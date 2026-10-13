@@ -133,9 +133,9 @@ Cada iteración `t`, para cada jugador `p`:
   4. **Manos destacadas:** repeticiones.
 - **Estética Balatro:** pixel art escalado sin suavizado (`image-rendering: pixelated`), fondo con remolino animado (fragment shader WebGL propio y liviano, con fallback CSS), filtro CRT opcional, cartas que se balancean y se inclinan siguiendo el puntero o el toque, "pop" al jugar, números que explotan al sumar puntos y temblor de pantalla con el vale cuatro. Se respeta `prefers-reduced-motion`.
 - **Arte:**
-  - **Caras de las cartas:** "Spanish Deck – Pixel Art" de jcanabal, edición gratuita (73×113 PNG), con crédito. Hay que escribirle al autor para confirmar que se pueden tener en un repo público. El arte queda fuera de la licencia MIT, en `web/public/cards/LICENSE-ART.md`.
+  - **Caras de las cartas:** "Spanish Deck – Pixel Art" de jcanabal, edición gratuita (73×113 PNG). La licencia permite usarlas y modificarlas en cualquier proyecto digital; solo prohíbe redistribuirlas como pack de assets por separado. Por eso: crédito visible en la web y el README ("Card art by Jose Angel Canabal"), y un `web/public/cards/LICENSE-ART.md` que aclara que el arte no es MIT y no puede extraerse como pack independiente.
   - **Hecho por nosotros:** el personaje del bot en pixel art (original, sin marcas de terceros), con reacciones (neutral, farol, descubierto, gana, pierde), el dorso de las cartas y el fondo.
-  - **Skins:** las cartas se cargan a través de una interfaz `CardSkin`. Si el autor no autoriza, se cambia a un skin propio sin tocar el resto.
+  - **Skins:** las cartas se cargan a través de una interfaz `CardSkin`, así se puede sumar o cambiar un mazo sin tocar el resto.
 - **Mobile-first:** se puede jugar con una mano en un celular de 360 px de ancho.
 - **Idioma:** la web en español.
 - **Deploy:** sitio estático independiente del hosting. Por defecto Vercel (gratis); el dominio se decide al final.
@@ -189,7 +189,6 @@ Cada iteración `t`, para cada jugador `p`:
 | Los recorridos son lentos | Benchmark temprano; red de 128; menos `K`; perfilar el motor |
 | Problemas de CUDA o Blackwell en WSL | Es la primera verificación del día 1 |
 | La traducción de reglas con los rivales externos lleva mucho tiempo | Se bajan de prioridad: se usan solo para contrastar reglas |
-| El autor del arte no autoriza | Skin propio a través de `CardSkin` |
 
 ## 8. Fuera de alcance (v1)
 
