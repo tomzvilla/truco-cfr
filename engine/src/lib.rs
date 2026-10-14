@@ -7,3 +7,4 @@ pub mod cfr;
 pub mod exact;
 pub mod minitruco;
 pub mod truco;
+pub mod agents;
