@@ -25,6 +25,8 @@ type WorkerOut = Result<Vec<(u64, Vec<MatchLog>)>, String>;
 pub struct Counters {
     pub decisions: AtomicU64,
     pub fallbacks: AtomicU64,
+    /// Fallbacks seguidos sin una respuesta válida en el medio (compartido entre hilos).
+    pub consecutive_fallbacks: AtomicU64,
     pub cost_micro_usd: AtomicU64,
     pub model: Mutex<String>,
 }

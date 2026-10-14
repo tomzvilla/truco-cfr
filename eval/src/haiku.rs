@@ -7,7 +7,7 @@ use rand::RngCore;
 use serde_json::Value;
 use std::io::{Read, Write};
 use std::path::PathBuf;
-use std::process::{Command, Stdio};
+use std::process::{Child, Command, Stdio};
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -225,6 +225,18 @@ pub fn ask_claude(opts: &HaikuOptions, user: &str) -> Result<Answer, String> {
         .stderr(Stdio::null())
         .spawn()
         .map_err(|e| format!("no pude lanzar {}: {e}", opts.claude.display()))?;
+    let result = converse(&mut child, opts, user);
+    if result.is_err() {
+        // Ninguna salida con error deja un proceso vivo o zombi.
+        let _ = child.kill();
+        let _ = child.wait();
+    }
+    result
+}
+
+/// Escribe la consulta, espera la respuesta (con tiempo máximo) y la interpreta. Quien llama
+/// se ocupa de matar y recoger al hijo si esto devuelve un error.
+fn converse(child: &mut Child, opts: &HaikuOptions, user: &str) -> Result<Answer, String> {
     {
         // Al soltar stdin se cierra y Claude empieza a responder.
         let mut stdin = child.stdin.take().expect("stdin de claude");
@@ -243,8 +255,6 @@ pub fn ask_claude(opts: &HaikuOptions, user: &str) -> Result<Answer, String> {
         match child.try_wait().map_err(|e| e.to_string())? {
             Some(_) => break,
             None if t0.elapsed() > opts.timeout => {
-                let _ = child.kill();
-                let _ = child.wait();
                 return Err(format!(
                     "claude no contestó en {} s",
                     opts.timeout.as_secs()
@@ -267,6 +277,14 @@ pub fn ask_claude(opts: &HaikuOptions, user: &str) -> Result<Answer, String> {
             .and_then(|m| m.keys().next().cloned())
             .unwrap_or_default(),
     })
+}
+
+/// Decisiones seguidas con fallback a partir de las cuales se corta el torneo.
+pub const MAX_CONSECUTIVE_FALLBACKS: u64 = 5;
+
+/// Si la racha de fallbacks seguidos ya obliga a cortar.
+pub fn should_abort(consecutive: u64) -> bool {
+    consecutive >= MAX_CONSECUTIVE_FALLBACKS
 }
 
 /// Claude jugando con nuestras reglas: dos intentos por decisión y, si no, la jugada prudente.
@@ -303,6 +321,9 @@ impl Agent for HaikuAgent {
                         *self.counters.model.lock().expect("modelo") = answer.model;
                     }
                     if let Some(k) = parse_choice(&answer.text, menu.len()) {
+                        self.counters
+                            .consecutive_fallbacks
+                            .store(0, Ordering::Relaxed);
                         return menu[k];
                     }
                     eprintln!("haiku: respuesta sin una opción válida: {:?}", answer.text);
@@ -311,6 +332,17 @@ impl Agent for HaikuAgent {
             }
         }
         self.counters.fallbacks.fetch_add(1, Ordering::Relaxed);
+        let streak = self
+            .counters
+            .consecutive_fallbacks
+            .fetch_add(1, Ordering::Relaxed)
+            + 1;
+        if should_abort(streak) {
+            eprintln!(
+                "error: claude falló {MAX_CONSECUTIVE_FALLBACKS} decisiones seguidas (¿límite de uso o sesión vencida?): se corta el torneo; retomalo con --resume true"
+            );
+            std::process::exit(2);
+        }
         fallback(obs.legal)
     }
 }

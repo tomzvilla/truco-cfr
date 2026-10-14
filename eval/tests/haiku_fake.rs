@@ -8,7 +8,9 @@ use std::time::{Duration, Instant};
 use truco_engine::agents::Agent;
 use truco_engine::game::actions_of;
 use truco_engine::truco::{deal, Observation, TrucoState};
-use truco_eval::haiku::{ask_claude, fallback, HaikuAgent, HaikuOptions};
+use truco_eval::haiku::{
+    ask_claude, fallback, should_abort, HaikuAgent, HaikuOptions, MAX_CONSECUTIVE_FALLBACKS,
+};
 use truco_eval::tournament::Counters;
 
 /// Un `claude` falso: un script de sh que ignora sus argumentos.
@@ -85,4 +87,50 @@ fn a_missing_claude_is_a_clear_error() {
     };
     let err = ask_claude(&opts, "hola").err().unwrap();
     assert!(err.contains("no pude lanzar"), "{err}");
+}
+
+#[test]
+fn a_claude_that_exits_without_reading_is_an_error_not_a_hang() {
+    let p = std::env::temp_dir().join(format!("truco-eval-{}-epipe.sh", std::process::id()));
+    std::fs::write(&p, "#!/bin/sh\nexit 0\n").unwrap();
+    std::fs::set_permissions(&p, std::fs::Permissions::from_mode(0o755)).unwrap();
+    let opts = HaikuOptions {
+        claude: p,
+        model: "haiku".into(),
+        timeout: Duration::from_secs(2),
+    };
+    // Más grande que el buffer del pipe: la escritura choca con el cierre (EPIPE).
+    let big = "x".repeat(4 << 20);
+    let t0 = Instant::now();
+    let err = ask_claude(&opts, &big).err().unwrap();
+    assert!(err.contains("claude no recibe"), "{err}");
+    assert!(t0.elapsed() < Duration::from_secs(5));
+}
+
+#[test]
+fn the_abort_rule_triggers_at_the_limit() {
+    assert!(!should_abort(MAX_CONSECUTIVE_FALLBACKS - 1));
+    assert!(should_abort(MAX_CONSECUTIVE_FALLBACKS));
+    assert_eq!(MAX_CONSECUTIVE_FALLBACKS, 5);
+}
+
+#[test]
+fn a_valid_answer_resets_the_fallback_streak() {
+    let counters = Arc::new(Counters::default());
+    let obs = root_obs();
+    let mut bad = HaikuAgent::new(fake("streak-bad", "exit 3"), counters.clone());
+    for _ in 0..MAX_CONSECUTIVE_FALLBACKS - 1 {
+        bad.act(&obs, &mut SmallRng::seed_from_u64(2));
+    }
+    assert_eq!(
+        counters.consecutive_fallbacks.load(Ordering::Relaxed),
+        MAX_CONSECUTIVE_FALLBACKS - 1
+    );
+    let mut good = HaikuAgent::new(fake("streak-ok", OK_1), counters.clone());
+    good.act(&obs, &mut SmallRng::seed_from_u64(2));
+    assert_eq!(counters.consecutive_fallbacks.load(Ordering::Relaxed), 0);
+    assert_eq!(
+        counters.fallbacks.load(Ordering::Relaxed),
+        MAX_CONSECUTIVE_FALLBACKS - 1
+    );
 }
