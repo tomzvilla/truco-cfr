@@ -56,7 +56,10 @@ impl Game for TrucoGame {
     }
 
     fn legal_actions(&self) -> ActionMask {
-        self.state().legal_actions()
+        match &self.0 {
+            Some(s) => s.legal_actions(),
+            None => 0,
+        }
     }
 
     fn apply(&mut self, a: Action) {

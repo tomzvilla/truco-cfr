@@ -62,3 +62,12 @@ fn infoset_keys_hide_opponent_card() {
     let b = play(dealt(2, 0), &[Kuhn::PASS]);
     assert_eq!(a.infoset_key(1), b.infoset_key(1));
 }
+
+#[test]
+fn legal_actions_empty_outside_decision_nodes() {
+    assert_eq!(Kuhn::root().legal_actions(), 0, "nodo de azar");
+    let terminal = play(dealt(1, 2), &[Kuhn::PASS, Kuhn::PASS]);
+    assert_eq!(terminal.node(), Node::Terminal);
+    assert_eq!(terminal.legal_actions(), 0, "nodo terminal");
+    assert_eq!(dealt(1, 2).legal_actions(), 0b11, "nodo de decisión");
+}

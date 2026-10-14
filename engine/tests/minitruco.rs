@@ -75,3 +75,12 @@ fn cfr_converges_on_minitruco() {
     assert!(late < 0.05, "explotabilidad final {late}");
     assert!(late < early / 2.0, "early={early} late={late}");
 }
+
+#[test]
+fn legal_actions_empty_outside_decision_nodes() {
+    assert_eq!(MiniTruco::root().legal_actions(), 0, "nodo de azar");
+    let terminal = play(dealt(5, 2), &[JUGAR, JUGAR]);
+    assert_eq!(terminal.node(), Node::Terminal);
+    assert_eq!(terminal.legal_actions(), 0, "nodo terminal");
+    assert_ne!(dealt(5, 2).legal_actions(), 0, "nodo de decisión");
+}

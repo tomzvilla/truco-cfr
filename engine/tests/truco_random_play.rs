@@ -47,3 +47,16 @@ fn root_is_chance_and_deal_is_valid() {
         assert!(s.score(0) < TARGET && s.score(1) < TARGET);
     }
 }
+
+#[test]
+fn legal_actions_empty_outside_decision_nodes() {
+    let mut rng = SmallRng::seed_from_u64(5);
+    assert_eq!(TrucoGame::root().legal_actions(), 0, "nodo de azar (no debe entrar en pánico)");
+    let mut g = TrucoGame::root().sample_chance(&mut rng);
+    assert_ne!(g.legal_actions(), 0, "nodo de decisión");
+    while g.node() != Node::Terminal {
+        let acts: Vec<_> = actions_of(g.legal_actions()).collect();
+        g.apply(acts[0]);
+    }
+    assert_eq!(g.legal_actions(), 0, "nodo terminal");
+}

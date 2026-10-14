@@ -43,7 +43,10 @@ impl Game for Kuhn {
     }
 
     fn legal_actions(&self) -> ActionMask {
-        0b11
+        match self.node() {
+            Node::Decision(_) => 0b11,
+            _ => 0,
+        }
     }
 
     fn apply(&mut self, a: usize) {

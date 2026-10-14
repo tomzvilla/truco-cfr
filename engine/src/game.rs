@@ -36,6 +36,8 @@ pub trait Game: Clone + Send + Sync + 'static {
     fn node(&self) -> Node;
     /// Resuelve un nodo de azar eligiendo un resultado al azar.
     fn sample_chance(&self, rng: &mut dyn RngCore) -> Self;
+    /// Acciones legales. Solo tiene sentido en `Node::Decision`; en nodos de azar y terminales
+    /// devuelve la máscara vacía (0).
     fn legal_actions(&self) -> ActionMask;
     fn apply(&mut self, a: Action);
     /// Puntos netos de cada jugador (suma cero).
