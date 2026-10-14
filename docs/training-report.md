@@ -91,20 +91,34 @@ Política actual (regret matching sobre las redes de ventajas), medida durante e
 - El bot aprendió muy rápido: a la iteración 10 ya le ganaba al heurístico (59 %) y al azar (92 %). Después la
   política actual osciló entre 46 % y 73 % contra el heurístico, con un bajón entre las iteraciones 110 y 300
   (promedio ~57 %) y su mejor tramo al final (iteraciones 430 a 590, promedio ~65 %). Cada punto se mide con 400
-  partidos, así que buena parte del sube y baja es ruido (±5 puntos).
-- La red de estrategia promedio, que es la que se publica, le gana al heurístico el 60,2 % [58,1; 62,4] de 2 000
-  partidos: el límite inferior del intervalo queda bien arriba del 50 %. Contra el azar gana el 91,8 %, por encima
-  del 85 % que pide el spec.
+  partidos (±5 puntos al 95 %), pero ese ruido de medición explica solo una parte del sube y baja: dentro de los
+  tramos estables la dispersión es cerca del doble de la esperable por azar, así que la política actual de verdad
+  oscila de una iteración a otra. Por eso se publica la red promedio y no la política de la última iteración.
+- La red de estrategia promedio le gana al heurístico el 60,2 % [58,1; 62,4] de 2 000 partidos: el límite inferior
+  del intervalo queda bien arriba del 50 %, que es el criterio del spec. Contra el azar gana el 91,8 %, por encima
+  del 85 % que el plan fijó como referencia.
 - Lo que sorprendió: la red promedio queda unos puntos por debajo de las últimas políticas actuales. Tiene sentido,
   porque promedia todas las iteraciones (con más peso en las últimas) e incluye el tramo flojo del medio; a cambio
   es más estable y es la que, en teoría, se acerca al equilibrio.
 - La corrida se cortó cinco veces porque la PC se quedó con poca memoria libre mientras se usaba para otras cosas
   (en las iteraciones 188, 300, 400, 542 y 550; la de la 400 fue una parada pedida a mano). Cada vez se retomó con
-  `resume` desde el último checkpoint, y las iteraciones perdidas (151 a 188 y 501 a 542) se volvieron a calcular.
+  `resume` desde el último checkpoint. Las iteraciones perdidas (151 a 188 y 501 a 542) se volvieron a calcular y
+  dieron exactamente las mismas pérdidas y evaluaciones que la primera vez, así que el resultado es idéntico al de
+  una corrida sin cortes. Las 7,16 horas de arriba cuentan solo las iteraciones conservadas; el trabajo descartado
+  por los cortes sumó cerca de una hora más.
 
 ## Limitaciones
 
 - La explotabilidad exacta solo se calcula en Kuhn y MiniTruco. En el truco completo no se calcula;
   la medida de fuerza es el rendimiento contra el heurístico propio y contra el azar.
+- El heurístico es un bot de reglas escrito para este mismo proyecto, no un rival externo: ganarle muestra que el
+  bot aprendió a jugar mejor que esas reglas, no que juegue bien contra personas u otros bots. La comparación con
+  bots de terceros queda para el torneo.
+- La configuración también se eligió mirando ese rival: arrancar cada iteración desde cero (`warm_start = false`)
+  se prefirió porque en las corridas cortas daba 48,3 % contra el heurístico frente a 38,7 % con arranque en caliente.
+- Los intervalos de Wilson tratan los 2 000 partidos como independientes, pero se juegan en 1 000 pares duplicados
+  (las mismas cartas con los asientos cambiados). Esa correlación probablemente es negativa, así que los intervalos
+  son, si acaso, conservadores, y la conclusión (límite inferior por encima del 50 %) se sostiene.
+- Por el tiempo disponible se usaron K = 4 500 recorridos por jugador y por iteración, menos que los 20 000 del spec.
 - Es una sola corrida con una sola semilla: no hay intervalos de confianza entre corridas.
 - Todos los números de este informe salen de `runs/overnight-1/metrics.jsonl` y `final.json`.
