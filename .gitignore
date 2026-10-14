@@ -1,2 +1,10 @@
 .worktrees/
 .superpowers/
+target/
+.venv/
+__pycache__/
+third_party/
+runs/
+node_modules/
+dist/
+*.tcfrw
