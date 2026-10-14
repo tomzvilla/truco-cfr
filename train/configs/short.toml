@@ -1,0 +1,23 @@
+# Corrida corta (~30 minutos). K y la red salen de scripts/bench_traversal.py (ver Tarea 9).
+game = "truco"
+seed = 1
+iterations = 120
+traversals = 5_000
+threads = 8
+hidden = 128
+n_hidden = 3
+adv_capacity = 2_000_000
+strat_capacity = 4_000_000
+adv_steps = 1_000
+batch_size = 4_096
+lr = 0.001
+adv_scale = 10.0
+warm_start = false
+strat_steps = 10_000
+eval_every = 5
+eval_pairs = 200
+checkpoint_every = 25
+compress_checkpoints = false
+final_pairs = 500
+time_budget_s = 1800
+device = "cuda"
