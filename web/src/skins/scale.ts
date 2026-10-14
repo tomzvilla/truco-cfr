@@ -42,6 +42,19 @@ export function pickScaleByHeight(
   return k >= kMin ? k / d : 1;
 }
 
+/**
+ * El mayor k/dpr (k entero: píxeles de arte de tamaño entero en el dispositivo) que no pasa de `limit`, pero nunca
+ * menor que `min`. Si ningún k/dpr cae entre `min` y `limit`, el tamaño manda sobre la nitidez: devuelve `limit`
+ * (o `min` si el límite es menor) aunque no sea un múltiplo entero; las imágenes usan `image-rendering: pixelated`.
+ */
+export function pickScaleUpTo(limit: number, min: number, dpr = 1): number {
+  const d = Number.isFinite(dpr) && dpr >= 1 ? dpr : 1;
+  const lim = Number.isFinite(limit) && limit > 0 ? limit : min;
+  const k = Math.floor(lim * d + 1e-9);
+  const s = k / d;
+  return s >= min ? s : Math.max(min, lim);
+}
+
 export function handWidth(nativeWidth: number, scale: number, cardsAcross: number, gap: number): number {
   return cardsAcross * nativeWidth * scale + gap * (cardsAcross - 1);
 }
