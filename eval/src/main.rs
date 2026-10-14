@@ -8,6 +8,8 @@ use std::process::ExitCode;
 use std::sync::Arc;
 use truco_eval::args::Args;
 use truco_eval::bluff::{analyze, BluffReport};
+use truco_eval::highlights::{find, select, HighlightsReport};
+use truco_eval::logs::read_logs;
 use truco_eval::model::load_model;
 use truco_eval::strength::StrengthTable;
 use truco_eval::tournament::{run_rival, RivalOptions, TournamentConfig};
@@ -104,12 +106,60 @@ fn bluff(args: &Args) -> Result<(), String> {
     write_json(&args.path("out", "eval/results"), "bluff.json", &report)
 }
 
+fn highlights(args: &Args) -> Result<(), String> {
+    let logs_dir = args.path("logs", "eval/logs");
+    let rivals: String = args.get("rivals", Some("heuristic,haiku".to_string()))?;
+    let table = StrengthTable::build(
+        args.get("strength-samples", Some(300))?,
+        args.get("seed", Some(11))?,
+        8,
+    );
+    let (mut found, mut sources) = (Vec::new(), Vec::new());
+    for rival in rivals.split(',').map(str::trim).filter(|r| !r.is_empty()) {
+        let path = logs_dir.join(format!("{rival}.jsonl"));
+        if !path.exists() {
+            println!("sin registros de {rival} ({}): se saltea", path.display());
+            continue;
+        }
+        let logs = read_logs(&path)?;
+        found.extend(find(rival, &logs, &table));
+        sources.push(path.display().to_string());
+    }
+    if sources.is_empty() {
+        return Err(format!(
+            "no hay registros en {}: correr primero `tournament`",
+            logs_dir.display()
+        ));
+    }
+    let truco_found = found.iter().filter(|h| h.kind == "truco").count() as u64;
+    let envido_found = found.len() as u64 - truco_found;
+    let (truco, envido) = select(
+        found,
+        args.get("top-truco", Some(8))?,
+        args.get("top-envido", Some(4))?,
+    );
+    println!("faroles exitosos: {truco_found} de truco, {envido_found} de envido");
+    let report = HighlightsReport {
+        sources,
+        truco_found,
+        envido_found,
+        truco,
+        envido,
+    };
+    write_json(
+        &args.path("out", "eval/results"),
+        "highlights.json",
+        &report,
+    )
+}
+
 fn run(argv: &[String]) -> Result<(), String> {
     let (cmd, rest) = argv.split_first().ok_or(USAGE)?;
     let args = Args::parse(rest)?;
     match cmd.as_str() {
         "tournament" => tournament(&args),
         "bluff" => bluff(&args),
+        "highlights" => highlights(&args),
         other => Err(format!("subcomando desconocido: {other}\n{USAGE}")),
     }
 }

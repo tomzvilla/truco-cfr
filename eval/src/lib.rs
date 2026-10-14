@@ -2,6 +2,7 @@
 pub mod args;
 pub mod bluff;
 pub mod haiku;
+pub mod highlights;
 pub mod logs;
 pub mod model;
 pub mod stats;
