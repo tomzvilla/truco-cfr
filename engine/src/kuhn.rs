@@ -67,7 +67,7 @@ impl Game for Kuhn {
         }
     }
 
-    /// 3 bytes = carta propia (one-hot) + 2 lugares de historia × (vacío, pasar, apostar).
+    /// 9 bytes = carta propia one-hot (3) + 2 lugares de historia × (vacío, pasar, apostar) (6).
     fn encode(&self, p: Player, out: &mut [u8]) {
         out.fill(0);
         out[self.cards.expect("sin repartir")[p] as usize] = 1;

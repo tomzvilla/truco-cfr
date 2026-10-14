@@ -41,13 +41,10 @@ pub struct TrucoState {
     /// Valor aceptado del truco: 1 (no se cantó), 2, 3 o 4.
     pub(crate) truco_level: u8,
     /// Canto de truco sin responder: (nivel propuesto, quién lo cantó).
-    #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) truco_pending: Option<(u8, Player)>,
     /// Quién dijo el último "quiero" (el único que puede subir).
-    #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) truco_holder: Option<Player>,
     /// A quién le vuelve el turno cuando se resuelve el canto de truco.
-    #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) truco_resume: Player,
     #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) envido_calls: [Option<(EnvidoKind, Player)>; 4],
@@ -142,11 +139,24 @@ impl TrucoState {
             return 0;
         }
         let p = self.turn;
+        if let Some((level, _)) = self.truco_pending {
+            let mut m = bit(QUIERO) | bit(NO_QUIERO);
+            if level == 2 {
+                m |= bit(RETRUCO);
+            }
+            if level == 3 {
+                m |= bit(VALE_CUATRO);
+            }
+            return m;
+        }
         let mut m = bit(MAZO);
         for slot in 0..3 {
             if !self.slot_used(p, slot) {
                 m |= bit(JUGAR0 + slot);
             }
+        }
+        if let Some(a) = self.next_truco_call(p) {
+            m |= bit(a);
         }
         m
     }
@@ -156,6 +166,9 @@ impl TrucoState {
         let p = self.turn;
         match a {
             JUGAR0 | JUGAR1 | JUGAR2 => self.play_card(p, a - JUGAR0),
+            TRUCO | RETRUCO | VALE_CUATRO => self.call_truco(p, a),
+            QUIERO => self.accept_truco(p),
+            NO_QUIERO => self.decline_truco(),
             MAZO => self.mazo(p),
             _ => panic!("acción todavía no soportada: {}", ACTION_NAMES[a]),
         }
