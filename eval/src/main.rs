@@ -7,7 +7,9 @@ use std::path::Path;
 use std::process::ExitCode;
 use std::sync::Arc;
 use truco_eval::args::Args;
+use truco_eval::bluff::{analyze, BluffReport};
 use truco_eval::model::load_model;
+use truco_eval::strength::StrengthTable;
 use truco_eval::tournament::{run_rival, RivalOptions, TournamentConfig};
 
 const USAGE: &str = "uso: truco-eval <tournament|bluff|highlights> [--clave valor ...]";
@@ -59,11 +61,55 @@ fn tournament(args: &Args) -> Result<(), String> {
     Ok(())
 }
 
+fn bluff(args: &Args) -> Result<(), String> {
+    let model_path = args.path("model", "models/strategy.tcfrw");
+    let net = load_model(&model_path)?;
+    let hands: u64 = args.get("hands", Some(20_000))?;
+    let seed: u64 = args.get("seed", Some(11))?;
+    let samples: u32 = args.get("strength-samples", Some(300))?;
+    let threads: usize = args.get("threads", Some(8))?;
+    let t0 = std::time::Instant::now();
+    let table = StrengthTable::build(samples, seed, threads);
+    println!("tabla de fuerza: {:.0} s", t0.elapsed().as_secs_f64());
+    let (envido_curve, envido_low_bluff, contention, truco) =
+        analyze(Some(net), &table, hands, seed);
+    let (_, _, _, truco_heuristic) = analyze(None, &table, hands, seed);
+    for r in &envido_low_bluff {
+        println!(
+            "envido con ≤7 ({}): cantó {}/{} = {:.1} %",
+            r.role,
+            r.called,
+            r.n,
+            100.0 * r.rate
+        );
+    }
+    println!(
+        "truco/retruco con mano floja: {}/{} = {:.1} % (heurístico {:.1} %)",
+        truco.weak_calls,
+        truco.calls,
+        100.0 * truco.weak_share,
+        100.0 * truco_heuristic.weak_share
+    );
+    let report = BluffReport {
+        model: model_path.display().to_string(),
+        hands,
+        seed,
+        strength_samples: samples,
+        envido_curve,
+        envido_low_bluff,
+        contention,
+        truco,
+        truco_heuristic,
+    };
+    write_json(&args.path("out", "eval/results"), "bluff.json", &report)
+}
+
 fn run(argv: &[String]) -> Result<(), String> {
     let (cmd, rest) = argv.split_first().ok_or(USAGE)?;
     let args = Args::parse(rest)?;
     match cmd.as_str() {
         "tournament" => tournament(&args),
+        "bluff" => bluff(&args),
         other => Err(format!("subcomando desconocido: {other}\n{USAGE}")),
     }
 }
