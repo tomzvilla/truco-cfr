@@ -3,3 +3,5 @@ pub mod cards;
 pub mod envido;
 pub mod game;
 pub mod kuhn;
+pub mod cfr;
+pub mod exact;
