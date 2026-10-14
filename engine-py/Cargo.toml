@@ -1,0 +1,19 @@
+[package]
+name = "truco-engine-py"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "truco_engine_py"
+crate-type = ["cdylib"]
+
+[features]
+# maturin lo enciende (ver pyproject.toml). Sin él, `cargo clippy` y `cargo build` linkean normal.
+extension-module = ["pyo3/extension-module"]
+
+[dependencies]
+truco-engine = { path = "../engine" }
+pyo3 = { version = "0.25", features = ["abi3-py312"] }
+rayon = "1.10"
+rand = { version = "0.8", features = ["small_rng"] }

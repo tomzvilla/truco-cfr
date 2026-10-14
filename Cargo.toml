@@ -1,6 +1,8 @@
 [workspace]
 resolver = "2"
-members = ["engine"]
+members = ["engine", "engine-py"]
+# `cargo test` / `cargo build` en la raíz tocan solo el motor; engine-py se compila con maturin.
+default-members = ["engine"]
 
 [profile.release]
 debug = 1
