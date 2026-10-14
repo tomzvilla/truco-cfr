@@ -21,6 +21,11 @@
   background: var(--noche); box-shadow: var(--notch);
 }
 .nav a[aria-current='page'] { background: var(--ambar); color: var(--tinta); }
+.nav a:focus-visible { outline: 3px solid var(--tiza); outline-offset: 0; }
+@media (hover: hover) {
+  .nav a:hover { background: var(--violeta); }
+  .nav a[aria-current='page']:hover { background: #ffc552; }
+}
 
 /* El título de Jugar solo se oculta a la vista en celular (sigue para lectores de pantalla): ahí la mesa necesita el lugar. */
 @media (max-width: 519.98px) {

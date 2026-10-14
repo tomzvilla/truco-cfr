@@ -4,7 +4,8 @@
   left: 0;
   bottom: 0;
   transform: translateX(-50%);
-  font: 400 22px/1 var(--font-display);
+  font: 700 22px/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
   color: var(--ambar);
   text-shadow: 2px 2px 0 var(--tinta);
   white-space: nowrap;
