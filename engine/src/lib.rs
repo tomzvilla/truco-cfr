@@ -5,3 +5,4 @@ pub mod game;
 pub mod kuhn;
 pub mod cfr;
 pub mod exact;
+pub mod minitruco;
