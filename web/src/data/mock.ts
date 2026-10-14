@@ -47,7 +47,7 @@ export const MOCK_HIGHLIGHTS: Highlight[] = [
   {
     id: 'farol-truco',
     title: 'El truco con la peor mano',
-    why: 'Con 6, 5 y 4 (lo más flojo del mazo) el bot cantó truco y se llevó el punto: no se animaron a aceptar.',
+    why: 'Con 6, 5 y 4 (lo más flojo del mazo) el bot cantó truco y se llevó el punto porque no se lo aceptaron.',
     steps: [
       {
         caption: 'Perdés la primera baza: el bot respondió tu 5 de oros con un 6.',
@@ -64,7 +64,7 @@ export const MOCK_HIGHLIGHTS: Highlight[] = [
         }),
       },
       {
-        caption: 'Te vas al mazo: el bot suma 1 punto y muestra que no tenía nada.',
+        caption: 'Decís no quiero: el bot suma 1 punto y muestra que no tenía nada.',
         view: { ...base, score: [base.score[0], base.score[1] + 1] },
       },
     ],

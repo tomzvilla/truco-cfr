@@ -64,3 +64,13 @@ describe('manos destacadas mock', () => {
     expect(after.envido.reveal).toBeNull();
   });
 });
+
+describe('manos destacadas mock: coherencia con el motor', () => {
+  it('ningún paso habla de irse al mazo con un canto pendiente (el motor lo prohíbe)', () => {
+    const h = MOCK_HIGHLIGHTS.find((x) => x.id === 'farol-truco')!;
+    const step = h.steps[1]!;
+    expect(step.view.truco.pending).not.toBeNull();
+    expect(h.steps[2]!.caption).not.toMatch(/mazo/i);
+    expect(h.steps[2]!.caption).toMatch(/no quiero/i);
+  });
+});

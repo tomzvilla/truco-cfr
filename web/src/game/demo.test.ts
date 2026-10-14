@@ -35,10 +35,10 @@ describe('demoReduce', () => {
     expect(v.envido.pending).toEqual({ by: 'yo' });
     expect(v.envido.calls).toEqual([{ call: 'envido', by: 'yo' }]);
   });
-  it('irse al mazo termina la mano y el bot suma lo que valía', () => {
+  it('irse al mazo en la primera baza sin envido jugado termina la mano y el bot suma 2', () => {
     const v = demoReduce(FIXTURES.inicioDeMano, 'mazo');
     expect(v.phase).toBe('finDeMano');
-    expect(v.score).toEqual([3, 6]);
+    expect(v.score).toEqual([3, 7]); // 1 del truco + 1 porque el envido no se jugó (spec §2)
   });
   it('CUALQUIER acción disponible en CUALQUIER fixture produce un TableView válido', () => {
     for (const name of FIXTURE_NAMES) {
@@ -141,5 +141,53 @@ describe('createDemoSource', () => {
     const shown = end.botHand!.map((k) => `${k.suit}-${k.number}`);
     for (const t of end.tricks) if (t.bot) expect(shown).toContain(`${t.bot.suit}-${t.bot.number}`);
     expect(end.score[0] + end.score[1]).toBeGreaterThan(FIXTURES.inicioDeMano.score[0] + FIXTURES.inicioDeMano.score[1]);
+  });
+});
+
+describe('demo: reglas del spec §2', () => {
+  it('con el truco ya aceptado el envido queda cerrado', () => {
+    const v = demoBotStep(demoReduce(FIXTURES.inicioDeMano, 'truco'));
+    expect(v.truco.acceptedLevel).toBe(2);
+    for (const a of ['envido', 'realEnvido', 'faltaEnvido'] as const) expect(v.actions).not.toContain(a);
+  });
+  it('sin truco cantado el envido sí se ofrece en la primera baza', () => {
+    expect(defaultActions(FIXTURES.inicioDeMano)).toContain('envido');
+  });
+  it('irse al mazo en la primera baza con el envido ya jugado vale solo el truco', () => {
+    const afterEnvido = demoBotStep(demoReduce(FIXTURES.inicioDeMano, 'envido'));
+    const v = demoReduce(afterEnvido, 'mazo');
+    expect(v.score[1]).toBe(afterEnvido.score[1] + 1);
+  });
+  it('irse al mazo después de la primera baza vale solo el truco', () => {
+    const v = demoReduce(FIXTURES.trucoPendiente, 'mazo'); // además: hay un canto pendiente
+    expect(v).toBe(FIXTURES.trucoPendiente);
+    const afterFirst = { ...FIXTURES.trucoPendiente, truco: { acceptedLevel: 1 as const, pending: null }, actions: ['mazo' as const] };
+    expect(demoReduce(afterFirst, 'mazo').score[1]).toBe(afterFirst.score[1] + 1);
+  });
+  it('el mazo no existe mientras hay un canto pendiente (el motor lo prohíbe)', () => {
+    expect(demoReduce(FIXTURES.envidoPendiente, 'mazo')).toBe(FIXTURES.envidoPendiente);
+    expect(demoReduce(FIXTURES.trucoPendiente, 'mazo')).toBe(FIXTURES.trucoPendiente);
+  });
+  it('un "no quiero" a un envido encadenado paga la suma de lo aceptado antes del último canto', () => {
+    const chained = {
+      ...FIXTURES.envidoPendiente,
+      envido: {
+        calls: [{ call: 'envido' as const, by: 'yo' as const }, { call: 'realEnvido' as const, by: 'bot' as const }],
+        pending: { by: 'bot' as const },
+        reveal: null,
+      },
+    };
+    const v = demoReduce(chained, 'noQuiero');
+    expect(v.score).toEqual([chained.score[0], chained.score[1] + 2]);
+    // y a un primer canto vale 1
+    expect(demoReduce(FIXTURES.envidoPendiente, 'noQuiero').score[1]).toBe(FIXTURES.envidoPendiente.score[1] + 1);
+  });
+  it('una falta envido aceptada con el que va ganando por debajo de 15 define el partido en 30', () => {
+    const falta = {
+      ...FIXTURES.envidoPendiente,
+      envido: { calls: [{ call: 'faltaEnvido' as const, by: 'bot' as const }], pending: { by: 'bot' as const }, reveal: null },
+    };
+    const v = demoReduce(falta, 'quiero');
+    expect(Math.max(...v.score)).toBe(30);
   });
 });

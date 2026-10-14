@@ -1,6 +1,6 @@
 import { PLAY_ACTIONS, TRUCO_CALL_LEVEL } from '../table/types';
 import type { ActionId, Card, EnvidoCall, Seat, TableView, TrucoCall } from '../table/types';
-import { envidoPoints, handOutcome, tanto, trickWinner, trucoRank } from './rules';
+import { envidoDeclinePoints, envidoPoints, handOutcome, tanto, trickWinner, trucoRank } from './rules';
 import type { GameSource } from './source';
 
 const ENVIDO_CALLS: readonly ActionId[] = ['envido', 'realEnvido', 'faltaEnvido'];
@@ -50,7 +50,9 @@ export function defaultActions(view: TableView): ActionId[] {
     if (!h.played) actions.push(PLAY_ACTIONS[i]!);
   });
   const firstCardNotPlayedYet = view.tricks.length === 0 || (view.tricks.length === 1 && view.tricks[0]!.mine === null);
-  if (firstCardNotPlayedYet && view.envido.calls.length === 0) actions.push('envido', 'realEnvido', 'faltaEnvido');
+  // spec §2: el envido solo va en la primera baza y se cierra apenas el truco fue cantado o aceptado
+  const trucoOpen = view.truco.acceptedLevel === 1 && view.truco.pending === null;
+  if (firstCardNotPlayedYet && view.envido.calls.length === 0 && trucoOpen) actions.push('envido', 'realEnvido', 'faltaEnvido');
   if (view.truco.acceptedLevel === 1 && !view.truco.pending) actions.push('truco');
   actions.push('mazo');
   return actions;
@@ -107,7 +109,14 @@ export function demoReduce(view: TableView, action: ActionId): TableView {
     return settle({ ...view, hand, tricks, actions: [], mood: 'neutral' });
   }
 
-  if (action === 'mazo') return finish(view, 'bot', view.truco.acceptedLevel);
+  if (action === 'mazo') {
+    // el motor no permite irse al mazo con un canto pendiente (se responde quiero / no quiero)
+    if (view.truco.pending || view.envido.pending) return view;
+    // spec §2: irse en la primera baza sin que se haya jugado el envido regala 1 punto más
+    const firstBaza = view.tricks.every((t) => t.winner === null);
+    const envidoNotPlayed = view.envido.calls.length === 0 && view.envido.reveal === null;
+    return finish(view, 'bot', view.truco.acceptedLevel + (firstBaza && envidoNotPlayed ? 1 : 0));
+  }
 
   if (action === 'quiero') {
     if (view.envido.pending) return { ...resolveEnvido(view), actions: [] };
@@ -121,7 +130,7 @@ export function demoReduce(view: TableView, action: ActionId): TableView {
     if (view.envido.pending) {
       return {
         ...view,
-        score: addPoints(view.score, view.envido.pending.by, 1),
+        score: addPoints(view.score, view.envido.pending.by, envidoDeclinePoints(view.envido.calls.map((c) => c.call), view.score)),
         actions: [],
         envido: { ...view.envido, pending: null },
         mood: view.envido.pending.by === 'bot' ? 'gana' : 'pierde',

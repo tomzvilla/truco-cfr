@@ -8,3 +8,6 @@ Fuente / Source: https://jcanabal.itch.io/spanish-deck-pixel-art
 **EN.** The PNG files in `cards/jcanabal/` are **NOT covered by this repository's MIT license**. They are used under the author's itch.io terms: free to use and modify in any digital project, but **may not be redistributed as a standalone asset pack**. Do not extract or republish them as a pack. If you fork this project, keep this credit, or download your own copy from the author's page.
 
 El dorso de las cartas, la mascota y el fondo son obra original de este proyecto (MIT).
+
+**ES.** Los PNG de esta carpeta se licencian solo para usarse dentro de este proyecto: no los reutilices como pack de assets, ni sueltos ni empaquetados, en otro proyecto ni en un repositorio aparte.
+**EN.** These PNGs are licensed only for use inside this project: do not reuse them as an asset pack, loose or bundled, in another project or a separate repository.

@@ -49,12 +49,30 @@ export function handOutcome(tricks: readonly TrickView[], mano: Seat): Seat | nu
   if (yo >= 2) return 'yo';
   if (bot >= 2) return 'bot';
   if (decided.length === 2 && yo + bot === 1) return yo === 1 ? 'yo' : 'bot'; // una parda y una baza ganada
-  if (decided.length >= 3) return yo > bot ? 'yo' : bot > yo ? 'bot' : mano;
+  if (decided.length >= 3) {
+    if (yo !== bot) return yo > bot ? 'yo' : 'bot'; // pardas en las dos primeras: define la tercera
+    // 1 a 1 con la tercera parda: gana quien ganó la PRIMERA; con las tres pardas, el mano
+    const first = decided[0];
+    return first === 'yo' || first === 'bot' ? first : mano;
+  }
   return null;
 }
 
-/** Puntos del envido aceptado: suma de los cantos; la falta vale lo que le falta al que va ganando. */
+/**
+ * Puntos del envido aceptado (spec §2): suma de los cantos. La falta envido: si el que va ganando tiene menos de 15,
+ * quien gane el envido gana el partido (30 alcanza siempre, el puntaje se acota a 30); si no, vale 30 menos el puntaje
+ * del que va ganando.
+ */
 export function envidoPoints(calls: readonly EnvidoCall[], score: readonly [number, number]): number {
-  if (calls.includes('faltaEnvido')) return 30 - Math.max(score[0], score[1]);
+  if (calls.includes('faltaEnvido')) {
+    const leader = Math.max(score[0], score[1]);
+    return leader < 15 ? 30 : 30 - leader;
+  }
   return calls.reduce((sum, c) => sum + (c === 'envido' ? 2 : 3), 0);
+}
+
+/** "No quiero" al último canto: quien cantó gana la suma de lo aceptado antes de ese canto, o 1 si fue el primero. */
+export function envidoDeclinePoints(calls: readonly EnvidoCall[], score: readonly [number, number]): number {
+  const accepted = calls.slice(0, -1);
+  return accepted.length === 0 ? 1 : envidoPoints(accepted, score);
 }

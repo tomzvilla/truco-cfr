@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { Card, TrickView } from '../table/types';
-import { envidoPoints, handOutcome, tanto, trickWinner, trucoRank } from './rules';
+import type { Card, Seat, TrickView } from '../table/types';
+import { envidoDeclinePoints, envidoPoints, handOutcome, tanto, trickWinner, trucoRank } from './rules';
 
 const c = (suit: Card['suit'], number: Card['number']): Card => ({ suit, number });
 const trick = (winner: TrickView['winner']): TrickView => ({ mine: c('oro', 4), bot: c('copa', 4), winner });
@@ -34,23 +34,30 @@ describe('trucoRank / trickWinner', () => {
   });
 });
 
-describe('handOutcome', () => {
-  it('dos bazas ganadas definen la mano', () => {
-    expect(handOutcome([trick('yo'), trick('yo')], 'bot')).toBe('yo');
-    expect(handOutcome([trick('bot'), trick('yo'), trick('bot')], 'yo')).toBe('bot');
-  });
-  it('1 a 1 sigue; parda en la tercera la gana el mano', () => {
-    expect(handOutcome([trick('yo'), trick('bot')], 'yo')).toBeNull();
-    expect(handOutcome([trick('yo'), trick('bot'), trick('parda')], 'bot')).toBe('bot');
-  });
-  it('parda en la primera: decide la segunda; parda en la segunda: decide la primera', () => {
-    expect(handOutcome([trick('parda'), trick('bot')], 'yo')).toBe('bot');
-    expect(handOutcome([trick('yo'), trick('parda')], 'bot')).toBe('yo');
-  });
-  it('dos pardas: decide la tercera; si también es parda, el mano', () => {
-    expect(handOutcome([trick('parda'), trick('parda')], 'yo')).toBeNull();
-    expect(handOutcome([trick('parda'), trick('parda'), trick('bot')], 'yo')).toBe('bot');
-    expect(handOutcome([trick('parda'), trick('parda'), trick('parda')], 'yo')).toBe('yo');
+type W = TrickView['winner'];
+
+describe('handOutcome (spec §2: pardas)', () => {
+  // [bazas jugadas], mano -> quién gana la mano (null = sigue)
+  const table: [string, W[], Seat, Seat | null][] = [
+    ['dos bazas ganadas por mí', ['yo', 'yo'], 'bot', 'yo'],
+    ['dos bazas ganadas por el bot', ['bot', 'bot'], 'yo', 'bot'],
+    ['1 a 1 todavía sigue', ['yo', 'bot'], 'yo', null],
+    ['1 a 1, la tercera la gana el bot', ['yo', 'bot', 'bot'], 'yo', 'bot'],
+    ['1 a 1 y tercera parda: gana quien ganó la PRIMERA (yo), aunque el mano sea el bot', ['yo', 'bot', 'parda'], 'bot', 'yo'],
+    ['1 a 1 y tercera parda: gana quien ganó la PRIMERA (bot), aunque el mano sea yo', ['bot', 'yo', 'parda'], 'yo', 'bot'],
+    ['primera parda: decide la segunda (bot)', ['parda', 'bot'], 'yo', 'bot'],
+    ['primera parda: decide la segunda (yo)', ['parda', 'yo'], 'bot', 'yo'],
+    ['segunda parda: gana quien ganó la primera (yo)', ['yo', 'parda'], 'bot', 'yo'],
+    ['segunda parda: gana quien ganó la primera (bot)', ['bot', 'parda'], 'yo', 'bot'],
+    ['primera y segunda pardas: sigue, decide la tercera', ['parda', 'parda'], 'yo', null],
+    ['primera y segunda pardas, la tercera la gana el bot', ['parda', 'parda', 'bot'], 'yo', 'bot'],
+    ['primera y segunda pardas, la tercera la gano yo', ['parda', 'parda', 'yo'], 'bot', 'yo'],
+    ['las tres pardas: gana el mano (yo)', ['parda', 'parda', 'parda'], 'yo', 'yo'],
+    ['las tres pardas: gana el mano (bot)', ['parda', 'parda', 'parda'], 'bot', 'bot'],
+    ['una sola baza jugada: sigue', ['yo'], 'yo', null],
+  ];
+  it.each(table)('%s', (_name, winners, mano, expected) => {
+    expect(handOutcome(winners.map(trick), mano)).toBe(expected);
   });
   it('una baza sin ganador todavía no cuenta', () => {
     expect(handOutcome([{ mine: c('oro', 4), bot: null, winner: null }], 'yo')).toBeNull();
@@ -58,10 +65,29 @@ describe('handOutcome', () => {
 });
 
 describe('envidoPoints', () => {
-  it('suma los cantos; la falta envido vale lo que le falta al que va ganando', () => {
+  it('suma los cantos aceptados', () => {
     expect(envidoPoints(['envido'], [3, 5])).toBe(2);
     expect(envidoPoints(['envido', 'envido'], [3, 5])).toBe(4);
     expect(envidoPoints(['envido', 'realEnvido'], [3, 5])).toBe(5);
-    expect(envidoPoints(['faltaEnvido'], [3, 12])).toBe(18);
+  });
+  it('falta envido con el que va ganando por debajo de 15: gana el partido (llega a 30)', () => {
+    expect(envidoPoints(['faltaEnvido'], [3, 12])).toBe(30);
+    expect(envidoPoints(['faltaEnvido'], [0, 0])).toBe(30);
+    expect(envidoPoints(['faltaEnvido'], [14, 9])).toBe(30);
+  });
+  it('falta envido con el que va ganando en 15 o más: vale 30 menos su puntaje', () => {
+    expect(envidoPoints(['faltaEnvido'], [15, 2])).toBe(15);
+    expect(envidoPoints(['faltaEnvido'], [3, 20])).toBe(10);
+    expect(envidoPoints(['envido', 'faltaEnvido'], [22, 22])).toBe(8);
+  });
+});
+
+describe('envidoDeclinePoints (no quiero)', () => {
+  it('vale 1 si fue el primer canto, o la suma de lo aceptado antes del último', () => {
+    expect(envidoDeclinePoints(['envido'], [0, 0])).toBe(1);
+    expect(envidoDeclinePoints(['envido', 'envido'], [0, 0])).toBe(2);
+    expect(envidoDeclinePoints(['envido', 'realEnvido'], [0, 0])).toBe(2);
+    expect(envidoDeclinePoints(['envido', 'envido', 'realEnvido'], [0, 0])).toBe(4);
+    expect(envidoDeclinePoints(['realEnvido', 'faltaEnvido'], [0, 0])).toBe(3);
   });
 });
