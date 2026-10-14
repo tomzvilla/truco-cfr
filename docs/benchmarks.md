@@ -39,3 +39,11 @@ Con redes ya entrenadas (3×128, corrida corta de 22 iteraciones) los recorridos
 Volver a medir con `scripts/bench_traversal.py --checkpoint runs/<id>` cuando exista una corrida corta.
 
 Medición repetida al implementar (`scripts/bench_traversal.py --k 2000`, redes recién inicializadas, 8 hilos): 3×256 = 1 397 recorridos/s, 59 nodos por recorrido, 97 µs por nodo y por hilo, 612 pasos/s de entrenamiento; 3×128 = 1 811 recorridos/s, 133 nodos, 33 µs, 478 pasos/s. Quedan dentro de ±30 % de la tabla.
+
+Nota: la primera tabla de esta sección es la medición al planificar y el párrafo de arriba la repetición al implementar; difieren por ruido de medición (±30 %).
+
+### Con redes entrenadas (Tarea 10)
+
+- 3×128 entrenada (short-2, 82 iteraciones): 577 recorridos/s, 324 nodos por recorrido, 43 µs por nodo y por hilo; entrenamiento 626 pasos/s.
+- 3×256 entrenada (probe-256, 16 iteraciones): 185 recorridos/s, 366 nodos por recorrido, 118 µs por nodo y por hilo; entrenamiento 607 pasos/s.
+- Elegido para la noche: 3×256 (185 ≥ 150), K = 185 × (55 − 2 × 3,5) / 2 ≈ 4 440 → 4 500 por jugador, 590 iteraciones (32 400 s / 55 s; manda `time_budget_s`), y `warm_start = false`: con warm start la política se degradaba (short-1: red final 38,7 % contra el heurístico y 73,7 % contra el azar) y desde cero no (short-2, misma config salvo eso: 48,3 % y 86,8 %, 1 000 partidos cada uno).
