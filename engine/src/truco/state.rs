@@ -46,11 +46,9 @@ pub struct TrucoState {
     pub(crate) truco_holder: Option<Player>,
     /// A quién le vuelve el turno cuando se resuelve el canto de truco.
     pub(crate) truco_resume: Player,
-    #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) envido_calls: [Option<(EnvidoKind, Player)>; 4],
     pub(crate) envido_status: EnvidoStatus,
     /// A quién le vuelve el turno cuando se resuelve el envido.
-    #[allow(dead_code)] // lo consume la Tarea 8
     pub(crate) envido_resume: Player,
     pub(crate) tantos: [u8; 2],
     pub(crate) revealed_tantos: [Option<u8>; 2],
@@ -139,8 +137,16 @@ impl TrucoState {
             return 0;
         }
         let p = self.turn;
+        if self.envido_status == EnvidoStatus::Pending {
+            return bit(QUIERO) | bit(NO_QUIERO) | self.envido_raises();
+        }
+        let envido = if self.can_call_envido(p) {
+            bit(ENVIDO) | bit(REAL_ENVIDO) | bit(FALTA_ENVIDO)
+        } else {
+            0
+        };
         if let Some((level, _)) = self.truco_pending {
-            let mut m = bit(QUIERO) | bit(NO_QUIERO);
+            let mut m = bit(QUIERO) | bit(NO_QUIERO) | envido;
             if level == 2 {
                 m |= bit(RETRUCO);
             }
@@ -149,7 +155,7 @@ impl TrucoState {
             }
             return m;
         }
-        let mut m = bit(MAZO);
+        let mut m = bit(MAZO) | envido;
         for slot in 0..3 {
             if !self.slot_used(p, slot) {
                 m |= bit(JUGAR0 + slot);
@@ -164,13 +170,17 @@ impl TrucoState {
     pub fn apply(&mut self, a: Action) {
         debug_assert!(self.legal_actions() & bit(a) != 0, "acción ilegal: {}", ACTION_NAMES[a]);
         let p = self.turn;
+        let envido_pending = self.envido_status == EnvidoStatus::Pending;
         match a {
             JUGAR0 | JUGAR1 | JUGAR2 => self.play_card(p, a - JUGAR0),
+            ENVIDO | REAL_ENVIDO | FALTA_ENVIDO => self.call_envido(p, a),
             TRUCO | RETRUCO | VALE_CUATRO => self.call_truco(p, a),
+            QUIERO if envido_pending => self.resolve_envido(true),
+            NO_QUIERO if envido_pending => self.resolve_envido(false),
             QUIERO => self.accept_truco(p),
             NO_QUIERO => self.decline_truco(),
             MAZO => self.mazo(p),
-            _ => panic!("acción todavía no soportada: {}", ACTION_NAMES[a]),
+            _ => panic!("acción inválida: {a}"),
         }
     }
 
