@@ -1,0 +1,32 @@
+import { describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { Jugar } from './Jugar';
+
+describe('Jugar (demo)', () => {
+  it('avisa que es una demostración y muestra la mesa', () => {
+    render(<Jugar />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Jugar' })).toBeInTheDocument();
+    expect(screen.getByRole('note')).toHaveTextContent(/demostración/i);
+    expect(screen.getByRole('region', { name: 'Mesa' })).toBeInTheDocument();
+  });
+  it('tocar una carta la juega y el turno pasa al bot', () => {
+    render(<Jugar />);
+    fireEvent.click(screen.getByRole('button', { name: 'Jugar 7 de oros' }));
+    expect(screen.queryByRole('button', { name: 'Jugar 7 de oros' })).toBeNull();
+    expect(screen.getByText('El bot está pensando…')).toBeInTheDocument();
+  });
+  it('el modo rayos X se prende y se apaga', () => {
+    render(<Jugar />);
+    expect(screen.queryByRole('region', { name: 'Rayos X del bot' })).toBeNull();
+    fireEvent.click(screen.getByLabelText('Modo rayos X'));
+    expect(screen.getByRole('region', { name: 'Rayos X del bot' })).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('Modo rayos X'));
+    expect(screen.queryByRole('region', { name: 'Rayos X del bot' })).toBeNull();
+  });
+  it('"Nueva mano" restaura el inicio', () => {
+    render(<Jugar />);
+    fireEvent.click(screen.getByRole('button', { name: 'Jugar 7 de oros' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Nueva mano' }));
+    expect(screen.getByRole('button', { name: 'Jugar 7 de oros' })).toBeInTheDocument();
+  });
+});

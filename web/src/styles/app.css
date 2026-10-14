@@ -1,0 +1,23 @@
+/* El margen lateral de .app__main (8 px / 16 px) vive en base.css: en celular de 360 px la mano tiene que entrar. */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.app__head, .app__foot { width: 100%; max-width: 720px; margin: 0 auto; padding-inline: 8px; }
+.app__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding-block: 12px 4px; }
+.app__main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding-block: 8px 32px; }
+.app__foot { padding-block: 16px; display: grid; gap: 10px; font-size: 14px; color: var(--tiza-dim); }
+@media (min-width: 520px) {
+  .app__head, .app__foot { padding-inline: 16px; }
+}
+.brand {
+  display: inline-flex; align-items: center; min-height: 48px;
+  font: 700 22px/1 var(--font-display); color: var(--ambar); text-decoration: none; text-shadow: 3px 3px 0 var(--tinta);
+}
+.nav { display: flex; flex-wrap: wrap; gap: 2px; }
+.nav a {
+  display: inline-flex; align-items: center; min-height: 48px; padding: 0 12px; margin: 3px;
+  font: 700 16px var(--font-display); color: var(--tiza); text-decoration: none;
+  background: var(--noche); box-shadow: var(--notch);
+}
+.nav a[aria-current='page'] { background: var(--ambar); color: var(--tinta); }
+.page__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; }
+.page__tools label { display: flex; align-items: center; gap: 8px; min-height: 48px; }
+.page__tools input[type='checkbox'] { width: 24px; height: 24px; accent-color: var(--ambar); }
