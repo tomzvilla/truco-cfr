@@ -45,6 +45,4 @@
   .nav a { padding: 0 12px; font-size: 16px; }
 }
 
-.page__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; }
-.page__tools label { display: flex; align-items: center; gap: 8px; min-height: 48px; }
-.page__tools input[type='checkbox'] { width: 24px; height: 24px; accent-color: var(--ambar); }
+.page__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 8px; }

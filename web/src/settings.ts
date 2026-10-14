@@ -5,10 +5,12 @@ import type { MotionSetting } from './logic/motion';
 export interface Settings {
   crt: boolean;
   motion: MotionSetting;
+  /** Modo rayos X de la mesa: muestra las probabilidades del bot. */
+  xray: boolean;
 }
 
 const KEY = 'truco-cfr.settings.v1';
-const DEFAULTS: Settings = { crt: false, motion: 'auto' };
+const DEFAULTS: Settings = { crt: false, motion: 'auto', xray: false };
 
 export function parseSettings(raw: string | null): Settings {
   try {
@@ -16,6 +18,7 @@ export function parseSettings(raw: string | null): Settings {
     const o = JSON.parse(raw);
     return {
       crt: o.crt === true,
+      xray: o.xray === true,
       motion: o.motion === 'reduced' || o.motion === 'full' ? o.motion : 'auto',
     };
   } catch {

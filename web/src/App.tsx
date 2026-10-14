@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Nav } from './components/Nav';
 import { CrtOverlay } from './fx/CrtOverlay';
-import { SettingsToggles } from './fx/SettingsToggles';
+import { ConfigDialog } from './components/ConfigDialog';
 import { SwirlBackground } from './fx/SwirlBackground';
 import { ComoFunciona } from './pages/ComoFunciona';
 import { Jugar } from './pages/Jugar';
@@ -54,7 +54,7 @@ export function App() {
           <Page route={route} />
         </main>
         <footer className="app__foot">
-          <SettingsToggles />
+          {route === 'jugar' ? null : <ConfigDialog />}
           <p>
             <a href={ART_URL}>{DEFAULT_SKIN.credit}</a>. El arte de las cartas no es MIT. El código, la mascota y el dorso sí.
           </p>

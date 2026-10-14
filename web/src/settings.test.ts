@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { getSettings, parseSettings, updateSettings } from './settings';
 import { mockMatchMedia } from './test/helpers';
 
-const DEFAULTS = { crt: false, motion: 'auto' };
+const DEFAULTS = { crt: false, motion: 'auto', xray: false };
 
 describe('parseSettings', () => {
   it('ante basura devuelve los valores por defecto', () => {
@@ -11,7 +11,7 @@ describe('parseSettings', () => {
     }
   });
   it('lee valores válidos', () => {
-    expect(parseSettings('{"crt":true,"motion":"reduced"}')).toEqual({ crt: true, motion: 'reduced' });
+    expect(parseSettings('{"crt":true,"motion":"reduced","xray":true}')).toEqual({ crt: true, motion: 'reduced', xray: true });
   });
 });
 

@@ -50,14 +50,16 @@ describe('App', () => {
     go('#/jugar');
     const { container } = render(<App />);
     expect(container.querySelector('.crt')).toBeNull();
-    await userEvent.click(screen.getByLabelText('Filtro CRT'));
+    await userEvent.click(screen.getByRole('button', { name: 'Configuración' }));
+    await userEvent.click(screen.getByRole('switch', { name: /Filtro CRT/ }));
     expect(container.querySelector('.crt')).not.toBeNull();
   });
 
   it('refleja la preferencia de animaciones en <html data-motion>', async () => {
     go('#/jugar');
     render(<App />);
-    await userEvent.selectOptions(screen.getByLabelText('Animaciones'), 'reduced');
+    await userEvent.click(screen.getByRole('button', { name: 'Configuración' }));
+    await userEvent.click(screen.getByRole('radio', { name: 'Reducidas' }));
     expect(document.documentElement.dataset.motion).toBe('reduced');
   });
 });

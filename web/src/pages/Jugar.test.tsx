@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach } from 'vitest';
+import { resetSettings } from '../settings';
 import { Jugar } from './Jugar';
+
+beforeEach(() => resetSettings());
 
 describe('Jugar (demo)', () => {
   it('avisa que es una demostración y muestra la mesa', () => {
@@ -18,9 +22,10 @@ describe('Jugar (demo)', () => {
   it('el modo rayos X se prende y se apaga', () => {
     render(<Jugar />);
     expect(screen.queryByRole('region', { name: 'Rayos X del bot' })).toBeNull();
-    fireEvent.click(screen.getByLabelText('Modo rayos X'));
+    fireEvent.click(screen.getByRole('button', { name: 'Configuración' }));
+    fireEvent.click(screen.getByRole('switch', { name: /Modo rayos X/ }));
     expect(screen.getByRole('region', { name: 'Rayos X del bot' })).toBeInTheDocument();
-    fireEvent.click(screen.getByLabelText('Modo rayos X'));
+    fireEvent.click(screen.getByRole('switch', { name: /Modo rayos X/ }));
     expect(screen.queryByRole('region', { name: 'Rayos X del bot' })).toBeNull();
   });
   it('"Nueva mano" restaura el inicio', () => {

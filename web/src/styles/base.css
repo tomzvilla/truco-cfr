@@ -141,19 +141,6 @@ img, svg { image-rendering: pixelated; }
 }
 @keyframes crt-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.94; } }
 
-/* preferencias */
-.settings { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; font-size: 15px; }
-.settings__item { display: flex; align-items: center; gap: 8px; min-height: 48px; }
-.settings select {
-  font: inherit;
-  color: var(--tiza);
-  background: var(--noche);
-  border: 2px solid var(--tiza-dim);
-  min-height: 48px;
-  padding: 0 8px;
-}
-.settings input[type='checkbox'] { width: 24px; height: 24px; accent-color: var(--ambar); }
-
 /*
  * Reducción de animaciones (un solo bloque). settings.ts pone <html data-reduced="true"> cuando
  * la elección del usuario (data-motion) y la preferencia del sistema piden reducir.
