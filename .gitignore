@@ -8,3 +8,6 @@ runs/
 node_modules/
 dist/
 *.tcfrw
+# La red publicada sí se versiona (la usan la evaluación y la web).
+!models/strategy.tcfrw
+eval/logs/
