@@ -22,6 +22,12 @@
   --menta: #38d6c8;
   --madera: #ecc882;
   --violeta: #5b34a8;
+  /* escala de espaciado: 4 / 8 / 12 / 16 / 24 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
   --font-display: 'Atkinson Digits', 'Pixelify Sans', ui-monospace, monospace;
   --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
   /* esquinas "mordidas" de pixel: contorno de 3 px sin las esquinas */
@@ -75,11 +81,15 @@ img, svg { image-rendering: pixelated; }
 .btn--brasa { --fondo: var(--brasa); --sombra: var(--brasa-oscuro); color: var(--tiza); }
 .btn--menta { --fondo: var(--menta); --sombra: #1f9c92; }
 .btn--ghost { --fondo: var(--noche); --sombra: var(--tinta); color: var(--tiza); }
+/* botón de solo ícono: cuadrado de 48 px */
+.btn--icon { --fondo: var(--noche); --sombra: var(--tinta); color: var(--tiza); padding: 0; display: inline-grid; place-items: center; width: 48px; }
+.btn--icon[aria-pressed='true'] { color: var(--ambar); }
+.picon { display: block; }
 
 /* Hover solo con puntero real: en pantallas táctiles no se queda "pegado". Con animaciones reducidas no se mueve nada. */
 @media (hover: hover) {
   .btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.15); }
-  .btn--ghost:hover:not(:disabled) { --fondo: #3a2670; }
+  .btn--ghost:hover:not(:disabled), .btn--icon:hover:not(:disabled) { --fondo: #3a2670; }
 }
 :root[data-reduced='true'] .btn:hover:not(:disabled) { transform: none; }
 :root[data-reduced='true'] .btn:active:not(:disabled) { transform: none; }

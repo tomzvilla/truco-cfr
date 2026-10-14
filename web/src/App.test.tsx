@@ -33,6 +33,29 @@ describe('App', () => {
     expect(screen.getByRole('link', { name: 'Resultados' })).toHaveAttribute('aria-current', 'page');
   });
 
+  it('la barra de arriba tiene menú, silencio y configuración con nombre accesible, en cualquier página', () => {
+    for (const hash of ['#/jugar', '#/resultados']) {
+      go(hash);
+      const { unmount } = render(<App />);
+      expect(screen.getByRole('button', { name: 'Abrir menú' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Silenciar' })).toBeInTheDocument();
+      expect(screen.getAllByRole('button', { name: 'Configuración' })).toHaveLength(1);
+      unmount();
+    }
+  });
+
+  it('"Nueva mano" aparece en el menú solo en Jugar', async () => {
+    go('#/jugar');
+    const { unmount } = render(<App />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
+    expect(screen.getAllByRole('button', { name: 'Nueva mano' }).length).toBeGreaterThan(0);
+    unmount();
+    go('#/resultados');
+    render(<App />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
+    expect(screen.queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+  });
+
   it('muestra el crédito del arte con link al autor', () => {
     go('#/jugar');
     render(<App />);

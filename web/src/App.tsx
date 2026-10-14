@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
+import { AudioRoot } from './audio/AudioRoot';
 import { Nav } from './components/Nav';
 import { CrtOverlay } from './fx/CrtOverlay';
 import { ConfigDialog } from './components/ConfigDialog';
+import { MuteButton } from './components/MuteButton';
+import { useNewHand } from './game/session';
+import { DESKTOP_QUERY, useMediaQuery } from './hooks/useViewport';
 import { SwirlBackground } from './fx/SwirlBackground';
 import { ComoFunciona } from './pages/ComoFunciona';
 import { Jugar } from './pages/Jugar';
@@ -36,6 +40,10 @@ function Page({ route }: { route: RouteId }) {
 export function App() {
   const route = useRoute();
   const settings = useSettings();
+  const newHand = useNewHand();
+  // en escritorio la partida tiene panel lateral propio (marca, silencio, configuración): la barra de arriba queda con el menú
+  const desktop = useMediaQuery(DESKTOP_QUERY);
+  const side = route === 'jugar' && desktop;
 
   // <html data-motion> y data-reduced los mantiene settings.ts; acá solo se pone el título de la pestaña.
   useEffect(() => {
@@ -45,16 +53,22 @@ export function App() {
   return (
     <>
       <SwirlBackground />
+      <AudioRoot />
       <div className="app" data-route={route}>
-        <header className="app__head">
-          <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>
-          <Nav route={route} />
+        <header className="app__head" data-side={side}>
+          {side ? null : <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>}
+          <Nav route={route} onNewHand={route === 'jugar' ? newHand : null} />
+          {side ? null : (
+            <div className="app__tools">
+              <MuteButton />
+              <ConfigDialog icon />
+            </div>
+          )}
         </header>
         <main className="app__main">
           <Page route={route} />
         </main>
         <footer className="app__foot">
-          {route === 'jugar' ? null : <ConfigDialog />}
           <p>
             <a href={ART_URL}>{DEFAULT_SKIN.credit}</a>. El arte de las cartas no es MIT. El código, la mascota y el dorso sí.
           </p>

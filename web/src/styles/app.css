@@ -1,61 +1,79 @@
 /* El margen lateral de .app__main (8 px / 16 px) vive en base.css: en celular de 360 px la mano tiene que entrar. */
-.app { min-height: 100vh; display: flex; flex-direction: column; }
-.app__head, .app__foot { width: 100%; max-width: 720px; margin: 0 auto; padding-inline: 8px; }
-.app__main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding-block: 2px 24px; }
-.app__foot { padding-block: 16px; display: grid; gap: 10px; font-size: 14px; color: var(--tiza-dim); }
+.app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.app__head { width: 100%; max-width: 720px; margin: 0 auto; padding-inline: var(--sp-2); }
+.app__main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding-block: 2px var(--sp-5); }
 
-/* Celular: marca y menú en UNA sola fila (el menú se desplaza hacia el costado), de 48 px de alto. */
-.app__head { display: flex; align-items: center; gap: 8px; padding-block: 2px; }
+/* Pie: ocupa todo el ancho y centra su texto, así queda centrado respecto de la página (no del contenedor de la mesa). */
+.app__foot {
+  width: 100%; margin: 0; padding: var(--sp-4) var(--sp-4); text-align: center;
+  font-size: 14px; color: var(--tiza-dim);
+}
+.app__foot p { max-width: 720px; margin: 0 auto; text-wrap: balance; }
+
+/* Barra superior (celular): marca a la izquierda; menú hamburguesa, silencio y configuración a la derecha. 48 px. */
+.app__head { position: relative; display: flex; align-items: center; gap: var(--sp-1); padding-block: 2px; min-height: 52px; }
 .brand {
-  display: inline-flex; align-items: center; flex: none; min-height: 48px;
+  display: inline-flex; align-items: center; flex: none; min-height: 48px; margin-right: auto;
   font: 400 18px/1 var(--font-display); color: var(--ambar); text-decoration: none; text-shadow: 3px 3px 0 var(--tinta);
 }
-.nav {
-  display: flex; flex: 1; min-width: 0; gap: 2px;
-  overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
-}
-.nav::-webkit-scrollbar { display: none; }
-.nav a {
-  display: inline-flex; flex: none; align-items: center; min-height: 48px; padding: 0 10px; margin: 3px;
-  font: 700 15px var(--font-body); color: var(--tiza); text-decoration: none; white-space: nowrap;
+.app__tools { display: flex; align-items: center; }
+.nav { display: none; }
+.nav a, .drawer a {
+  display: inline-flex; flex: none; align-items: center; min-height: 48px; padding: 0 12px; margin: 3px;
+  font: 700 16px var(--font-body); color: var(--tiza); text-decoration: none; white-space: nowrap;
   background: var(--noche); box-shadow: var(--notch);
 }
-.nav a[aria-current='page'] { background: var(--ambar); color: var(--tinta); }
-.nav a:focus-visible { outline: 3px solid var(--tiza); outline-offset: 0; }
+.nav a[aria-current='page'], .drawer a[aria-current='page'] { background: var(--ambar); color: var(--tinta); }
+.nav a:focus-visible, .drawer a:focus-visible { outline: 3px solid var(--tiza); outline-offset: 0; }
 @media (hover: hover) {
-  .nav a:hover { background: var(--violeta); }
-  .nav a[aria-current='page']:hover { background: #ffc552; }
+  .nav a:hover, .drawer a:hover { background: var(--violeta); }
+  .nav a[aria-current='page']:hover, .drawer a[aria-current='page']:hover { background: #ffc552; }
 }
 
+/* Panel del menú hamburguesa: cuelga de la barra, debajo del botón. */
+.drawer {
+  position: absolute; top: calc(100% - 2px); right: var(--sp-2); z-index: 40;
+  width: min(300px, calc(100% - 16px)); margin: 0; padding: var(--sp-2);
+  display: grid; gap: var(--sp-2); box-shadow: var(--notch), 6px 8px 0 0 rgba(13, 8, 28, 0.55);
+}
+.drawer[hidden] { display: none; }
+.drawer nav { display: grid; gap: var(--sp-1); }
+.drawer a { margin: 0; }
+.drawer__new { margin: 0; width: 100%; }
+
 /* El título de Jugar solo se oculta a la vista en celular (sigue para lectores de pantalla): ahí la mesa necesita el lugar. */
-@media (max-width: 519.98px) {
+@media (max-width: 719.98px) {
   .title-sr-narrow {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
     clip-path: inset(50%); white-space: nowrap; border: 0;
   }
-  .page > .banner { margin-bottom: 8px; padding: 4px 10px; font-size: 14px; }
+  .page > .banner { margin-bottom: var(--sp-2); padding: 4px 10px; font-size: 14px; }
 }
 
 @media (min-width: 520px) {
-  .app__head, .app__foot { padding-inline: 16px; }
-  .app__head { flex-wrap: wrap; gap: 4px 16px; padding-block: 12px 4px; }
-  .app__main { padding-block: 8px 32px; }
+  .app__head { padding-inline: var(--sp-4); }
+  .app__main { padding-block: var(--sp-2) 32px; }
   .brand { font-size: 22px; }
-  .nav { flex-wrap: wrap; overflow: visible; }
-  .nav a { padding: 0 12px; font-size: 16px; }
 }
 
-/* Escritorio: en Jugar la mesa ocupa más ancho (dos columnas) y la página entera entra en la ventana sin scroll. */
+/* Desde 720 px: enlaces en línea, sin hamburguesa. */
+@media (min-width: 720px) {
+  .app__head { gap: var(--sp-4); }
+  .brand { margin-right: 0; }
+  .nav { display: flex; flex: 1; min-width: 0; flex-wrap: wrap; gap: 2px; }
+  .nav__burger, .drawer { display: none; }
+  .app__tools { margin-left: auto; }
+}
+
+/* Escritorio: en Jugar la mesa ocupa más ancho (panel lateral + mesa) y la página entera entra en la ventana sin scroll. */
 @media (min-width: 900px) {
-  .app__head { flex-wrap: nowrap; padding-block: 6px; }
-  .brand { min-height: 40px; }
+  .app__head { padding-block: 2px; min-height: 0; }
   .nav a { min-height: 40px; }
+  .brand { min-height: 40px; }
   .app__main { padding-block: 2px 0; }
-  .app__foot { padding-block: 8px; gap: 0; font-size: 13px; }
-  .app__foot p { margin: 0; }
+  .app__foot { padding-block: var(--sp-1); font-size: 13px; line-height: 1.3; }
   .app[data-route='jugar'] .app__head,
-  .app[data-route='jugar'] .app__main,
-  .app[data-route='jugar'] .app__foot { max-width: 1160px; }
+  .app[data-route='jugar'] .app__main { max-width: 1160px; }
   /* la mesa rellena el alto que sobra entre el banner y el pie */
   .app[data-route='jugar'] .app__main,
   .app[data-route='jugar'] .page,

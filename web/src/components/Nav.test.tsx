@@ -1,6 +1,75 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Nav } from './Nav';
+
+describe('Nav hamburguesa', () => {
+  const burger = () => screen.getByRole('button', { name: /menú/i });
+
+  it('el botón tiene aria-expanded y aria-controls apuntando al panel, que arranca cerrado', () => {
+    render(<Nav route="jugar" />);
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+    const id = burger().getAttribute('aria-controls')!;
+    const panel = document.getElementById(id)!;
+    expect(panel).toBeInTheDocument();
+    expect(panel).toHaveAttribute('hidden');
+  });
+
+  it('se abre y se cierra con el botón, y el foco entra al primer enlace', async () => {
+    render(<Nav route="jugar" />);
+    await userEvent.click(burger());
+    expect(burger()).toHaveAttribute('aria-expanded', 'true');
+    const menu = screen.getByRole('navigation', { name: 'Menú' });
+    expect(within(menu).getAllByRole('link')).toHaveLength(4);
+    expect(within(menu).getByRole('link', { name: 'Jugar' })).toHaveFocus();
+    await userEvent.click(burger());
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('navigation', { name: 'Menú' })).toBeNull();
+  });
+
+  it('Esc lo cierra y el foco vuelve al botón', async () => {
+    render(<Nav route="jugar" />);
+    await userEvent.click(burger());
+    await userEvent.keyboard('{Escape}');
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+    expect(burger()).toHaveFocus();
+  });
+
+  it('un clic afuera lo cierra', async () => {
+    render(
+      <>
+        <p>afuera</p>
+        <Nav route="jugar" />
+      </>,
+    );
+    await userEvent.click(burger());
+    await userEvent.click(screen.getByText('afuera'));
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('marca la sección actual en el menú y elegir un enlace lo cierra', async () => {
+    render(<Nav route="resultados" />);
+    await userEvent.click(burger());
+    const menu = screen.getByRole('navigation', { name: 'Menú' });
+    expect(within(menu).getByRole('link', { name: 'Resultados' })).toHaveAttribute('aria-current', 'page');
+    const link = within(menu).getByRole('link', { name: 'Manos destacadas' });
+    expect(link).toHaveAttribute('href', '#/manos');
+    link.addEventListener('click', (e) => e.preventDefault());
+    await userEvent.click(link);
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('ofrece Nueva mano solo si hay partida, y lo cierra al usarlo', async () => {
+    const onNewHand = vi.fn();
+    const { rerender } = render(<Nav route="jugar" />);
+    await userEvent.click(burger());
+    expect(screen.queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+    rerender(<Nav route="jugar" onNewHand={onNewHand} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Nueva mano' }));
+    expect(onNewHand).toHaveBeenCalledOnce();
+    expect(burger()).toHaveAttribute('aria-expanded', 'false');
+  });
+});
 
 describe('Nav', () => {
   it('tiene las 4 secciones con su hash', () => {
