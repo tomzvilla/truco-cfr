@@ -8,3 +8,4 @@ pub mod exact;
 pub mod minitruco;
 pub mod truco;
 pub mod agents;
+pub mod match_runner;
