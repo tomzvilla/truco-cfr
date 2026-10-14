@@ -29,7 +29,7 @@ button.pcard:disabled { cursor: not-allowed; filter: brightness(0.7) saturate(0.
   padding: 4px;
   background: var(--tiza);
   color: var(--tinta);
-  font: 700 14px/1.1 var(--font-display);
+  font: 400 14px/1.1 var(--font-display);
   text-align: center;
   box-shadow: var(--notch);
 }

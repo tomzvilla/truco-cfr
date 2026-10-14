@@ -27,11 +27,12 @@ body {
   color: var(--tiza);
   font-family: var(--font-body);
   font-size: 17px;
+  font-synthesis: none; /* si falta un peso, no inventar negrita: deforma la C de Pixelify Sans */
   line-height: 1.55;
   overflow-x: clip;
   -webkit-tap-highlight-color: transparent;
 }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; margin: 0 0 0.5em; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; margin: 0 0 0.5em; }
 h1 { font-size: 28px; }
 h2 { font-size: 22px; }
 h3 { font-size: 18px; }
@@ -44,7 +45,7 @@ img, svg { image-rendering: pixelated; }
 .btn {
   --fondo: var(--ambar);
   --sombra: var(--ambar-oscuro);
-  font: 700 18px/1 var(--font-display);
+  font: 400 18px/1 var(--font-display);
   min-height: 48px;
   min-width: 48px;
   padding: 0 16px;
