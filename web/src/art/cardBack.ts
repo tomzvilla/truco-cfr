@@ -1,4 +1,4 @@
-import { matrixToRects } from './pixels';
+import { matrixToRects } from './pixels.ts';
 
 export const CARD_W = 73;
 export const CARD_H = 113;

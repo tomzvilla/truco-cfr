@@ -21,7 +21,8 @@ describe('SettingsToggles', () => {
 });
 
 describe('CrtOverlay', () => {
-  it('solo se dibuja si está encendido y no captura clicks', () => {
+  // que no capture clicks (pointer-events: none) vive en el CSS y jsdom corre con css: false
+  it('solo se dibuja si está encendido y es decorativo (aria-hidden)', () => {
     const { container, rerender } = render(<CrtOverlay on={false} />);
     expect(container.firstChild).toBeNull();
     rerender(<CrtOverlay on />);

@@ -1,6 +1,7 @@
 /**
- * Escala CSS (>= 1) tal que escala x dpr sea un entero: píxeles físicos enteros, sin desbordar.
- * Con dpr 1 el resultado es siempre entero; con dpr 3 puede ser 4/3, 5/3, etc.
+ * Escala CSS (>= 1) para que `cardsAcross` cartas entren en `availableWidth`, siempre como k/dpr con k entero:
+ * cada píxel del arte ocupa k píxeles físicos enteros (nítido). Con dpr 1 es un entero; con dpr 3 puede ser 4/3.
+ * Se elige el k más grande que entra (hasta `maxScale`) y cumple k/dpr >= 1; si ninguno cumple, devuelve 1.
  * `availableWidth` es el ancho real del contenedor de la mano (clientWidth).
  */
 export function pickScale(
@@ -13,9 +14,12 @@ export function pickScale(
 ): number {
   if (!Number.isFinite(availableWidth) || availableWidth <= 0) return 1;
   const d = Number.isFinite(dpr) && dpr >= 1 ? dpr : 1;
+  const eps = 1e-9;
   const perCard = (availableWidth - gap * (cardsAcross - 1)) / cardsAcross;
-  const deviceSteps = Math.floor((perCard / nativeWidth) * d + 1e-9);
-  return Math.max(1, Math.min(maxScale, deviceSteps / d));
+  const fits = Math.floor((perCard / nativeWidth) * d + eps);
+  const k = Math.min(fits, Math.floor(maxScale * d + eps));
+  const kMin = Math.ceil(d - eps); // con dpr fraccionario, el menor k entero cuya escala es >= 1
+  return k >= kMin ? k / d : 1;
 }
 
 export function handWidth(nativeWidth: number, scale: number, cardsAcross: number, gap: number): number {

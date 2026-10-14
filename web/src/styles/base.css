@@ -95,6 +95,8 @@ img, svg { image-rendering: pixelated; }
   background: conic-gradient(from 0deg, #5a1230, #1d1a4f, #0f6f6a, #5a1230);
   animation: swirl-spin 40s linear infinite;
 }
+/* con WebGL activo el canvas tapa el degradé: no gastar composición girándolo (solo gira en el fallback) */
+.swirl[data-fallback='false']::before { animation: none; }
 .swirl__canvas {
   position: absolute;
   inset: 0;

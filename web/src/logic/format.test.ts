@@ -18,4 +18,14 @@ describe('formato en español', () => {
     expect(formatSigned(-0.4)).toBe('-0,40');
     expect(formatSigned(0)).toBe('0,00');
   });
+  it('formatSigned no inventa "NaN" ni "-0,00"', () => {
+    expect(formatSigned(Number.NaN)).toBe('–');
+    expect(formatSigned(Number.POSITIVE_INFINITY)).toBe('–');
+    expect(formatSigned(-0.001)).toBe('0,00');
+    expect(formatSigned(0.004)).toBe('0,00');
+    expect(formatSigned(-0.006)).toBe('-0,01');
+  });
+  it('formatPct1 con NaN devuelve el guión', () => {
+    expect(formatPct1(Number.NaN)).toBe('–');
+  });
 });

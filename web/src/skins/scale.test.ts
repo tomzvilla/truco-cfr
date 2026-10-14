@@ -40,6 +40,31 @@ describe('pickScale con densidad de pantalla', () => {
       }
     }
   });
+  it('dpr fraccionario de Android (1.5, 2.625, 2.75): k/dpr con k entero, entra y nunca baja de 1', () => {
+    // 328 útiles: 1.5 -> k=2 (4/3), 2.625 -> k=3 (3/2.625)
+    expect(pickScale(328, 73, 3, 8, 3, 1.5)).toBeCloseTo(2 / 1.5, 6);
+    expect(pickScale(328, 73, 3, 8, 3, 2.625)).toBeCloseTo(3 / 2.625, 6);
+    for (const dpr of [1.5, 2.625, 2.75]) {
+      for (let w = 150; w <= 1400; w += 29) {
+        const s = pickScale(w, 73, 3, 8, 3, dpr);
+        expect(s).toBeGreaterThanOrEqual(1);
+        expect(s).toBeLessThanOrEqual(3);
+        if (s > 1) {
+          const k = s * dpr;
+          expect(Math.abs(k - Math.round(k))).toBeLessThan(1e-6); // píxeles físicos enteros
+          expect(handWidth(73, s, 3, 8)).toBeLessThanOrEqual(w + 1e-6);
+        }
+      }
+    }
+  });
+  it('con dpr fraccionario respeta el máximo en píxeles físicos enteros', () => {
+    const s = pickScale(5000, 73, 3, 8, 3, 2.625);
+    expect(s).toBeLessThanOrEqual(3);
+    expect(Math.abs(s * 2.625 - Math.round(s * 2.625))).toBeLessThan(1e-6);
+  });
+  it('si ningún k entero con k/dpr >= 1 entra, vuelve a 1', () => {
+    expect(pickScale(250, 73, 3, 8, 3, 2.625)).toBe(1);
+  });
   it('dpr inválido se trata como 1', () => {
     expect(pickScale(328, 73, 3, 8, 3, Number.NaN)).toBe(1);
     expect(pickScale(328, 73, 3, 8, 3, 0.5)).toBe(1);
