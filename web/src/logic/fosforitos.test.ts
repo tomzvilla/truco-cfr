@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GRID, clampPoints, fosforitos, groupRects } from './fosforitos';
+import { GRID, MATCH_COLORS, clampPoints, fosforitos, groupRects } from './fosforitos';
 
 describe('fosforitos (grupos de 5, 15 malas + 15 buenas)', () => {
   const cases: [number, number[], number[]][] = [
@@ -76,31 +76,35 @@ describe('groupRects (fósforos con cabeza roja)', () => {
   it('los primeros 4 forman un cuadrado cerrado y el quinto lo cruza en diagonal', () => {
     const square = cells(groupRects(4));
     // esquinas y puntos medios de los 4 lados
-    for (const c of ['2,2', '12,2', '12,12', '2,12', '6,2', '12,6', '8,12', '2,8']) expect(square.has(c), c).toBe(true);
+    for (const c of ['2,2', '12,2', '13,12', '3,13', '6,1', '13,6', '8,14', '1,8']) expect(square.has(c), c).toBe(true);
     // adentro del cuadrado no hay nada (todavía)
     expect(square.has('7,7')).toBe(false);
-    const diagonal = sticksOf(5).get(4)!;
-    const d = cells(diagonal);
-    expect(d.has('7,7') || d.has('8,7') || d.has('7,8')).toBe(true); // pasa por el centro
+    const d = cells(sticksOf(5).get(4)!);
+    expect(d.has('7,8') && d.has('8,7')).toBe(true); // pasa por el centro
     const xs = [...d].map((c) => Number(c.split(',')[0]));
     const ys = [...d].map((c) => Number(c.split(',')[1]));
     expect(Math.min(...xs)).toBeLessThanOrEqual(4);
     expect(Math.max(...xs)).toBeGreaterThanOrEqual(11);
     expect(Math.min(...ys)).toBeLessThanOrEqual(4);
-    expect(Math.max(...ys)).toBeGreaterThanOrEqual(10);
+    expect(Math.max(...ys)).toBeGreaterThanOrEqual(11);
   });
-  it('los fósforos no se pisan entre sí salvo en las esquinas y el cruce', () => {
-    const by = sticksOf(4);
-    const sets = [...by.values()].map(cells);
+  it('cada fósforo tiene la madera con su sombra y la cabeza con su brillo', () => {
+    for (const rs of sticksOf(5).values()) {
+      for (const kind of ['madera', 'sombra', 'cabeza', 'brillo'] as const) expect(rs.some((r) => r.kind === kind)).toBe(true);
+    }
+    for (const kind of Object.keys(MATCH_COLORS)) expect(MATCH_COLORS[kind as keyof typeof MATCH_COLORS]).toMatch(/^#[0-9a-f]{6}$/);
+  });
+  it('los fósforos no se pisan entre sí: el molinete cierra sin superponerse', () => {
+    const sets = [...sticksOf(5).values()].map(cells);
     for (let i = 0; i < sets.length; i++) {
       for (let j = i + 1; j < sets.length; j++) {
         const shared = [...sets[i]!].filter((c) => sets[j]!.has(c));
-        expect(shared.length, `${i} y ${j}`).toBeLessThanOrEqual(1);
+        expect(shared, `${i} y ${j}`).toEqual([]);
       }
     }
   });
-  it('todo cae dentro de la grilla de 15x15', () => {
-    expect(GRID).toBe(15);
+  it('todo cae dentro de la grilla de 16x16', () => {
+    expect(GRID).toBe(16);
     for (const r of groupRects(5)) {
       expect(r.x).toBeGreaterThanOrEqual(0);
       expect(r.y).toBeGreaterThanOrEqual(0);

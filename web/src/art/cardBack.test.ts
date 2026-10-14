@@ -15,19 +15,20 @@ describe('dorso de carta', () => {
   it('es determinista', () => {
     expect(cardBackMatrix()).toEqual(m);
   });
-  it('tiene contorno, medallón ámbar y ojos blancos', () => {
+  it('tiene contorno y las tres franjas de la bandera: celeste, blanca, celeste', () => {
     expect(m[0]![0]).toBe('k');
-    expect(m[56]![36]).toBe('a');
-    expect(m[50]![28]).toBe('w');
+    expect(['C', 'L']).toContain(m[20]![36]);
+    expect(['C', 'L']).toContain(m[100]![36]);
+    expect(['W', 'V']).toContain(m[56]![8]);
+    expect(['W', 'V']).toContain(m[56]![64]);
   });
-  it('lleva el chambergo (copa, cinta y ala ancha) y el bigote del gaucho', () => {
-    expect(m[38]![36]).toBe('n');
-    expect(m[40]![36]).toBe('b');
-    expect(m[43]![36]).toBe('n');
-    expect(m[43]![21]).toBe('n');
-    expect(m[61]![36]).toBe('q');
-    expect(m[63]![28]).toBe('q');
-    expect(m[62]![36]).toBe('a'); // la boca vieja ya no está
+  it('lleva el Sol de Mayo en el centro: cara de oro con ojos marrones y rayos', () => {
+    expect(m[56]![36]).toBe('a');
+    expect(m[53]![32]).toBe('d');
+    expect(m[53]![40]).toBe('d');
+    expect(['a', 'A']).toContain(m[36]![36]); // rayo recto hacia arriba
+    expect(['a', 'A']).toContain(m[76]![36]); // y hacia abajo
+    expect(m.join('').includes('o')).toBe(true); // rayos flamígeros
   });
   it('el SVG y la data URL son válidos', () => {
     expect(cardBackSvg()).toContain('viewBox="0 0 73 113"');

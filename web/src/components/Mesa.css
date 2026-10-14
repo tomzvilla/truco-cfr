@@ -48,7 +48,7 @@
 .score__name small { font: 400 12px var(--font-body); color: var(--ambar); }
 .score__half { display: flex; }
 .score__num { position: relative; text-align: right; font: 700 22px/1 var(--font-body); font-variant-numeric: tabular-nums; }
-.fosforito { display: block; width: 30px; height: 30px; } /* 15 px de arte x 2 */
+.fosforito { display: block; width: 32px; height: 32px; } /* 16 px de arte x 2 */
 
 .mesa__status {
   grid-area: status;
@@ -95,7 +95,7 @@
   .mesa { gap: 12px 16px; padding: 8px 24px 24px; }
   .bubble { padding: 6px 10px; font-size: 15px; }
   .score { gap: 6px; padding: 10px 12px; }
-  .fosforito { width: 45px; height: 45px; } /* x 3 */
+  .fosforito { width: 48px; height: 48px; } /* x 3 */
   .score__legend, .score__row { grid-template-columns: 64px 1fr 1fr 40px; }
   .mesa__status { gap: 6px; font-size: 14px; }
   .mesa__status li { padding: 4px 8px; }
@@ -130,7 +130,7 @@
   .bubble { flex: 1; font-size: 15px; padding: 6px 10px; }
   .score { gap: 4px; padding: 8px 12px; }
   .score__legend, .score__row { grid-template-columns: 56px 1fr 1fr 40px; }
-  .fosforito { width: 30px; height: 30px; }
+  .fosforito { width: 32px; height: 32px; }
   .mesa__status { gap: 4px; font-size: 13px; }
   .mesa__status li { padding: 2px 8px; }
   .baza__tag { min-height: 22px; margin-top: 4px; }
