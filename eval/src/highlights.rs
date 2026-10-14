@@ -20,6 +20,8 @@ pub struct Highlight {
     pub strength: f64,
     /// La respuesta del rival: "noQuiero" o "mazo".
     pub response: String,
+    /// Puntos que sumó el bot en toda la mano (envido, truco y lo que vino después), no solo
+    /// los del farol: una mano con un farol de envido exitoso puede terminar perdida.
     pub points_won: u8,
     pub hand: HandLog,
 }
