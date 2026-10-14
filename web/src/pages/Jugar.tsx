@@ -13,9 +13,9 @@ export function Jugar() {
 
   return (
     <article className="page">
-      <h1>Jugar</h1>
+      <h1 className="title-sr-narrow">Jugar</h1>
       <p className="banner" role="note">
-        Modo demostración: todavía no hay un bot real conectado. Las respuestas son de ejemplo.
+        Modo demostración: bot de ejemplo.
       </p>
       <Mesa view={view} skin={DEFAULT_SKIN} onAction={source.dispatch} xrayOn={xray} />
       <div className="page__tools">

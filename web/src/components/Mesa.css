@@ -1,55 +1,50 @@
-/* Celular primero: 8 px de margen lateral (también en .app__main) para que en 360 px queden 328 px útiles. */
+/*
+ * Celular primero: 8 px de margen lateral (también en .app__main) para que en 360 px queden 328 px útiles, y todo
+ * compacto para que la mano propia y la primera fila de botones entren en la primera pantalla (360 x 780) sin scroll.
+ */
 .mesa {
   max-width: 640px;
   margin: 0 auto;
-  padding: 0 8px 24px;
+  padding: 0 8px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   background: linear-gradient(var(--pano), var(--pano-oscuro));
   box-shadow: var(--notch);
 }
 
-/* Celular: las cartas del bot en una fila y debajo la mascota con su globo. */
+/* Celular: arriba los 3 dorsos enteros (tamaño nativo) con la mascota al lado; el globo va en una línea debajo. */
 .mesa__bot {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  gap: 2px 8px;
   margin: 0 -8px;
-  padding: 0 8px 4px;
+  padding: 3px 8px;
   background: var(--pano-oscuro);
 }
-/* El bot asoma desde el borde: dorsos cortados a mitad de altura... */
-.mesa__botcards {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  height: calc(var(--scale) * 56px);
-  overflow: hidden;
-}
-/* ...pero su mano revelada se ve entera, nunca recortada. */
-.mesa__botcards[data-revealed='true'] { height: auto; overflow: visible; }
-.mesa__mascot { display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
+.mesa__botcards { display: flex; gap: 8px; }
+.mesa__mascot { display: contents; }
+.mesa__mascot .mascot { justify-self: center; }
 .bubble {
-  margin: 0 0 8px;
-  padding: 6px 10px;
-  max-width: 220px;
-  font-size: 15px;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 14px;
   line-height: 1.25;
   color: var(--tinta);
   background: var(--tiza);
   box-shadow: var(--notch);
 }
 
-.score { display: grid; gap: 6px; padding: 10px 12px; }
+.score { display: grid; gap: 4px; padding: 6px 10px; }
 .score__legend, .score__row { display: grid; grid-template-columns: 64px 1fr 1fr 40px; align-items: center; gap: 8px; }
-.score__legend { font-size: 13px; color: var(--tiza-dim); }
-.score__name { font: 700 16px/1 var(--font-display); }
+.score__legend { font-size: 13px; line-height: 1.2; color: var(--tiza-dim); }
+.score__name { font: 400 16px/1 var(--font-display); }
 .score__name small { font: 400 12px var(--font-body); color: var(--ambar); }
 .score__half { display: flex; gap: 2px; }
-.score__num { position: relative; text-align: right; font: 700 22px/1 var(--font-display); }
-.fosforito { display: block; }
+.score__num { position: relative; text-align: right; font: 400 22px/1 var(--font-display); }
+.fosforito { display: block; width: 20px; height: 20px; }
 
 .mesa__status {
   list-style: none;
@@ -57,21 +52,22 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  font-size: 14px;
+  gap: 4px;
+  font-size: 13px;
 }
-.mesa__status li { padding: 4px 8px; color: var(--tiza); background: rgba(27, 16, 51, 0.7); }
+.mesa__status li { padding: 2px 6px; color: var(--tiza); background: rgba(27, 16, 51, 0.7); }
 
 .mesa__bazas { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; gap: 8px; }
 .baza { display: grid; justify-items: center; }
-.baza > :nth-child(2) { margin-top: calc(var(--scale) * -56px); position: relative; z-index: 1; }
-.baza__tag { min-height: 22px; margin-top: 4px; font-size: 13px; color: var(--tiza); }
+/* Celular: de la carta del bot asoman solo los 38 px de arriba (número y palo); la mía la tapa casi toda. */
+.baza > :nth-child(2) { margin-top: calc(var(--scale) * -75px); position: relative; z-index: 1; }
+.baza__tag { min-height: 18px; margin-top: 2px; font-size: 13px; color: var(--tiza); }
 .baza[data-winner='yo'] .baza__tag { color: var(--menta); }
 .baza[data-winner='bot'] .baza__tag { color: var(--brasa); }
 .slot { border: 2px dashed rgba(255, 246, 224, 0.25); }
 
 /* El gap (8 px) debe coincidir con HAND_GAP en Mesa.tsx. El ancho de este contenedor se mide para elegir la escala. */
-.mesa__hand { display: flex; justify-content: center; gap: 8px; padding-top: 8px; }
+.mesa__hand { display: flex; justify-content: center; gap: 8px; padding-top: 4px; }
 
 .actionbar { display: grid; gap: 6px; }
 .actionbar__row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
@@ -84,10 +80,20 @@
 .xray__list li { display: grid; grid-template-columns: 112px 1fr 44px; align-items: center; gap: 8px; font-size: 15px; }
 .xray__bar { height: 14px; background: var(--tinta); }
 .xray__bar > span { display: block; height: 100%; background: var(--menta); }
-.xray__pct { text-align: right; font: 700 16px var(--font-display); }
+.xray__pct { text-align: right; font: 400 16px var(--font-display); }
 
 @media (min-width: 520px) {
   .mesa { gap: 16px; padding: 0 24px 32px; }
-  .mesa__bot { margin: 0 -24px; padding: 0 24px 4px; flex-direction: row; align-items: flex-end; justify-content: space-between; }
-  .mesa__botcards { justify-content: flex-start; align-self: flex-start; }
+  /* Pantalla ancha: dorsos a la izquierda, mascota con su globo a la derecha, como antes. */
+  .mesa__bot { display: flex; margin: 0 -24px; padding: 0 24px 4px; align-items: flex-end; justify-content: space-between; }
+  .mesa__botcards { align-self: flex-start; }
+  .mesa__mascot { display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
+  .bubble { grid-column: auto; margin: 0 0 8px; max-width: 220px; padding: 6px 10px; font-size: 15px; }
+  .score { gap: 6px; padding: 10px 12px; }
+  .fosforito { width: 24px; height: 24px; }
+  .mesa__status { gap: 6px; font-size: 14px; }
+  .mesa__status li { padding: 4px 8px; }
+  .baza > :nth-child(2) { margin-top: calc(var(--scale) * -56px); }
+  .baza__tag { min-height: 22px; margin-top: 4px; }
+  .mesa__hand { padding-top: 8px; }
 }

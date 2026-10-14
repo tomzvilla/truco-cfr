@@ -15,3 +15,18 @@ describe('Nav', () => {
     expect(screen.getByRole('link', { name: 'Jugar' })).not.toHaveAttribute('aria-current');
   });
 });
+
+describe('Nav compacta', () => {
+  it('el enlace de la sección actual se ofrece a la vista (la barra se desplaza en celular)', () => {
+    const calls: unknown[] = [];
+    const orig = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (opts?: unknown) { calls.push([this.textContent, opts]); };
+    try {
+      render(<Nav route="manos" />);
+    } finally {
+      Element.prototype.scrollIntoView = orig;
+    }
+    expect(calls).toHaveLength(1);
+    expect((calls[0] as [string, unknown])[0]).toBe('Manos destacadas');
+  });
+});

@@ -118,3 +118,78 @@ describe('Mesa: cabecera del bot (F9)', () => {
     expect(header.children[1]).toHaveClass('mesa__mascot');
   });
 });
+
+/** matchMedia que dice que la pantalla es angosta (< 520 px) o no. */
+function stubNarrow(narrow: boolean) {
+  window.matchMedia = ((query: string) => ({
+    matches: narrow && query.includes('max-width'),
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  })) as unknown as typeof window.matchMedia;
+}
+
+describe('Mesa: celular compacto y dorsos completos', () => {
+  const botBackWidths = (c: HTMLElement) =>
+    [...c.querySelectorAll('.mesa__botcards img')].map((i) => Number(i.getAttribute('width')));
+
+  it('los dorsos del bot son 3, enteros (sin recorte) y de tamaño nativo, también en pantalla ancha', () => {
+    stubViewport(600, 1);
+    stubNarrow(false);
+    const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(botBackWidths(container)).toEqual([73, 73, 73]);
+    // el CSS ya no fija una altura recortada: nada de --scale * 56px en el contenedor
+    expect(container.querySelector('.mesa__botcards')).not.toHaveAttribute('style');
+  });
+  it('la mano revelada del bot usa el mismo tamaño nativo', () => {
+    stubViewport(600, 1);
+    const { container } = render(<Mesa view={FIXTURES.finDeManoRayosX} skin={jcanabalSkin} />);
+    expect(botBackWidths(container)).toEqual([73, 73, 73]);
+  });
+  it('en celular las cartas de las bazas bajan a tamaño nativo aunque la mano sea más grande (dpr 3)', () => {
+    stubViewport(328, 3);
+    stubNarrow(true);
+    const { container } = render(<Mesa view={FIXTURES.trucoPendiente} skin={jcanabalSkin} />);
+    expect(Number(container.querySelector('.mesa__hand img')!.getAttribute('width'))).toBeCloseTo(73 * (4 / 3), 5);
+    const tableImgs = [...container.querySelectorAll('.baza img')].map((i) => Number(i.getAttribute('width')));
+    expect(tableImgs.length).toBeGreaterThan(0);
+    for (const w of tableImgs) expect(w).toBe(73);
+    expect(container.querySelector('.mesa')).toHaveStyle({ '--scale': '1' });
+  });
+  it('en pantalla ancha las bazas siguen la escala de la mano', () => {
+    stubViewport(440, 1);
+    stubNarrow(false);
+    const { container } = render(<Mesa view={FIXTURES.trucoPendiente} skin={jcanabalSkin} />);
+    const w = handImgWidth();
+    for (const i of container.querySelectorAll('.baza img')) expect(Number(i.getAttribute('width'))).toBe(w);
+  });
+});
+
+describe('Mesa: avisos para lectores de pantalla', () => {
+  it('el estado de la mano se anuncia con cortesía (aria-live polite)', () => {
+    render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(screen.getByRole('list', { name: 'Estado de la mano' })).toHaveAttribute('aria-live', 'polite');
+  });
+  it('el globo de la mascota no es una región viva: los cambios de ánimo no se anuncian', () => {
+    const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    const bubble = container.querySelector('.bubble')!;
+    expect(bubble).not.toHaveAttribute('role');
+    expect(bubble).not.toHaveAttribute('aria-live');
+    expect(bubble.closest('[aria-live]')).toBeNull();
+  });
+  it('re-mide la escala cuando cambia la densidad de pantalla', () => {
+    stubViewport(328, 1);
+    const listeners: (() => void)[] = [];
+    window.matchMedia = ((query: string) => ({
+      matches: false,
+      media: query,
+      addEventListener: (_: string, l: () => void) => listeners.push(l),
+      removeEventListener() {},
+    })) as unknown as typeof window.matchMedia;
+    render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(handImgWidth()).toBe(73);
+    Object.defineProperty(window, 'devicePixelRatio', { configurable: true, value: 3 });
+    act(() => listeners.forEach((l) => l()));
+    expect(handImgWidth()).toBeCloseTo(73 * (4 / 3), 5);
+  });
+});

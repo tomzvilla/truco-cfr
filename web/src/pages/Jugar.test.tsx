@@ -30,3 +30,14 @@ describe('Jugar (demo)', () => {
     expect(screen.getByRole('button', { name: 'Jugar 7 de oros' })).toBeInTheDocument();
   });
 });
+
+describe('Jugar (celular)', () => {
+  it('el título se oculta solo en pantallas angostas pero sigue para lectores de pantalla', () => {
+    render(<Jugar />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Jugar' })).toHaveClass('title-sr-narrow');
+  });
+  it('el aviso de demo es corto (una línea en 360 px)', () => {
+    render(<Jugar />);
+    expect((screen.getByRole('note').textContent ?? '').length).toBeLessThanOrEqual(40);
+  });
+});

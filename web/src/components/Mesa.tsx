@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Mascot } from '../art/Mascot';
 import { useElementWidth } from '../hooks/useElementWidth';
+import { NARROW_QUERY, useDevicePixelRatio, useMediaQuery } from '../hooks/useViewport';
 import { pickScale } from '../skins/scale';
 import type { CardSkin } from '../skins/types';
 import { moodLine } from '../table/labels';
@@ -58,7 +59,13 @@ function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefin
 export function Mesa({ view, skin, onAction, xrayOn = false }: MesaProps) {
   // El ancho disponible es el del contenedor real de la mano (no window.innerWidth menos un margen supuesto).
   const [handWidth, handRef] = useElementWidth<HTMLDivElement>();
-  const scale = pickScale(handWidth, skin.native.w, 3, HAND_GAP, 3, window.devicePixelRatio || 1);
+  const dpr = useDevicePixelRatio();
+  const narrow = useMediaQuery(NARROW_QUERY);
+  const scale = pickScale(handWidth, skin.native.w, 3, HAND_GAP, 3, dpr);
+  // Solo la mano propia crece con la densidad de pantalla; el bot y las bazas quedan en tamaño nativo (el bot siempre,
+  // las bazas en celular) para que la mano y los botones entren sin scroll en 360 x 780.
+  const tableScale = narrow ? 1 : scale;
+  const botScale = 1;
   const botLeft = Math.max(0, 3 - view.tricks.filter((t) => t.bot).length);
   const shake = useShakeTrigger(view);
   const status = describeStatus(view);
@@ -68,24 +75,25 @@ export function Mesa({ view, skin, onAction, xrayOn = false }: MesaProps) {
 
   return (
     <ShakeRoot trigger={shake}>
-      <section className="mesa" aria-label="Mesa" style={{ '--scale': scale } as CSSProperties}>
+      <section className="mesa" aria-label="Mesa" style={{ '--scale': tableScale } as CSSProperties}>
         <header className="mesa__bot">
           <div className="mesa__botcards" data-revealed={String(revealed)}>
             {view.botHand
-              ? view.botHand.map((c, i) => <PixelCard key={i} card={c} skin={skin} scale={scale} variant="table" />)
+              ? view.botHand.map((c, i) => <PixelCard key={i} card={c} skin={skin} scale={botScale} variant="table" />)
               : Array.from({ length: botLeft }, (_, i) => (
-                  <PixelCard key={i} card={null} skin={skin} scale={scale} variant="table" />
+                  <PixelCard key={i} card={null} skin={skin} scale={botScale} variant="table" />
                 ))}
           </div>
           <div className="mesa__mascot">
             <Mascot mood={view.mood} scale={4} />
-            <p className="bubble" role="status">{moodLine(view.mood)}</p>
+            {/* sin aria-live: el ánimo cambia seguido y no hace falta anunciarlo; el estado real va en la lista de abajo */}
+            <p className="bubble">{moodLine(view.mood)}</p>
           </div>
         </header>
 
         <Scoreboard score={view.score} mano={view.mano} />
 
-        <ul className="mesa__status" aria-label="Estado de la mano">
+        <ul className="mesa__status" aria-label="Estado de la mano" aria-live="polite">
           {status.map((l) => (
             <li key={l.key}>{l.text}</li>
           ))}
@@ -93,7 +101,7 @@ export function Mesa({ view, skin, onAction, xrayOn = false }: MesaProps) {
 
         <div className="mesa__bazas">
           {[0, 1, 2].map((i) => (
-            <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={scale} />
+            <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={tableScale} />
           ))}
         </div>
 
