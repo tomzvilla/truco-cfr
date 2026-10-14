@@ -1,6 +1,7 @@
 """Checkpoints: pesos, buffers, estado de los generadores aleatorios y número de iteración."""
 from __future__ import annotations
 
+import os
 import shutil
 from pathlib import Path
 
@@ -13,6 +14,23 @@ from .deepcfr import DeepCfr
 DIR = "checkpoint"
 
 
+def _fsync_file(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _fsync_dir(path: Path) -> None:
+    """Hace durable la lista de entradas de una carpeta (los renombrados y las altas)."""
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 def save_checkpoint(dcfr: DeepCfr, run_dir: Path) -> None:
     """Escribe en una carpeta temporal y recién después reemplaza la anterior, así un corte
     de luz a mitad del guardado no destruye el último checkpoint bueno.
@@ -21,7 +39,11 @@ def save_checkpoint(dcfr: DeepCfr, run_dir: Path) -> None:
     (3) `checkpoint.tmp` pasa a `checkpoint`; (4) recién ahí se borra `checkpoint.old`.
     Si el corte cae entre (2) y (3), no existe `checkpoint/` pero `checkpoint.old` está
     completo: `has_checkpoint` y `load_checkpoint` lo usan. Un guardado nuevo nunca borra
-    `checkpoint.old` mientras falte `checkpoint/`."""
+    `checkpoint.old` mientras falte `checkpoint/`.
+
+    Durabilidad: cada archivo de `checkpoint.tmp` y las carpetas (`checkpoint.tmp` y la de la
+    corrida) se pasan por fsync antes y después de los renombrados, y recién entonces se borra
+    `checkpoint.old`: un corte de luz no puede dejar un `checkpoint/` con archivos vacíos."""
     final = run_dir / DIR
     tmp = run_dir / f"{DIR}.tmp"
     old = run_dir / f"{DIR}.old"
@@ -42,11 +64,17 @@ def save_checkpoint(dcfr: DeepCfr, run_dir: Path) -> None:
         "torch_rng": torch.get_rng_state(),
     }
     torch.save(state, tmp / "state.pt")
+    for f in sorted(tmp.iterdir()):
+        _fsync_file(f)
+    _fsync_dir(tmp)
+    _fsync_dir(run_dir)
     if final.exists():
         final.rename(old)
     tmp.rename(final)
+    _fsync_dir(run_dir)
     if old.exists():
         shutil.rmtree(old)
+        _fsync_dir(run_dir)
 
 
 def _source(run_dir: Path) -> Path | None:

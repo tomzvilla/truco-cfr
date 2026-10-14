@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import os
 import signal
 import time
 from datetime import datetime
@@ -20,6 +21,8 @@ from .monitor import duplicate_vs, evaluate
 def _append(path: Path, record: dict) -> None:
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
 
 
 def truncate_metrics(path: Path, upto: int) -> None:
@@ -90,7 +93,7 @@ def drive(dcfr: DeepCfr, run_dir: Path) -> None:
     """Itera hasta `cfg.iterations` (o hasta agotar `time_budget_s`), guardando métricas y
     checkpoints.
 
-    Ctrl-C (SIGINT) no corta la iteración en curso: levanta una bandera, la iteración termina,
+    Ctrl-C (SIGINT) y SIGTERM (kill, TaskStop) no cortan la iteración en curso: levanta una bandera, la iteración termina,
     se guarda un checkpoint consistente (nunca un estado a medias) y la corrida sale sin
     finalizar; se retoma con `resume`. Un segundo Ctrl-C sí corta de inmediato (se pierde el
     trabajo desde el último checkpoint)."""
@@ -98,18 +101,24 @@ def drive(dcfr: DeepCfr, run_dir: Path) -> None:
     metrics = run_dir / "metrics.jsonl"
     began = time.monotonic()
     stop = {"requested": False}
-    previous = None
+    previous: dict = {}
 
-    def on_sigint(signum, frame):
+    def restore() -> None:
+        for sig, handler in previous.items():
+            signal.signal(sig, handler)
+
+    def on_signal(signum, frame):
         stop["requested"] = True
-        signal.signal(signal.SIGINT, previous)  # el segundo Ctrl-C vuelve a ser el normal
-        print("\nCtrl-C: termino la iteración en curso, guardo y salgo "
-              "(otro Ctrl-C corta ya)", flush=True)
+        restore()  # la segunda señal vuelve a ser la normal (corta ya)
+        print(f"\nseñal {signal.Signals(signum).name}: termino la iteración en curso, guardo y salgo "
+              "(otra señal corta ya)", flush=True)
 
     try:
-        previous = signal.signal(signal.SIGINT, on_sigint)
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            previous[sig] = signal.signal(sig, on_signal)
         handled = True
     except ValueError:  # no estamos en el hilo principal
+        restore()
         handled = False
     try:
         while dcfr.iteration < cfg.iterations:
@@ -132,7 +141,7 @@ def drive(dcfr: DeepCfr, run_dir: Path) -> None:
                 break
     finally:
         if handled and not stop["requested"]:
-            signal.signal(signal.SIGINT, previous)
+            restore()
     save_checkpoint(dcfr, run_dir)
     finalize(dcfr, run_dir)
 

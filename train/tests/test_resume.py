@@ -1,4 +1,6 @@
 import json
+import os
+import shutil
 import signal
 
 import numpy as np
@@ -127,7 +129,8 @@ def test_truncate_metrics_keeps_only_rows_up_to_the_checkpoint(tmp_path):
     truncate_metrics(tmp_path / "no_existe.jsonl", 2)  # no falla
 
 
-def test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint(tmp_path):
+@pytest.mark.parametrize("sig", [signal.SIGINT, signal.SIGTERM])
+def test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint(tmp_path, sig):
     cfg = tiny_truco_config(iterations=4, checkpoint_every=100)
     reference = DeepCfr(cfg)
     for _ in range(4):
@@ -143,13 +146,14 @@ def test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint
     def step_with_interrupt():
         calls["n"] += 1
         if calls["n"] == 2:
-            signal.raise_signal(signal.SIGINT)  # llega a mitad de la iteración 2
+            signal.raise_signal(sig)  # llega a mitad de la iteración 2
         return real_step()
 
     dcfr.step = step_with_interrupt
     drive(dcfr, run_dir)  # no levanta KeyboardInterrupt: termina la iteración y sale
     assert not (run_dir / "final.json").exists()
     assert signal.getsignal(signal.SIGINT) is signal.default_int_handler
+    assert signal.getsignal(signal.SIGTERM) is signal.SIG_DFL
     saved = load_checkpoint(run_dir, cfg)
     assert saved.iteration == 2, "el checkpoint tiene que ser de una iteración completa"
     assert [json.loads(line)["iter"] for line in (run_dir / "metrics.jsonl").read_text().splitlines()] == [1, 2]
@@ -159,3 +163,36 @@ def test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint
     assert final["iterations"] == 4
     assert load_checkpoint(run_dir, cfg).net_bytes == reference.net_bytes, \
         "retomar después de Ctrl-C tiene que dar lo mismo que no interrumpir"
+
+
+def test_save_checkpoint_fsyncs_every_file_and_both_directories_before_removing_the_old_one(
+        tmp_path, monkeypatch):
+    from truco_train import checkpoint as ckpt
+
+    dcfr = DeepCfr(tiny_truco_config())
+    dcfr.step()
+    save_checkpoint(dcfr, tmp_path)  # ahora existe `checkpoint/` y el próximo guardado crea `.old`
+    dcfr.step()
+
+    events = []
+    real_fsync, real_rmtree = os.fsync, shutil.rmtree
+    monkeypatch.setattr(ckpt.os, "fsync", lambda fd: (events.append(("fsync", os.readlink(f"/proc/self/fd/{fd}"))),
+                                                      real_fsync(fd))[1])
+    monkeypatch.setattr(ckpt.shutil, "rmtree", lambda p, *a, **k: (events.append(("rmtree", str(p))),
+                                                                     real_rmtree(p, *a, **k))[1])
+    save_checkpoint(dcfr, tmp_path)
+
+    run = str(tmp_path)
+    synced = [path for kind, path in events if kind == "fsync"]
+    for name in ("state.pt", "adv0.npz", "adv1.npz", "strat.npz"):
+        assert any(p.endswith(f"checkpoint.tmp/{name}") for p in synced), f"falta fsync de {name}"
+    assert any(p.endswith("checkpoint.tmp") for p in synced), "falta fsync de la carpeta temporal"
+    old_removed = next(i for i, (kind, path) in enumerate(events)
+                       if kind == "rmtree" and path.endswith("checkpoint.old"))
+    run_dir_syncs_before = [i for i, (kind, path) in enumerate(events[:old_removed])
+                            if kind == "fsync" and path == run]
+    assert len(run_dir_syncs_before) >= 2, "la carpeta de la corrida se sincroniza antes y después de los renombrados"
+    last_file_sync = max(i for i, (kind, path) in enumerate(events[:old_removed])
+                         if kind == "fsync" and "checkpoint.tmp" in path)
+    assert last_file_sync < run_dir_syncs_before[0], "los archivos se sincronizan antes que la carpeta de la corrida"
+    assert load_checkpoint(tmp_path, dcfr.cfg).iteration == 2
