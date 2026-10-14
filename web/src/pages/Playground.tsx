@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Mascot } from '../art/Mascot';
 import { Mesa } from '../components/Mesa';
 import { PixelCard } from '../components/PixelCard';
+import { PixelSegmented } from '../components/PixelSegmented';
+import { PixelSwitch } from '../components/PixelSwitch';
 import { DEFAULT_SKIN } from '../skins';
 import { FIXTURES, FIXTURE_NAMES } from '../table/fixtures';
 import type { FixtureName } from '../table/fixtures';
@@ -17,6 +19,9 @@ const FIXTURE_LABEL: Record<FixtureName, string> = {
   trucoPendiente: 'Truco pendiente',
   finDeManoRayosX: 'Fin de mano con rayos X',
 };
+
+const FIXTURE_OPTIONS = FIXTURE_NAMES.map((n) => ({ value: n, label: FIXTURE_LABEL[n] }));
+const MOOD_OPTIONS = MOODS.map((m) => ({ value: m, label: m }));
 
 export function Playground() {
   const [name, setName] = useState<FixtureName>('inicioDeMano');
@@ -49,22 +54,11 @@ export function Playground() {
       <p>Banco de pruebas visual con datos falsos. Sirve para revisar el arte y los efectos sin motor.</p>
 
       <div className="playground__controls panel">
-        <label htmlFor="pg-fixture">Situación</label>
-        <select id="pg-fixture" value={name} onChange={(e) => pick(e.target.value as FixtureName)}>
-          {FIXTURE_NAMES.map((n) => (
-            <option key={n} value={n}>{FIXTURE_LABEL[n]}</option>
-          ))}
-        </select>
-        <label htmlFor="pg-mood">Ánimo de la mascota</label>
-        <select id="pg-mood" value={mood} onChange={(e) => setMood(e.target.value as Mood)}>
-          {MOODS.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-        <label className="playground__check">
-          <input type="checkbox" checked={xray} onChange={(e) => setXray(e.target.checked)} />
-          <span>Rayos X</span>
-        </label>
+        <p className="playground__label" aria-hidden="true">Situación</p>
+        <PixelSegmented label="Situación" value={name} options={FIXTURE_OPTIONS} onChange={pick} />
+        <p className="playground__label" aria-hidden="true">Ánimo de la mascota</p>
+        <PixelSegmented label="Ánimo de la mascota" value={mood} options={MOOD_OPTIONS} onChange={setMood} />
+        <PixelSwitch label="Rayos X" checked={xray} onChange={setXray} />
         <div className="playground__buttons">
           <button type="button" className="btn" onClick={() => setScore([Math.min(30, score[0] + 2), score[1]])}>
             Sumarte 2 puntos

@@ -1,10 +1,10 @@
 .playground__controls { display: grid; gap: 10px; margin-bottom: 16px; }
-.playground__controls select {
-  font: inherit; color: var(--tiza); background: var(--tinta);
-  border: 2px solid var(--tiza-dim); min-height: 48px; padding: 0 8px;
+.playground__label { margin: 4px 0 -4px; font-weight: 700; }
+/* Con 4-5 opciones, el control segmentado baja de línea en vez de apretarse. */
+.playground__controls .psegmented {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
 }
-.playground__check { display: flex; align-items: center; gap: 8px; min-height: 48px; }
-.playground__check input { width: 24px; height: 24px; accent-color: var(--ambar); }
 .playground__buttons { display: flex; flex-wrap: wrap; gap: 6px; }
 .playground__moods { display: flex; flex-wrap: wrap; gap: 16px; }
 .playground__moods figure { margin: 0; text-align: center; }
