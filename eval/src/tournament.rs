@@ -51,13 +51,23 @@ impl Default for RivalOptions {
 /// Un rival por hilo; los externos comparten `counters`.
 pub fn make_rival(
     id: &str,
-    _opts: &RivalOptions,
-    _counters: Arc<Counters>,
+    opts: &RivalOptions,
+    counters: Arc<Counters>,
 ) -> Result<Box<dyn Agent>, String> {
     match id {
         "random" => Ok(Box::new(RandomAgent)),
         "heuristic" => Ok(Box::new(HeuristicAgent)),
-        other => Err(format!("rival desconocido: {other} (random o heuristic)")),
+        "haiku" => Ok(Box::new(crate::haiku::HaikuAgent::new(
+            crate::haiku::HaikuOptions {
+                claude: opts.claude.clone(),
+                model: opts.rival_model.clone(),
+                timeout: std::time::Duration::from_secs(opts.timeout_s),
+            },
+            counters,
+        ))),
+        other => Err(format!(
+            "rival desconocido: {other} (random, heuristic o haiku)"
+        )),
     }
 }
 
