@@ -69,3 +69,23 @@ describe('EnvidoCurve con datos desordenados o parciales (cada barra va a su lug
     expect(sel[0]).toHaveAttribute('data-tantos', '33');
   });
 });
+
+describe('EnvidoCurve: probabilidades inválidas', () => {
+  const bad = ENVIDO_CURVE_MOCK.map((d, i) =>
+    i === 0 ? { ...d, mano: Number.NaN } : i === 1 ? { ...d, mano: 1.7 } : i === 2 ? { ...d, mano: -0.4 } : d,
+  );
+  it('NaN, mayores a 1 y negativas se acotan a [0,1] y no ensucian el SVG', () => {
+    const { container } = render(<EnvidoCurve data={bad} />);
+    expect(container.innerHTML).not.toMatch(/NaN|Infinity/);
+    const rects = container.querySelectorAll('rect[data-tantos]');
+    const hOf = (t: number) => Number(container.querySelector(`rect[data-tantos="${t}"]`)!.getAttribute('height'));
+    expect(rects).toHaveLength(22);
+    expect(hOf(0)).toBe(1); // NaN -> 0 (alto mínimo de 1 px)
+    expect(hOf(2)).toBe(1); // negativa -> 0
+    expect(hOf(1)).toBe(190 - 8 - 24); // 1,7 se acota a 1: llena el área del gráfico, sin pasarse
+  });
+  it('la tabla muestra 0% para un NaN, no "–" ni NaN', () => {
+    render(<EnvidoCurve data={bad} />);
+    expect(screen.queryByText('NaN%')).toBeNull();
+  });
+});

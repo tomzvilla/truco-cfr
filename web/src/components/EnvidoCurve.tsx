@@ -18,7 +18,11 @@ const H = 190;
 const PAD = { l: 38, r: 8, t: 8, b: 24 };
 const LABELED = new Set([0, 7, 20, 25, 30, 33]);
 
-export function EnvidoCurve({ data, note, initialSeat = 'mano', initialTantos = 27 }: Props) {
+/** Probabilidad válida: NaN o infinita cuenta como 0 y todo se acota a [0, 1] (los datos reales pueden venir mal). */
+const clamp01 = (p: number): number => (Number.isFinite(p) ? Math.min(1, Math.max(0, p)) : 0);
+
+export function EnvidoCurve({ data: rawData, note, initialSeat = 'mano', initialTantos = 27 }: Props) {
+  const data = rawData.map((d) => ({ ...d, mano: clamp01(d.mano), pie: clamp01(d.pie) }));
   const [seat, setSeat] = useState<CurveSeat>(initialSeat);
   const [idx, setIdx] = useState(Math.max(0, (TANTOS as readonly number[]).indexOf(initialTantos)));
   const tantos = TANTOS[idx]!;
