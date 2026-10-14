@@ -183,11 +183,21 @@ fn the_clean_rewrite_leaves_no_temporary_file_and_keeps_completed_pairs() {
     let o = RivalOptions::default();
     let p = fresh("atomic");
     run_rival(net.clone(), "tiny", "heuristic", &o, &cfg(3, 8, 2), &p).unwrap();
-    let before = std::fs::read_to_string(&p).unwrap();
-    // Reanudar con los mismos pares: no hay nada para jugar y el archivo queda idéntico.
+    // El orden de las líneas depende de qué hilo termina antes; se compara como conjunto.
+    let sorted_lines = |p: &std::path::Path| {
+        let mut v: Vec<String> = std::fs::read_to_string(p)
+            .unwrap()
+            .lines()
+            .map(String::from)
+            .collect();
+        v.sort();
+        v
+    };
+    let before = sorted_lines(&p);
+    // Reanudar con los mismos pares: no hay nada para jugar y el contenido queda igual.
     let (rep, _) = run_rival(net, "tiny", "heuristic", &o, &cfg(3, 8, 2), &p).unwrap();
     assert_eq!(rep.resumed_pairs, 3);
-    assert_eq!(std::fs::read_to_string(&p).unwrap(), before);
+    assert_eq!(sorted_lines(&p), before);
     let mut tmp = p.as_os_str().to_owned();
     tmp.push(".tmp");
     assert!(!PathBuf::from(tmp).exists(), "quedó el archivo temporal");
