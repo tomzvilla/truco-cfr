@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { Scoreboard } from './Scoreboard';
+import { MATCH_COLORS } from '../logic/fosforitos';
 
 const fills = (el: HTMLElement) =>
   Array.from(el.querySelectorAll('[data-fill]')).map((n) => n.getAttribute('data-fill'));
@@ -39,5 +40,17 @@ describe('Scoreboard', () => {
     const { rerender } = render(<Scoreboard score={[5, 5]} mano="yo" />);
     rerender(<Scoreboard score={[2, 5]} mano="yo" />);
     expect(screen.queryByText(/^\+\d/)).toBeNull();
+  });
+  it('cada fósforo se dibuja con madera y cabeza roja', () => {
+    const { container } = render(<Scoreboard score={[5, 0]} mano="yo" />);
+    const g = container.querySelector('[data-fill="5"]')!;
+    expect(g.querySelectorAll(`rect[fill="${MATCH_COLORS.cabeza}"]`).length).toBeGreaterThanOrEqual(5);
+    expect(g.querySelectorAll(`rect[fill="${MATCH_COLORS.madera}"]`).length).toBeGreaterThanOrEqual(5);
+    expect(g.querySelectorAll(`rect[fill="${MATCH_COLORS.sombra}"]`).length).toBeGreaterThanOrEqual(5);
+  });
+  it('los puntos se escriben con la fuente de lectura, no con la de pixeles', () => {
+    render(<Scoreboard score={[8, 3]} mano="yo" />);
+    const n = screen.getByRole('group', { name: 'Vos: 8 puntos' }).querySelector('.score__num')!;
+    expect(n).toHaveTextContent('8');
   });
 });

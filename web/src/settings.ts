@@ -5,10 +5,19 @@ import type { MotionSetting } from './logic/motion';
 export interface Settings {
   crt: boolean;
   motion: MotionSetting;
+  /** Modo rayos X de la mesa: muestra las probabilidades del bot. */
+  xray: boolean;
+  /** Silencio total (el botón de la barra): no cambia las preferencias de música y efectos. */
+  muted: boolean;
+  music: boolean;
+  sfx: boolean;
+  volume: Volume;
 }
 
+export type Volume = 'low' | 'mid' | 'high';
+
 const KEY = 'truco-cfr.settings.v1';
-const DEFAULTS: Settings = { crt: false, motion: 'auto' };
+const DEFAULTS: Settings = { crt: false, motion: 'auto', xray: false, muted: false, music: true, sfx: true, volume: 'mid' };
 
 export function parseSettings(raw: string | null): Settings {
   try {
@@ -16,6 +25,11 @@ export function parseSettings(raw: string | null): Settings {
     const o = JSON.parse(raw);
     return {
       crt: o.crt === true,
+      xray: o.xray === true,
+      muted: o.muted === true,
+      music: o.music !== false,
+      sfx: o.sfx !== false,
+      volume: o.volume === 'low' || o.volume === 'high' ? o.volume : 'mid',
       motion: o.motion === 'reduced' || o.motion === 'full' ? o.motion : 'auto',
     };
   } catch {

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { getSettings, parseSettings, updateSettings } from './settings';
 import { mockMatchMedia } from './test/helpers';
 
-const DEFAULTS = { crt: false, motion: 'auto' };
+const DEFAULTS = { crt: false, motion: 'auto', xray: false, muted: false, music: true, sfx: true, volume: 'mid' };
 
 describe('parseSettings', () => {
   it('ante basura devuelve los valores por defecto', () => {
@@ -11,7 +11,21 @@ describe('parseSettings', () => {
     }
   });
   it('lee valores válidos', () => {
-    expect(parseSettings('{"crt":true,"motion":"reduced"}')).toEqual({ crt: true, motion: 'reduced' });
+    expect(parseSettings('{"crt":true,"motion":"reduced","xray":true}')).toEqual({
+      ...DEFAULTS,
+      crt: true,
+      motion: 'reduced',
+      xray: true,
+    });
+  });
+  it('lee el sonido: silencio, música, efectos y volumen (con valores por defecto si faltan o son raros)', () => {
+    expect(parseSettings('{"muted":true,"music":false,"sfx":false,"volume":"high"}')).toMatchObject({
+      muted: true,
+      music: false,
+      sfx: false,
+      volume: 'high',
+    });
+    expect(parseSettings('{"volume":"ensordecedor","music":"si"}')).toMatchObject({ volume: 'mid', music: true, sfx: true, muted: false });
   });
 });
 

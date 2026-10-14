@@ -28,3 +28,27 @@ describe('tipografía', () => {
     expect(read('styles/base.css')).toMatch(/font-synthesis:\s*none/);
   });
 });
+
+describe('números legibles (nunca en Pixelify Sans)', () => {
+  const css = allCss.map((f) => readFileSync(join(src, f), 'utf8')).join('\n');
+  const ruleOf = (selector: string) => {
+    const esc = selector.replace(/[.]/g, '\\.');
+    const m = css.match(new RegExp(`(?:^|\\n|\\})\\s*${esc}\\s*\\{([^}]*)\\}`));
+    expect(m, `regla ${selector}`).not.toBeNull();
+    return m![1]!;
+  };
+  it.each(['.score__num', '.burst__label', '.curve__value', '.xray__pct', '.pcard__fallback'])(
+    '%s usa la fuente del cuerpo, en negrita y con cifras tabulares',
+    (sel) => {
+      const body = ruleOf(sel);
+      expect(body).not.toMatch(/var\(--font-display\)/);
+      expect(body).toMatch(/font:\s*700\s[^;]*var\(--font-body\)/);
+      expect(body).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    },
+  );
+  it('por las dudas, los dígitos de cualquier texto en Pixelify caen en Atkinson (unicode-range)', () => {
+    const base = read('styles/base.css');
+    expect(base).toMatch(/@font-face\s*\{[^}]*Atkinson Digits[^}]*unicode-range:\s*U\+0030-0039/);
+    expect(base).toMatch(/--font-display:\s*'Atkinson Digits',\s*'Pixelify Sans'/);
+  });
+});

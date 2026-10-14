@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Mascot } from '../art/Mascot';
+import { feltDataUrl, railDataUrl } from '../art/table';
+import { handOutcome } from '../game/rules';
 import { useElementWidth } from '../hooks/useElementWidth';
-import { NARROW_QUERY, useDevicePixelRatio, useMediaQuery } from '../hooks/useViewport';
-import { pickScale } from '../skins/scale';
+import { DESKTOP_QUERY, useDevicePixelRatio, useMediaQuery, useViewportHeight } from '../hooks/useViewport';
 import type { CardSkin } from '../skins/types';
 import { moodLine } from '../table/labels';
+import { handOverlap, tableSizes } from '../table/sizing';
 import { describeStatus, isValeCuatroMoment } from '../table/status';
 import { PLAY_ACTIONS } from '../table/types';
 import type { ActionId, TableView, TrickView } from '../table/types';
@@ -16,15 +18,49 @@ import { ShakeRoot } from './ShakeRoot';
 import { XRayPanel } from './XRayPanel';
 import './Mesa.css';
 
-/** Separación entre cartas de la mano (px); debe coincidir con `gap` de .mesa__hand en Mesa.css. */
-const HAND_GAP = 8;
-
 interface MesaProps {
   view: TableView;
   skin: CardSkin;
   /** Sin `onAction` la mesa es de solo lectura (repeticiones). */
   onAction?: (a: ActionId) => void;
+  /** Empezar otra mano: se ofrece en el cartel de fin de mano. */
+  onNewHand?: () => void;
   xrayOn?: boolean;
+  /** Arriba del panel lateral (solo escritorio): marca y aviso de demo. */
+  head?: ReactNode;
+  /** Botones del panel lateral (solo escritorio): Nueva mano, Configuración, sonido. Fuera del paño. */
+  tools?: ReactNode;
+}
+
+/** Texturas del paño y del riel (se dibujan una sola vez). Se enchufan como `--felt-image` y `--rail-image`. */
+let cachedTextures: { felt: string; rail: string } | null = null;
+function textures(): { felt: string; rail: string } {
+  cachedTextures ??= { felt: `url("${feltDataUrl()}")`, rail: `url("${railDataUrl()}")` };
+  return cachedTextures;
+}
+
+/** Cuánto le queda a la mesa en la ventana: alto de la ventana menos lo que hay arriba (y el pie en escritorio). */
+function useAvailableHeight(ref: { current: HTMLElement | null }, desktop: boolean): { height: number; top: number } {
+  const vh = useViewportHeight();
+  const [chrome, setChrome] = useState({ top: 0, foot: 0 });
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => {
+      const top = Math.round(el.getBoundingClientRect().top + window.scrollY);
+      const foot = desktop ? Math.round(document.querySelector('.app__foot')?.getBoundingClientRect().height ?? 0) : 0;
+      setChrome((c) => (c.top === top && c.foot === foot ? c : { top, foot }));
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    ro?.observe(document.body);
+    return () => {
+      window.removeEventListener('resize', measure);
+      ro?.disconnect();
+    };
+  }, [ref, desktop]);
+  return { height: vh - chrome.top - chrome.foot, top: chrome.top };
 }
 
 function useShakeTrigger(view: TableView): number {
@@ -38,95 +74,204 @@ function useShakeTrigger(view: TableView): number {
   return n;
 }
 
-const WINNER_TEXT = { yo: 'Ganaste la baza', bot: 'Ganó el bot', parda: 'Parda' } as const;
+const WINNER_TEXT = { yo: 'Ganaste', bot: 'Ganó el bot', parda: 'Parda' } as const;
 
-function Slot({ w, h }: { w: number; h: number }) {
-  return <div className="slot" style={{ width: w, height: h }} aria-hidden="true" />;
+function Slot({ w, h, ghost }: { w: number; h: number; ghost?: boolean }) {
+  return <div className={ghost ? 'slot slot--ghost' : 'slot'} style={{ width: w, height: h }} aria-hidden="true" />;
 }
 
 function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefined; skin: CardSkin; scale: number }) {
   const w = skin.native.w * scale;
   const h = skin.native.h * scale;
+  // un solo contorno punteado por baza (solo si todavía no se jugó nada); el otro hueco queda invisible para guardar el lugar
+  const empty = !trick?.bot && !trick?.mine;
   return (
     <div className="baza" role="group" aria-label={`Baza ${n}`} data-winner={trick?.winner ?? 'none'}>
-      {trick?.bot ? <PixelCard card={trick.bot} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} />}
-      {trick?.mine ? <PixelCard card={trick.mine} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} />}
+      <div className="baza__cards">
+        {trick?.bot ? <PixelCard card={trick.bot} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} ghost={!empty} />}
+        {trick?.mine ? <PixelCard card={trick.mine} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} ghost />}
+      </div>
       <span className="baza__tag">{trick?.winner ? WINNER_TEXT[trick.winner] : ''}</span>
     </div>
   );
 }
 
-export function Mesa({ view, skin, onAction, xrayOn = false }: MesaProps) {
-  // El ancho disponible es el del contenedor real de la mano (no window.innerWidth menos un margen supuesto).
+function resultLine(view: TableView): string {
+  const o = handOutcome(view.tricks, view.mano);
+  return o === 'yo' ? 'Ganaste la mano' : o === 'bot' ? 'Ganó el bot' : 'Mano terminada';
+}
+
+export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, tools }: MesaProps) {
   const [handWidth, handRef] = useElementWidth<HTMLDivElement>();
+  const sectionRef = useRef<HTMLElement>(null);
   const dpr = useDevicePixelRatio();
-  const narrow = useMediaQuery(NARROW_QUERY);
-  const scale = pickScale(handWidth, skin.native.w, 3, HAND_GAP, 3, dpr);
-  // Solo la mano propia crece con la densidad de pantalla; el bot y las bazas quedan en tamaño nativo (el bot siempre,
-  // las bazas en celular) para que la mano y los botones entren sin scroll en 360 x 780.
-  const tableScale = narrow ? 1 : scale;
-  const botScale = 1;
-  const botLeft = Math.max(0, 3 - view.tricks.filter((t) => t.bot).length);
+  const desktop = useMediaQuery(DESKTOP_QUERY);
+  const { height, top } = useAvailableHeight(sectionRef, desktop);
+  const sizes = tableSizes({ desktop, width: handWidth, height, dpr, native: skin.native });
+  const [xrayOpen, setXrayOpen] = useState(false);
+  const xrayId = useId();
+
   const shake = useShakeTrigger(view);
   const status = describeStatus(view);
-  const w = skin.native.w * scale;
-  const h = skin.native.h * scale;
+  const nw = skin.native.w;
+  const nh = skin.native.h;
+  const handW = nw * sizes.hand;
+  const handH = nh * sizes.hand;
+  const playedW = nw * sizes.played;
+  const playedH = nh * sizes.played;
+  const botW = nw * sizes.bot;
+  const botH = nh * sizes.bot;
+  const overlap = handOverlap(handWidth, handW, desktop ? Math.round(handW * 0.1) : 6, handH);
+  const botLeft = Math.max(0, 3 - view.tricks.filter((t) => t.bot).length);
   const revealed = view.botHand !== undefined;
+  const interactive = onAction !== undefined;
+  const sheet = interactive && xrayOn; // jugando: los rayos X se abren desde un botón
+  const ended = interactive && view.phase === 'finDeMano';
+
+  const style = {
+    '--hand-w': `${handW}px`,
+    '--hand-h': `${handH}px`,
+    '--played-w': `${playedW}px`,
+    '--played-h': `${playedH}px`,
+    '--bot-w': `${botW}px`,
+    '--bot-h': `${botH}px`,
+    '--hand-overlap': `${overlap}px`,
+    '--mesa-top': `${top}px`,
+    '--felt-image': textures().felt,
+    '--rail-image': textures().rail,
+  } as CSSProperties;
+
+  const backs = (
+    <div className="mesa__bots" data-revealed={String(revealed)}>
+      <div className="mesa__botcards" data-revealed={String(revealed)}>
+        {view.botHand
+          ? view.botHand.map((c, i) => <PixelCard key={i} card={c} skin={skin} scale={sizes.bot} variant="table" />)
+          : Array.from({ length: botLeft }, (_, i) => (
+              <PixelCard key={i} card={null} skin={skin} scale={sizes.bot} variant="table" />
+            ))}
+      </div>
+    </div>
+  );
+
+  const mascot = (
+    <div className="mesa__mascot">
+      <Mascot mood={view.mood} scale={desktop ? 3 : 2} />
+      {/* sin aria-live: el ánimo cambia seguido y no hace falta anunciarlo; el estado real va en la lista de chips */}
+      <p className="bubble">{moodLine(view.mood)}</p>
+    </div>
+  );
+
+  const paper = (
+    <div className="mesa__paper">
+      <Scoreboard score={view.score} mano={view.mano} />
+      <ul className="mesa__status" aria-label="Estado de la mano" aria-live="polite">
+        {status.map((l) => (
+          <li key={l.key}>{l.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const xrayToggle = sheet ? (
+    <button
+      type="button"
+      className="btn btn--ghost"
+      aria-expanded={xrayOpen}
+      aria-controls={xrayId}
+      onClick={() => setXrayOpen((o) => !o)}
+    >
+      Rayos X
+    </button>
+  ) : null;
+
+  const toolRow =
+    tools || xrayToggle ? (
+      <div className="mesa__tools">
+        {tools}
+        {xrayToggle}
+      </div>
+    ) : null;
+
+  const xraySheet = sheet ? (
+    <div id={xrayId} className="xsheet" data-open={String(xrayOpen)} hidden={!xrayOpen}>
+      <div className="xsheet__box">
+        <XRayPanel entries={view.xray} />
+        <button type="button" className="btn btn--ghost xsheet__close" onClick={() => setXrayOpen(false)}>
+          Cerrar rayos X
+        </button>
+      </div>
+    </div>
+  ) : null;
 
   return (
     <ShakeRoot trigger={shake}>
-      <section className="mesa" aria-label="Mesa" style={{ '--scale': tableScale } as CSSProperties}>
-        <header className="mesa__bot">
-          <div className="mesa__botcards" data-revealed={String(revealed)}>
-            {view.botHand
-              ? view.botHand.map((c, i) => <PixelCard key={i} card={c} skin={skin} scale={botScale} variant="table" />)
-              : Array.from({ length: botLeft }, (_, i) => (
-                  <PixelCard key={i} card={null} skin={skin} scale={botScale} variant="table" />
+      <section ref={sectionRef} className="mesa" aria-label="Mesa" style={style} data-layout={desktop ? "desktop" : "mobile"} data-bot={sizes.botCorner ? "corner" : "top"}>
+        {desktop ? (
+          <div className="mesa__side">
+            {head}
+            {mascot}
+            {paper}
+            {toolRow}
+            {xraySheet}
+          </div>
+        ) : null}
+
+        <div className="mesa__play">
+          {desktop ? null : (
+            <div className="mesa__strip">
+              {backs}
+              {mascot}
+            </div>
+          )}
+
+          <div className="mesa__rail">
+            <div className="mesa__felt">
+              {desktop ? backs : paper}
+              <div className="mesa__bazas">
+                {[0, 1, 2].map((i) => (
+                  <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={sizes.played} />
                 ))}
+              </div>
+              {ended ? (
+                <div className="mesa__end" data-outcome={handOutcome(view.tricks, view.mano) ?? 'none'}>
+                  <p className="mesa__end-title">{resultLine(view)}</p>
+                  {onNewHand ? (
+                    <button type="button" className="btn btn--brasa" onClick={onNewHand}>
+                      Nueva mano
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
           </div>
-          <div className="mesa__mascot">
-            <Mascot mood={view.mood} scale={4} />
-            {/* sin aria-live: el ánimo cambia seguido y no hace falta anunciarlo; el estado real va en la lista de abajo */}
-            <p className="bubble">{moodLine(view.mood)}</p>
+
+          <div className="mesa__hand" ref={handRef} role="group" aria-label="Tus cartas" data-n={view.hand.filter((s) => !s.played).length}>
+            {view.hand.map((slot, i) => {
+              const id = PLAY_ACTIONS[i]!;
+              return slot.played ? null : (
+                <PixelCard
+                  key={i}
+                  card={slot.card}
+                  skin={skin}
+                  scale={sizes.hand}
+                  variant="hand"
+                  index={i}
+                  onPlay={onAction ? () => onAction(id) : undefined}
+                  disabled={!view.actions.includes(id)}
+                />
+              );
+            })}
           </div>
-        </header>
 
-        <Scoreboard score={view.score} mano={view.mano} />
-
-        <ul className="mesa__status" aria-label="Estado de la mano" aria-live="polite">
-          {status.map((l) => (
-            <li key={l.key}>{l.text}</li>
-          ))}
-        </ul>
-
-        <div className="mesa__bazas">
-          {[0, 1, 2].map((i) => (
-            <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={tableScale} />
-          ))}
+          {onAction ? (
+            <div className="mesa__bar">
+              <ActionBar view={view} onAction={onAction} />
+            </div>
+          ) : null}
+          {desktop ? null : toolRow}
+          {desktop ? null : xraySheet}
+          {!interactive && xrayOn ? <XRayPanel entries={view.xray} /> : null}
         </div>
-
-        <div className="mesa__hand" ref={handRef} role="group" aria-label="Tus cartas">
-          {view.hand.map((slot, i) => {
-            const id = PLAY_ACTIONS[i]!;
-            return slot.played ? (
-              <Slot key={i} w={w} h={h} />
-            ) : (
-              <PixelCard
-                key={i}
-                card={slot.card}
-                skin={skin}
-                scale={scale}
-                variant="hand"
-                index={i}
-                onPlay={onAction ? () => onAction(id) : undefined}
-                disabled={!view.actions.includes(id)}
-              />
-            );
-          })}
-        </div>
-
-        {onAction ? <ActionBar view={view} onAction={onAction} /> : null}
-        {xrayOn ? <XRayPanel entries={view.xray} /> : null}
       </section>
     </ShakeRoot>
   );

@@ -1,51 +1,106 @@
 /*
- * Celular primero: 8 px de margen lateral (también en .app__main) para que en 360 px queden 328 px útiles, y todo
- * compacto para que la mano propia y la primera fila de botones entren en la primera pantalla (360 x 780) sin scroll.
+ * Mesa de juego. Celular primero (una columna, de arriba abajo): tira del bot (dorsos + mascota con globo), el paño con
+ * el anotador y las 3 bazas, la mano propia en abanico y la barra de acciones pegada abajo. Desde 900 px (DESKTOP_QUERY)
+ * pasa a dos columnas: panel lateral (marca, mascota, anotador, botones) y la mesa a la derecha.
+ *
+ * Los tamaños de las cartas los calcula table/sizing.ts y llegan como variables CSS (--hand-w, --played-w, --bot-w...).
+ * La superficie de la mesa vive SOLO en .mesa__felt (paño) y .mesa__rail (riel de madera): cada una con un color liso de
+ * respaldo y una textura opcional en --felt-image / --rail-image (Mesa.tsx las enchufa; con `none` queda el color liso).
  */
-.mesa {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 8px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: linear-gradient(var(--pano), var(--pano-oscuro));
-  box-shadow: var(--notch);
+:root {
+  --felt-image: none;
+  --rail-image: none;
 }
 
-/* Celular: arriba los 3 dorsos enteros (tamaño nativo) con la mascota al lado; el globo va en una línea debajo. */
-.mesa__bot {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  align-items: center;
-  gap: 2px 8px;
-  margin: 0 -8px;
-  padding: 3px 8px;
-  background: var(--pano-oscuro);
+.mesa {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 0 0 var(--sp-2);
+  min-height: calc(100vh - var(--mesa-top, 72px));
+  min-height: calc(100dvh - var(--mesa-top, 72px));
 }
-.mesa__botcards { display: flex; gap: 8px; }
-.mesa__mascot { display: contents; }
-.mesa__mascot .mascot { justify-self: center; }
+.mesa__play { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+
+/* tira del bot: dorsos en abanico a la izquierda, mascota con su globo a la derecha */
+.mesa__strip { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); min-height: calc(var(--bot-h) + 4px); }
+.mesa__botcards { display: flex; align-items: flex-start; padding: 2px 4px 0; }
+.mesa__botcards > * + * { margin-left: calc(var(--bot-w) * -0.4); }
+.mesa__botcards > :nth-child(1) { rotate: -7deg; transform-origin: 50% 100%; }
+.mesa__botcards > :nth-child(3) { rotate: 7deg; transform-origin: 50% 100%; }
+.mesa__botcards > :nth-child(2) { translate: 0 -3px; }
+.mesa__mascot { display: flex; flex: 1; min-width: 0; flex-direction: row-reverse; align-items: center; gap: 10px; }
+.mesa__mascot .mascot { flex: none; }
 .bubble {
-  grid-column: 1 / -1;
+  position: relative;
+  flex: 1;
   margin: 0;
-  padding: 2px 8px;
+  padding: 6px 10px;
   font-size: 14px;
   line-height: 1.25;
   color: var(--tinta);
   background: var(--tiza);
   box-shadow: var(--notch);
 }
+/* cola del globo, apuntando a la mascota (a la derecha en celular, a la izquierda en el panel lateral) */
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -9px;
+  margin-top: -6px;
+  border: 6px solid transparent;
+  border-right-width: 0;
+  border-left: 9px solid var(--tiza);
+}
 
-.score { display: grid; gap: 4px; padding: 6px 10px; }
-.score__legend, .score__row { display: grid; grid-template-columns: 64px 1fr 1fr 40px; align-items: center; gap: 8px; }
-.score__legend { font-size: 13px; line-height: 1.2; color: var(--tiza-dim); }
-.score__name { font: 400 16px/1 var(--font-display); }
-.score__name small { font: 400 12px var(--font-body); color: var(--ambar); }
-.score__half { display: flex; gap: 2px; }
-.score__num { position: relative; text-align: right; font: 400 22px/1 var(--font-display); }
-.fosforito { display: block; width: 20px; height: 20px; }
+/* riel de madera alrededor del paño */
+.mesa__rail {
+  position: relative;
+  padding: 8px;
+  background-color: #8a5a32;
+  background-image: var(--rail-image);
+  background-size: 96px 32px;
+  image-rendering: pixelated;
+  box-shadow: inset 0 0 0 3px var(--tinta), inset 0 -6px 0 #4a2a17, 0 8px 0 rgba(13, 8, 28, 0.45);
+}
+.mesa__felt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 6px;
+  background-color: var(--pano);
+  background-image: radial-gradient(ellipse at center, transparent 50%, rgba(5, 25, 16, 0.55)), var(--felt-image);
+  background-size: auto, 64px 64px;
+  background-position: 0 0, 0 0;
+  image-rendering: pixelated;
+  box-shadow: 0 0 0 4px var(--tinta), inset 0 6px 0 rgba(0, 0, 0, 0.35);
+}
 
+/* anotador: papelito crema sobre el paño */
+.mesa__paper {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px 8px 6px;
+  display: grid;
+  gap: 4px;
+  color: var(--tinta);
+  background: #f2e6c9;
+  box-shadow: var(--notch), 3px 4px 0 rgba(13, 8, 28, 0.4);
+  rotate: -1deg;
+}
+.mesa__paper .score { margin: 0; padding: 0; background: none; box-shadow: none; display: grid; gap: 2px; }
+.score__legend { display: none; }
+.score__row { display: grid; grid-template-columns: auto minmax(52px, 1fr) minmax(52px, 1fr) auto; align-items: center; gap: var(--sp-2); }
+.score__name { font: 400 15px/1 var(--font-display); }
+.score__name small { font: 400 11px var(--font-body); color: var(--brasa-oscuro); }
+.score__half { display: flex; }
+.score__num { position: relative; min-width: 24px; text-align: right; font: 700 20px/1 var(--font-body); font-variant-numeric: tabular-nums; }
+.fosforito { display: block; width: 16px; height: 16px; } /* 16 px de arte x 1 */
 .mesa__status {
   list-style: none;
   margin: 0;
@@ -53,26 +108,132 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.2;
 }
-.mesa__status li { padding: 2px 6px; color: var(--tiza); background: rgba(27, 16, 51, 0.7); }
+.mesa__status li { padding: 1px 6px; color: var(--tiza); background: var(--noche); }
 
-.mesa__bazas { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; gap: 8px; }
-.baza { display: grid; justify-items: center; }
-/* Celular: de la carta del bot asoman solo los 38 px de arriba (número y palo); la mía la tapa casi toda. */
-.baza > :nth-child(2) { margin-top: calc(var(--scale) * -75px); position: relative; z-index: 1; }
-.baza__tag { min-height: 18px; margin-top: 2px; font-size: 13px; color: var(--tiza); }
+/* bazas: la carta del bot arriba y la mía encima, pisando el 40% de su alto, apenas corrida y girada */
+.mesa__bazas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+.baza { --ov: 0.5; display: grid; justify-items: center; align-content: start; min-width: 0; }
+.baza__cards { display: grid; justify-items: center; padding: 3px 5px 0 0; }
+.baza__cards > :nth-child(1) { rotate: -2deg; translate: -3px 0; }
+.baza__cards > :nth-child(2) { position: relative; z-index: 1; margin-top: calc(var(--played-h) * var(--ov) * -1); rotate: 2deg; translate: 4px 0; }
+.baza__tag {
+  min-height: 16px;
+  margin-top: 2px;
+  padding: 1px 6px;
+  font: 700 12px/14px var(--font-body);
+  color: var(--tiza);
+  background: rgba(27, 16, 51, 0.8);
+  white-space: nowrap;
+}
+.baza__tag:empty { visibility: hidden; }
 .baza[data-winner='yo'] .baza__tag { color: var(--menta); }
-.baza[data-winner='bot'] .baza__tag { color: var(--brasa); }
-.slot { border: 2px dashed rgba(255, 246, 224, 0.25); }
+.baza[data-winner='bot'] .baza__tag { color: #ff8a80; }
+.slot { border: 2px dashed rgba(255, 246, 224, 0.3); }
+.slot--ghost { border: 0; visibility: hidden; }
 
-/* El gap (8 px) debe coincidir con HAND_GAP en Mesa.tsx. El ancho de este contenedor se mide para elegir la escala. */
-.mesa__hand { display: flex; justify-content: center; gap: 8px; padding-top: 4px; }
+/* cartel de fin de mano, centrado sobre el paño */
+.mesa__end {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  min-width: 220px;
+  padding: var(--sp-4) var(--sp-5);
+  text-align: center;
+  background: var(--noche);
+  box-shadow: var(--notch), 6px 8px 0 rgba(13, 8, 28, 0.55);
+}
+.mesa__end-title { margin: 0; font: 400 24px/1.1 var(--font-display); }
+.mesa__end[data-outcome='yo'] .mesa__end-title { color: var(--menta); }
+.mesa__end[data-outcome='bot'] .mesa__end-title { color: #ff8a80; }
+.mesa__end .btn { margin: 0; }
 
-.actionbar { display: grid; gap: 6px; }
-.actionbar__row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
-.actionbar__row .btn { font-size: 16px; padding: 0 8px; min-height: 48px; }
-.actionbar--wait { margin: 0; padding: 14px 0; text-align: center; color: var(--tiza-dim); }
+/* mano propia: abanico. El solape lo calcula Mesa.tsx para que las 3 entren en el ancho. */
+.mesa__hand {
+  flex: 1;
+  min-width: 0;
+  min-height: calc(var(--hand-h) + 8px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-top: 6px;
+}
+.mesa__hand > * + * { margin-left: calc(var(--hand-overlap) * -1); }
+.mesa__hand > :nth-child(1) { rotate: -6deg; transform-origin: 50% 100%; }
+.mesa__hand > :nth-child(2) { translate: 0 -4px; }
+.mesa__hand > :nth-child(3) { rotate: 6deg; transform-origin: 50% 100%; }
+/* las jugadas se sacan de la mano: las que quedan se centran (con 2, abanico chico; con 1, derecha) */
+.mesa__hand[data-n='2'] > :nth-child(1) { rotate: -4deg; translate: 0 0; }
+.mesa__hand[data-n='2'] > :nth-child(2) { rotate: 4deg; translate: 0 0; }
+.mesa__hand[data-n='1'] > * { rotate: 0deg; translate: 0 0; }
+
+/* barra de acciones: pegada al borde de abajo de la pantalla */
+.mesa__bar { position: sticky; bottom: 0; z-index: 6; min-height: 60px; }
+.actionbar {
+  margin: 0;
+  padding: 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  background: var(--noche);
+  box-shadow: var(--notch), 0 -6px 0 0 rgba(13, 8, 28, 0.35);
+}
+.actionbar__row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.actionbar .btn { margin: 0; min-height: 48px; padding: 0 4px; font-size: 16px; line-height: 1.1; }
+.actionbar .btn .picon { display: inline-block; vertical-align: -2px; margin-left: 4px; }
+.actionbar--wait { text-align: center; color: var(--tiza-dim); line-height: 48px; padding-block: 6px; }
+/* responder un canto: tapa la barra y crece hacia arriba (sobre la mano, que no se puede jugar ahora) */
+.actionbar--respond { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 6px; }
+.actionbar__row--answer .btn { min-height: 60px; font-size: 22px; }
+.actionbar__group { position: relative; display: grid; }
+.actionbar__menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 7;
+  display: grid;
+  gap: 6px;
+  min-width: 190px;
+  margin: 0;
+  padding: 6px;
+  box-shadow: var(--notch), 4px 6px 0 rgba(13, 8, 28, 0.55);
+}
+.actionbar__menu[hidden] { display: none; }
+
+.mesa__tools { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-2); }
+.mesa__tools .btn { margin: 0; }
+.mesa__tools-row { display: flex; gap: var(--sp-2); }
+
+/* rayos X: hoja que sube desde abajo (celular) */
+.xsheet {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(13, 8, 28, 0.6);
+}
+.xsheet[hidden] { display: none; }
+.xsheet__box {
+  width: 100%;
+  max-height: 85vh;
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+  background: var(--noche);
+  box-shadow: 0 -4px 0 0 var(--tinta);
+  animation: xsheet-up 0.22s steps(5, end);
+}
+.xsheet__box .xray { margin: 0; box-shadow: none; padding: 0; }
+.xsheet__close { margin: 0; }
+@keyframes xsheet-up { from { transform: translateY(100%); } to { transform: none; } }
 
 .xray h2 { font-size: 18px; }
 .xray__hint { font-size: 14px; color: var(--tiza-dim); }
@@ -80,20 +241,56 @@
 .xray__list li { display: grid; grid-template-columns: 112px 1fr 44px; align-items: center; gap: 8px; font-size: 15px; }
 .xray__bar { height: 14px; background: var(--tinta); }
 .xray__bar > span { display: block; height: 100%; background: var(--menta); }
-.xray__pct { text-align: right; font: 400 16px var(--font-display); }
+.xray__pct { text-align: right; font: 700 16px var(--font-body); font-variant-numeric: tabular-nums; }
 
 @media (min-width: 520px) {
-  .mesa { gap: 16px; padding: 0 24px 32px; }
-  /* Pantalla ancha: dorsos a la izquierda, mascota con su globo a la derecha, como antes. */
-  .mesa__bot { display: flex; margin: 0 -24px; padding: 0 24px 4px; align-items: flex-end; justify-content: space-between; }
-  .mesa__botcards { align-self: flex-start; }
-  .mesa__mascot { display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
-  .bubble { grid-column: auto; margin: 0 0 8px; max-width: 220px; padding: 6px 10px; font-size: 15px; }
-  .score { gap: 6px; padding: 10px 12px; }
-  .fosforito { width: 24px; height: 24px; }
-  .mesa__status { gap: 6px; font-size: 14px; }
-  .mesa__status li { padding: 4px 8px; }
-  .baza > :nth-child(2) { margin-top: calc(var(--scale) * -56px); }
-  .baza__tag { min-height: 22px; margin-top: 4px; }
-  .mesa__hand { padding-top: 8px; }
+  .mesa { gap: var(--sp-3); }
+  .bubble { font-size: 15px; }
+  .mesa__rail { padding: 12px; background-size: 144px 48px; }
+  .mesa__felt { padding: 10px; background-size: auto, 96px 96px; }
+  .fosforito { width: 32px; height: 32px; } /* x 2 */
+  .score__name { font-size: 16px; }
+  .score__num { font-size: 22px; }
+  .mesa__status { font-size: 13px; }
+}
+
+/*
+ * Escritorio (>= 900 px): panel lateral a la izquierda y la mesa a la derecha, sin scroll. Las cartas escalan con el alto
+ * de la ventana (table/sizing.ts: DESKTOP_FIXED debe coincidir con lo fijo de esta columna). La barra de acciones va
+ * debajo de la mano, centrada, y la mano se mete un poco detrás de ella.
+ */
+@media (min-width: 900px) {
+  .mesa { max-width: 1160px; flex-direction: row; align-items: stretch; gap: var(--sp-5); padding: var(--sp-1) var(--sp-3); min-height: 0; }
+  .mesa__side { flex: 0 0 320px; display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; }
+  .mesa__side .banner { margin: 0; padding: 2px 10px; font-size: 13px; }
+  .mesa__brand { min-height: 0; font-size: 24px; }
+  .mesa__mascot { flex-direction: row; }
+  .bubble::after { right: auto; left: -9px; border-left-width: 0; border-right: 9px solid var(--tiza); }
+  .mesa__paper { align-self: stretch; padding: 8px 10px; rotate: -0.6deg; }
+  .score__legend { display: grid; grid-template-columns: 40px minmax(52px, 1fr) minmax(52px, 1fr) 30px; gap: var(--sp-2); font-size: 12px; color: #6b5c8a; }
+  .score__row { grid-template-columns: 40px minmax(52px, 1fr) minmax(52px, 1fr) 30px; }
+  .mesa__status { font-size: 13px; }
+  .mesa__tools { flex-direction: column; align-items: stretch; justify-content: flex-start; }
+  .mesa__tools .btn { min-height: 48px; }
+  .mesa__tools-row { display: grid; grid-template-columns: 1fr 48px; }
+  .xsheet { position: static; inset: auto; z-index: auto; display: block; background: none; }
+  .xsheet__box { max-height: none; overflow: visible; padding: var(--sp-3); box-shadow: var(--notch); animation: none; }
+
+  /* columna central: [paño con los dorsos adentro, flex 1] [mano] [barra]. El paño se estira con el alto que sobra. */
+  .mesa__play { display: grid; grid-template-rows: minmax(0, 1fr) auto auto; gap: 0; }
+  .mesa__side .mesa__mascot { flex: none; }
+  /* dorsos del bot: enteros, centrados contra el borde de arriba del paño */
+  .mesa__bots { display: flex; justify-content: center; flex: none; }
+  .mesa__botcards { padding: 2px 4px 0; }
+  .mesa__rail { min-height: 0; display: flex; padding: 18px; background-size: 192px 64px; }
+  .mesa__felt { flex: 1; min-height: 0; justify-content: flex-start; gap: var(--sp-1); padding: 4px; background-size: auto, 128px 128px; }
+  .mesa__bazas { margin-block: auto; }
+  /* ventana baja: los dorsos van en la esquina de arriba a la izquierda y las bazas se corren a la derecha para no pisarlos */
+  .mesa[data-bot='corner'] .mesa__bots { position: absolute; top: 10px; left: 14px; }
+  .mesa[data-bot='corner'] .mesa__bazas { margin-left: calc(var(--bot-w) * 2.2 + 34px); }
+  .baza { --ov: 0.55; }
+  .baza__tag { min-height: 18px; margin-top: 2px; line-height: 16px; }
+  /* la mano se mete un poco sobre el riel de abajo */
+  .mesa__hand { flex: none; position: relative; z-index: 4; margin-top: -22px; min-height: calc(var(--hand-h) + 6px); padding-top: 6px; }
+  .mesa__bar { width: min(640px, 100%); margin: var(--sp-3) auto 0; position: relative; z-index: 6; bottom: auto; min-height: 0; }
 }

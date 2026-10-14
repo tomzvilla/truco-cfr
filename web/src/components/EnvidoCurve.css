@@ -5,7 +5,7 @@
 .curve label { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; }
 .curve input[type='radio'] { width: 24px; height: 24px; accent-color: var(--ambar); }
 .curve__slider { display: grid; gap: 4px; }
-.curve__value { font: 400 20px var(--font-display); color: var(--ambar); }
+.curve__value { font: 700 20px var(--font-body); font-variant-numeric: tabular-nums; color: var(--ambar); }
 .curve input[type='range'] { width: 100%; min-height: 48px; accent-color: var(--ambar); }
 .curve__svg { display: block; width: 100%; height: auto; }
 .curve__bar { fill: var(--ambar); cursor: pointer; }

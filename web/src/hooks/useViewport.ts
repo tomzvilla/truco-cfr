@@ -2,6 +2,8 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 
 /** Pantallas angostas: debe coincidir con el breakpoint de 520 px de los CSS. */
 export const NARROW_QUERY = '(max-width: 519.98px)';
+/** Escritorio: la mesa pasa a dos columnas (mesa a la izquierda, marcador y botones a la derecha). Igual que en Mesa.css. */
+export const DESKTOP_QUERY = '(min-width: 900px)';
 
 /** `matchMedia` si existe (jsdom o navegadores muy viejos no lo tienen). */
 function mq(query: string): MediaQueryList | null {
@@ -34,4 +36,15 @@ export function useDevicePixelRatio(): number {
     return () => list.removeEventListener?.('change', onChange);
   }, [dpr]);
   return dpr;
+}
+
+/** Alto de la ventana (innerHeight), actualizado al redimensionar. */
+export function useViewportHeight(): number {
+  const [h, setH] = useState(() => (typeof window === 'undefined' ? 800 : window.innerHeight));
+  useEffect(() => {
+    const onResize = () => setH(window.innerHeight);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return h;
 }

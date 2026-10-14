@@ -1,0 +1,103 @@
+/* Panel de configuración y controles de pixeles (interruptor y elección de una entre pocas). */
+.config__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* por encima del filtro CRT (50) */
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: rgba(13, 8, 28, 0.78);
+}
+.config {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+  background: var(--noche);
+}
+.config h2 { margin: 0; font: 700 24px/1.15 var(--font-body); } /* la f de Pixelify Sans parece una A: acá va la fuente de lectura */
+.config__list { display: grid; gap: 10px; }
+.config__group { display: grid; gap: 6px; }
+.config__group-label { font-weight: 700; }
+
+/* interruptor */
+.pswitch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 12px;
+  border: 0;
+  color: var(--tiza);
+  font: 400 16px/1.2 var(--font-body);
+  text-align: left;
+  background: var(--tinta);
+  box-shadow: var(--notch);
+  cursor: pointer;
+}
+.pswitch__text { display: grid; gap: 2px; }
+.pswitch__label { font-weight: 700; }
+.pswitch__hint { font-size: 13px; color: var(--tiza-dim); }
+.pswitch__track {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 36px;
+  background: var(--noche);
+  box-shadow: var(--notch);
+}
+.pswitch__knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background: var(--tiza-dim);
+  box-shadow: inset 0 -4px 0 0 #8f8670;
+  transition: left 80ms steps(3);
+}
+.pswitch__state {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font: 700 13px var(--font-body);
+  color: var(--tiza-dim);
+}
+.pswitch[aria-checked='true'] .pswitch__track { background: #1f9c92; }
+.pswitch[aria-checked='true'] .pswitch__knob { left: 40px; background: var(--menta); box-shadow: inset 0 -4px 0 0 #1f9c92; }
+.pswitch[aria-checked='true'] .pswitch__state { right: auto; left: 10px; color: var(--tinta); }
+.pswitch:focus-visible { outline: 3px solid var(--tiza); outline-offset: 2px; }
+.pswitch:active { filter: brightness(0.9); }
+@media (hover: hover) {
+  .pswitch:hover { background: #2a1850; }
+}
+
+/* elección de una entre pocas */
+.psegmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; }
+.psegmented__opt {
+  min-height: 48px;
+  padding: 4px 6px;
+  border: 0;
+  color: var(--tiza);
+  font: 700 15px/1.15 var(--font-body);
+  background: var(--tinta);
+  box-shadow: var(--notch);
+  cursor: pointer;
+}
+.psegmented__opt[aria-checked='true'] {
+  color: var(--tinta);
+  background: var(--ambar);
+  box-shadow: var(--notch), inset 0 -4px 0 0 var(--ambar-oscuro);
+}
+.psegmented__opt:focus-visible { outline: 3px solid var(--tiza); outline-offset: 2px; z-index: 1; }
+.psegmented__opt:active { filter: brightness(0.9); }
+@media (hover: hover) {
+  .psegmented__opt:hover:not([aria-checked='true']) { background: #2a1850; }
+  .psegmented__opt[aria-checked='true']:hover { filter: brightness(1.1); }
+}
+:root[data-reduced='true'] .pswitch__knob { transition: none; }

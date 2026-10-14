@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { handWidth, pickScale } from './scale';
+import { handWidth, pickScale, pickScaleByHeight } from './scale';
 
 describe('pickScale (3 cartas de 73 px, gap 8)', () => {
   it('a 360 px de pantalla (328 útiles) usa 1x y entra', () => {
@@ -68,5 +68,36 @@ describe('pickScale con densidad de pantalla', () => {
   it('dpr inválido se trata como 1', () => {
     expect(pickScale(328, 73, 3, 8, 3, Number.NaN)).toBe(1);
     expect(pickScale(328, 73, 3, 8, 3, 0.5)).toBe(1);
+  });
+});
+
+describe('pickScaleByHeight (mesa de 396 px nativos + 82 fijos)', () => {
+  const pick = (h: number, dpr = 1, max = 3) => pickScaleByHeight(h, 82, 396, max, dpr);
+  it('1280x720, 1366x768 y 1920x1080 (descontando cabecera y pie)', () => {
+    expect(pick(558)).toBe(1);
+    expect(pick(606)).toBe(1);
+    expect(pick(918)).toBe(2);
+  });
+  it('nunca baja de 1x ni se rompe con valores raros', () => {
+    expect(pick(100)).toBe(1);
+    expect(pick(0)).toBe(1);
+    expect(pick(Number.NaN)).toBe(1);
+    expect(pick(-50)).toBe(1);
+  });
+  it('respeta el máximo', () => {
+    expect(pick(10000)).toBe(3);
+    expect(pick(10000, 1, 2)).toBe(2);
+  });
+  it('con dpr fraccionario sigue siendo k/dpr con k entero y alcanza 1x como mínimo', () => {
+    const s = pick(1000, 2.625);
+    expect(Number.isInteger(Math.round(s * 2.625 * 1e6) / 1e6)).toBe(true);
+    expect(s).toBeGreaterThanOrEqual(1);
+    expect(396 * s + 82).toBeLessThanOrEqual(1000);
+  });
+  it('lo que devuelve siempre entra en la altura (si 1x entra)', () => {
+    for (const h of [480, 520, 700, 874, 880, 1200]) {
+      const s = pick(h);
+      expect(396 * s + 82).toBeLessThanOrEqual(Math.max(h, 478));
+    }
   });
 });

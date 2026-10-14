@@ -11,6 +11,15 @@
   touch-action: manipulation;
 }
 button.pcard { cursor: pointer; }
+button.pcard:focus-visible { outline-offset: 4px; }
+/* la carta se levanta del abanico con el puntero o el foco del teclado */
+button.pcard:not(:disabled):focus-visible { top: -14px; z-index: 4; }
+@media (hover: hover) {
+  button.pcard:not(:disabled):hover { top: -14px; z-index: 4; }
+  button.pcard:not(:disabled):hover .pcard__face { filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.35)) brightness(1.12); }
+}
+:root[data-reduced='true'] button.pcard:not(:disabled):hover,
+:root[data-reduced='true'] button.pcard:not(:disabled):focus-visible { top: 0; }
 button.pcard:disabled { cursor: not-allowed; filter: brightness(0.7) saturate(0.6); }
 .pcard__face {
   display: block;
@@ -29,7 +38,8 @@ button.pcard:disabled { cursor: not-allowed; filter: brightness(0.7) saturate(0.
   padding: 4px;
   background: var(--tiza);
   color: var(--tinta);
-  font: 400 14px/1.1 var(--font-display);
+  font: 700 14px/1.1 var(--font-body);
+  font-variant-numeric: tabular-nums;
   text-align: center;
   box-shadow: var(--notch);
 }

@@ -1,3 +1,13 @@
+/* Los dígitos de Pixelify Sans se confunden (8 con S, 5 con S): cualquier número escrito con --font-display cae en Atkinson. */
+@font-face {
+  font-family: 'Atkinson Digits';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+}
+
 :root {
   --tinta: #1b1033;
   --noche: #2b1b52;
@@ -10,8 +20,15 @@
   --brasa: #e0453a;
   --brasa-oscuro: #9c2a22;
   --menta: #38d6c8;
+  --madera: #ecc882;
   --violeta: #5b34a8;
-  --font-display: 'Pixelify Sans', ui-monospace, monospace;
+  /* escala de espaciado: 4 / 8 / 12 / 16 / 24 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --font-display: 'Atkinson Digits', 'Pixelify Sans', ui-monospace, monospace;
   --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
   /* esquinas "mordidas" de pixel: contorno de 3 px sin las esquinas */
   --notch: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
@@ -27,6 +44,7 @@ body {
   color: var(--tiza);
   font-family: var(--font-body);
   font-size: 17px;
+  font-variant-numeric: tabular-nums;
   font-synthesis: none; /* si falta un peso, no inventar negrita: deforma la C de Pixelify Sans */
   line-height: 1.55;
   overflow-x: clip;
@@ -57,11 +75,24 @@ img, svg { image-rendering: pixelated; }
   cursor: pointer;
   transition: transform 60ms steps(2);
 }
-.btn:active:not(:disabled) { transform: translateY(2px); }
+.btn:active:not(:disabled) { transform: translateY(2px); filter: brightness(0.9); box-shadow: var(--notch), inset 0 -2px 0 0 var(--sombra); }
+.btn:focus-visible { outline: 3px solid var(--tiza); outline-offset: 2px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn--brasa { --fondo: var(--brasa); --sombra: var(--brasa-oscuro); color: var(--tiza); }
 .btn--menta { --fondo: var(--menta); --sombra: #1f9c92; }
 .btn--ghost { --fondo: var(--noche); --sombra: var(--tinta); color: var(--tiza); }
+/* botón de solo ícono: cuadrado de 48 px */
+.btn--icon { --fondo: var(--noche); --sombra: var(--tinta); color: var(--tiza); padding: 0; display: inline-grid; place-items: center; width: 48px; }
+.btn--icon[aria-pressed='true'] { color: var(--ambar); }
+.picon { display: block; }
+
+/* Hover solo con puntero real: en pantallas táctiles no se queda "pegado". Con animaciones reducidas no se mueve nada. */
+@media (hover: hover) {
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.15); }
+  .btn--ghost:hover:not(:disabled), .btn--icon:hover:not(:disabled) { --fondo: #3a2670; }
+}
+:root[data-reduced='true'] .btn:hover:not(:disabled) { transform: none; }
+:root[data-reduced='true'] .btn:active:not(:disabled) { transform: none; }
 
 .panel {
   background: var(--noche);
@@ -119,19 +150,6 @@ img, svg { image-rendering: pixelated; }
   animation: crt-flicker 6s steps(60) infinite;
 }
 @keyframes crt-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.94; } }
-
-/* preferencias */
-.settings { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; font-size: 15px; }
-.settings__item { display: flex; align-items: center; gap: 8px; min-height: 48px; }
-.settings select {
-  font: inherit;
-  color: var(--tiza);
-  background: var(--noche);
-  border: 2px solid var(--tiza-dim);
-  min-height: 48px;
-  padding: 0 8px;
-}
-.settings input[type='checkbox'] { width: 24px; height: 24px; accent-color: var(--ambar); }
 
 /*
  * Reducción de animaciones (un solo bloque). settings.ts pone <html data-reduced="true"> cuando
