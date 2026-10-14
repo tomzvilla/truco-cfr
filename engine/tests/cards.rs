@@ -18,9 +18,16 @@ fn deck_has_40_distinct_cards_and_roundtrips() {
 
 #[test]
 fn truco_hierarchy() {
-    let order = ["1E", "1B", "7E", "7O", "3C", "2O", "1C", "12E", "11B", "10O", "7C", "6E", "5E", "4E"];
+    let order = [
+        "1E", "1B", "7E", "7O", "3C", "2O", "1C", "12E", "11B", "10O", "7C", "6E", "5E", "4E",
+    ];
     for w in order.windows(2) {
-        assert!(c(w[0]).rank() > c(w[1]).rank(), "{} debería ganarle a {}", w[0], w[1]);
+        assert!(
+            c(w[0]).rank() > c(w[1]).rank(),
+            "{} debería ganarle a {}",
+            w[0],
+            w[1]
+        );
     }
     assert_eq!(c("1C").rank(), c("1O").rank());
     assert_eq!(c("7C").rank(), c("7B").rank());

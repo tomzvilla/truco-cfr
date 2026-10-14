@@ -25,7 +25,11 @@ pub const OFF_BUENAS: usize = 302; // 2 (yo en buenas, rival en buenas)
 pub const ENCODING_SIZE: usize = 304;
 
 pub fn encode(o: &Observation, out: &mut [u8]) {
-    assert_eq!(out.len(), ENCODING_SIZE, "buffer de codificación de largo incorrecto");
+    assert_eq!(
+        out.len(),
+        ENCODING_SIZE,
+        "buffer de codificación de largo incorrecto"
+    );
     out.fill(0);
     for (slot, c) in o.hand.iter().enumerate() {
         out[OFF_HAND + slot * 40 + c.id() as usize] = 1;

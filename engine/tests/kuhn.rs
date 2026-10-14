@@ -35,11 +35,26 @@ fn root_is_chance_with_six_deals() {
 #[test]
 fn payoffs() {
     // cartas: 0 = J, 1 = Q, 2 = K
-    assert_eq!(play(dealt(2, 0), &[Kuhn::PASS, Kuhn::PASS]).returns(), [1.0, -1.0]);
-    assert_eq!(play(dealt(0, 2), &[Kuhn::BET, Kuhn::PASS]).returns(), [1.0, -1.0]);
-    assert_eq!(play(dealt(0, 2), &[Kuhn::BET, Kuhn::BET]).returns(), [-2.0, 2.0]);
-    assert_eq!(play(dealt(2, 0), &[Kuhn::PASS, Kuhn::BET, Kuhn::PASS]).returns(), [-1.0, 1.0]);
-    assert_eq!(play(dealt(2, 1), &[Kuhn::PASS, Kuhn::BET, Kuhn::BET]).returns(), [2.0, -2.0]);
+    assert_eq!(
+        play(dealt(2, 0), &[Kuhn::PASS, Kuhn::PASS]).returns(),
+        [1.0, -1.0]
+    );
+    assert_eq!(
+        play(dealt(0, 2), &[Kuhn::BET, Kuhn::PASS]).returns(),
+        [1.0, -1.0]
+    );
+    assert_eq!(
+        play(dealt(0, 2), &[Kuhn::BET, Kuhn::BET]).returns(),
+        [-2.0, 2.0]
+    );
+    assert_eq!(
+        play(dealt(2, 0), &[Kuhn::PASS, Kuhn::BET, Kuhn::PASS]).returns(),
+        [-1.0, 1.0]
+    );
+    assert_eq!(
+        play(dealt(2, 1), &[Kuhn::PASS, Kuhn::BET, Kuhn::BET]).returns(),
+        [2.0, -2.0]
+    );
 }
 
 #[test]

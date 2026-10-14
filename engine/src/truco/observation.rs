@@ -54,13 +54,19 @@ impl TrucoState {
             truco_level: self.truco_level,
             truco_pending: self.truco_pending.map(|(l, caller)| (l, caller == p)),
             truco_holder: self.truco_holder.map(|h| h == p),
-            envido_calls: self.envido_calls.map(|c| c.map(|(k, caller)| (k, caller == p))),
+            envido_calls: self
+                .envido_calls
+                .map(|c| c.map(|(k, caller)| (k, caller == p))),
             envido_status: self.envido_status,
             my_tantos: self.tantos[p],
             opp_revealed_tantos: self.revealed_tantos[o],
             my_score: self.score(p),
             opp_score: self.score(o),
-            legal: if self.turn == p { self.legal_actions() } else { 0 },
+            legal: if self.turn == p {
+                self.legal_actions()
+            } else {
+                0
+            },
         }
     }
 }

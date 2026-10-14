@@ -60,7 +60,10 @@ pub struct TrucoState {
 impl TrucoState {
     pub fn new_hand(mut hands: [[Card; 3]; 2], mano: Player, scores: [u8; 2]) -> TrucoState {
         assert!(mano < 2, "mano inválido: {mano}");
-        assert!(scores[0] < TARGET && scores[1] < TARGET, "puntaje inicial inválido: {scores:?}");
+        assert!(
+            scores[0] < TARGET && scores[1] < TARGET,
+            "puntaje inicial inválido: {scores:?}"
+        );
         for h in hands.iter_mut() {
             h.sort_by(|a, b| b.rank().cmp(&a.rank()).then(a.id().cmp(&b.id())));
         }
@@ -168,7 +171,11 @@ impl TrucoState {
     }
 
     pub fn apply(&mut self, a: Action) {
-        debug_assert!(self.legal_actions() & bit(a) != 0, "acción ilegal: {}", ACTION_NAMES[a]);
+        debug_assert!(
+            self.legal_actions() & bit(a) != 0,
+            "acción ilegal: {}",
+            ACTION_NAMES[a]
+        );
         let p = self.turn;
         let envido_pending = self.envido_status == EnvidoStatus::Pending;
         match a {

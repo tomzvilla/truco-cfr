@@ -29,7 +29,10 @@ fn random_play_invariants() {
             assert!(s.score(p) <= TARGET);
             assert!(s.score(p) >= st);
         }
-        assert!(s.points().iter().any(|&x| x > 0), "toda mano reparte al menos un punto");
+        assert!(
+            s.points().iter().any(|&x| x > 0),
+            "toda mano reparte al menos un punto"
+        );
     }
 }
 
@@ -40,7 +43,12 @@ fn root_is_chance_and_deal_is_valid() {
     for _ in 0..1000 {
         let g = TrucoGame::root().sample_chance(&mut rng);
         let s = g.state();
-        let mut ids: Vec<u8> = s.hand(0).iter().chain(s.hand(1).iter()).map(|c| c.id()).collect();
+        let mut ids: Vec<u8> = s
+            .hand(0)
+            .iter()
+            .chain(s.hand(1).iter())
+            .map(|c| c.id())
+            .collect();
         ids.sort();
         ids.dedup();
         assert_eq!(ids.len(), 6, "seis cartas distintas");
@@ -51,7 +59,11 @@ fn root_is_chance_and_deal_is_valid() {
 #[test]
 fn legal_actions_empty_outside_decision_nodes() {
     let mut rng = SmallRng::seed_from_u64(5);
-    assert_eq!(TrucoGame::root().legal_actions(), 0, "nodo de azar (no debe entrar en pánico)");
+    assert_eq!(
+        TrucoGame::root().legal_actions(),
+        0,
+        "nodo de azar (no debe entrar en pánico)"
+    );
     let mut g = TrucoGame::root().sample_chance(&mut rng);
     assert_ne!(g.legal_actions(), 0, "nodo de decisión");
     while g.node() != Node::Terminal {

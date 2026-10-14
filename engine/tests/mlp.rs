@@ -5,8 +5,18 @@ use truco_engine::mlp::{Layer, Mlp, MAGIC};
 fn tiny() -> Mlp {
     Mlp::new(
         vec![
-            Layer { inp: 2, out: 2, w: vec![1.0, -1.0, 0.5, 2.0], b: vec![0.0, -1.0] },
-            Layer { inp: 2, out: 1, w: vec![1.0, 1.0], b: vec![0.5] },
+            Layer {
+                inp: 2,
+                out: 2,
+                w: vec![1.0, -1.0, 0.5, 2.0],
+                b: vec![0.0, -1.0],
+            },
+            Layer {
+                inp: 2,
+                out: 1,
+                w: vec![1.0, 1.0],
+                b: vec![0.5],
+            },
         ],
         vec![1.0, 0.5],
     )
@@ -38,7 +48,10 @@ fn rejects_bad_files() {
     let mut bad = bytes.clone();
     bad[0] = b'X';
     assert!(Mlp::from_bytes(&bad).is_err(), "magic incorrecto");
-    assert!(Mlp::from_bytes(&bytes[..bytes.len() - 3]).is_err(), "archivo truncado");
+    assert!(
+        Mlp::from_bytes(&bytes[..bytes.len() - 3]).is_err(),
+        "archivo truncado"
+    );
     let mut extra = bytes.clone();
     extra.push(0);
     assert!(Mlp::from_bytes(&extra).is_err(), "bytes de sobra");
@@ -54,7 +67,10 @@ fn rejects_corrupt_headers_without_panicking() {
     };
     // n_layers absurdo con el archivo cortado justo después del encabezado.
     assert!(Mlp::from_bytes(&header(u32::MAX, 2)).is_err());
-    assert!(Mlp::from_bytes(&header(1000, 0)).is_err(), "más de 64 capas");
+    assert!(
+        Mlp::from_bytes(&header(1000, 0)).is_err(),
+        "más de 64 capas"
+    );
     // input_size gigante: no puede reservar memoria ni entrar en pánico.
     assert!(Mlp::from_bytes(&header(1, u32::MAX)).is_err());
     // Dimensiones de capa gigantes (inp * out desborda en 32 bits y es enorme en 64).
@@ -65,7 +81,10 @@ fn rejects_corrupt_headers_without_panicking() {
     // Archivos truncados en cada prefijo posible: siempre Err, nunca pánico.
     let bytes = tiny().to_bytes();
     for cut in 0..bytes.len() {
-        assert!(Mlp::from_bytes(&bytes[..cut]).is_err(), "prefijo de {cut} bytes");
+        assert!(
+            Mlp::from_bytes(&bytes[..cut]).is_err(),
+            "prefijo de {cut} bytes"
+        );
     }
     // Sin capas.
     assert!(Mlp::from_bytes(&header(0, 0)).is_err());

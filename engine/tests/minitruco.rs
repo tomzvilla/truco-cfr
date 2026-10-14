@@ -42,10 +42,17 @@ fn plain_play_higher_card_wins_one() {
 
 #[test]
 fn truco_chain() {
-    let s = play(dealt(1, 4), &[TRUCO, RETRUCO, VALE_CUATRO, QUIERO, JUGAR, JUGAR]);
+    let s = play(
+        dealt(1, 4),
+        &[TRUCO, RETRUCO, VALE_CUATRO, QUIERO, JUGAR, JUGAR],
+    );
     assert_eq!(s.returns(), [-4.0, 4.0]);
     let s = play(dealt(1, 4), &[TRUCO, RETRUCO, NO_QUIERO]);
-    assert_eq!(s.returns(), [-2.0, 2.0], "rechazar el retruco paga el truco aceptado");
+    assert_eq!(
+        s.returns(),
+        [-2.0, 2.0],
+        "rechazar el retruco paga el truco aceptado"
+    );
     let s = play(dealt(1, 4), &[TRUCO, NO_QUIERO]);
     assert_eq!(s.returns(), [1.0, -1.0]);
 }
@@ -54,9 +61,17 @@ fn truco_chain() {
 fn only_holder_can_raise() {
     let s = play(dealt(0, 1), &[TRUCO, QUIERO]);
     assert_eq!(s.node(), Node::Decision(0));
-    assert_eq!(s.legal_actions(), bit(JUGAR) | bit(MAZO), "el que cantó no puede subir");
+    assert_eq!(
+        s.legal_actions(),
+        bit(JUGAR) | bit(MAZO),
+        "el que cantó no puede subir"
+    );
     let s = play(s, &[JUGAR]);
-    assert_eq!(s.legal_actions() & bit(RETRUCO), bit(RETRUCO), "el que dijo quiero sí puede");
+    assert_eq!(
+        s.legal_actions() & bit(RETRUCO),
+        bit(RETRUCO),
+        "el que dijo quiero sí puede"
+    );
 }
 
 #[test]

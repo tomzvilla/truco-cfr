@@ -12,7 +12,11 @@ fn heur(s: &TrucoState) -> usize {
 
 #[test]
 fn heuristic_envido_thresholds() {
-    assert_eq!(heur(&new("7E 6E 1C", "12O 11O 4B")), REAL_ENVIDO, "33 tantos");
+    assert_eq!(
+        heur(&new("7E 6E 1C", "12O 11O 4B")),
+        REAL_ENVIDO,
+        "33 tantos"
+    );
     assert_eq!(heur(&new("7E 1E 4C", "12O 11O 4B")), ENVIDO, "28 tantos");
     let pending = play(new("12O 11O 4B", "6E 1E 4C"), &[ENVIDO]);
     assert_eq!(heur(&pending), QUIERO, "27 >= 26");

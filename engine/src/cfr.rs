@@ -66,11 +66,17 @@ impl<G: ExactGame> TabularCfr<G> {
                     node_value += strat[a] * values[a];
                 }
                 if q == p {
-                    let r = self.regrets.entry(key).or_insert_with(|| vec![0.0; G::NUM_ACTIONS]);
+                    let r = self
+                        .regrets
+                        .entry(key)
+                        .or_insert_with(|| vec![0.0; G::NUM_ACTIONS]);
                     for a in actions_of(mask) {
                         r[a] += pi_o * pi_c * (values[a] - node_value);
                     }
-                    let ss = self.strategy_sum.entry(key).or_insert_with(|| vec![0.0; G::NUM_ACTIONS]);
+                    let ss = self
+                        .strategy_sum
+                        .entry(key)
+                        .or_insert_with(|| vec![0.0; G::NUM_ACTIONS]);
                     for a in actions_of(mask) {
                         ss[a] += pi_p * strat[a];
                     }

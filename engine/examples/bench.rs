@@ -31,7 +31,11 @@ fn main() {
     let mut x = [0u8; ENCODING_SIZE];
     TrucoGame::root().sample_chance(&mut rng).encode(0, &mut x);
     for width in [128usize, 256] {
-        let mlp = Mlp::random(&[ENCODING_SIZE, width, width, width, NUM_ACTIONS], feature_scale(), &mut rng);
+        let mlp = Mlp::random(
+            &[ENCODING_SIZE, width, width, width, NUM_ACTIONS],
+            feature_scale(),
+            &mut rng,
+        );
         let mut out = [0f32; NUM_ACTIONS];
         let n = 50_000;
         let t = Instant::now();
@@ -39,6 +43,9 @@ fn main() {
             mlp.forward(&x, &mut out);
         }
         let us = t.elapsed().as_secs_f64() * 1e6 / n as f64;
-        println!("MLP 3×{width}: {us:.1} µs por forward (1 hilo), checksum {:.3}", out[0]);
+        println!(
+            "MLP 3×{width}: {us:.1} µs por forward (1 hilo), checksum {:.3}",
+            out[0]
+        );
     }
 }

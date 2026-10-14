@@ -31,14 +31,20 @@ impl TrucoState {
     }
 
     pub(crate) fn accept_truco(&mut self, p: Player) {
-        let (level, _) = self.truco_pending.take().expect("quiero sin truco pendiente");
+        let (level, _) = self
+            .truco_pending
+            .take()
+            .expect("quiero sin truco pendiente");
         self.truco_level = level;
         self.truco_holder = Some(p);
         self.turn = self.truco_resume;
     }
 
     pub(crate) fn decline_truco(&mut self) {
-        let (_, caller) = self.truco_pending.take().expect("no quiero sin truco pendiente");
+        let (_, caller) = self
+            .truco_pending
+            .take()
+            .expect("no quiero sin truco pendiente");
         self.award(caller, self.truco_level);
         self.over = true;
     }

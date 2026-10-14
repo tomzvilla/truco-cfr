@@ -44,7 +44,11 @@ impl HeuristicAgent {
         let unplayed: Vec<usize> = (0..3).filter(|&s| o.legal & bit(JUGAR0 + s) != 0).collect();
         let weakest = *unplayed.last().expect("sin cartas para jugar");
         if let Some(opp) = o.opp_played[o.baza] {
-            return match unplayed.iter().rev().find(|&&s| o.hand[s].rank() > opp.rank()) {
+            return match unplayed
+                .iter()
+                .rev()
+                .find(|&&s| o.hand[s].rank() > opp.rank())
+            {
                 Some(&s) => JUGAR0 + s,
                 None => JUGAR0 + weakest,
             };
@@ -73,7 +77,11 @@ impl Agent for HeuristicAgent {
             if can(ENVIDO) && o.my_tantos >= 27 {
                 return envido_call(o.my_tantos);
             }
-            return if Self::high_unplayed(o) >= 1 { QUIERO } else { NO_QUIERO };
+            return if Self::high_unplayed(o) >= 1 {
+                QUIERO
+            } else {
+                NO_QUIERO
+            };
         }
         if can(ENVIDO) && o.my_tantos >= 27 {
             return envido_call(o.my_tantos);

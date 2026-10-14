@@ -16,7 +16,10 @@ impl Kuhn {
     pub const BET: usize = 1;
 
     fn is_terminal(&self) -> bool {
-        matches!(self.history.as_slice(), [0, 0] | [1, 0] | [1, 1] | [0, 1, 0] | [0, 1, 1])
+        matches!(
+            self.history.as_slice(),
+            [0, 0] | [1, 0] | [1, 1] | [0, 1, 0] | [0, 1, 1]
+        )
     }
 }
 
@@ -25,7 +28,10 @@ impl Game for Kuhn {
     const ENCODING_SIZE: usize = 9;
 
     fn root() -> Self {
-        Kuhn { cards: None, history: vec![] }
+        Kuhn {
+            cards: None,
+            history: vec![],
+        }
     }
 
     fn node(&self) -> Node {
@@ -39,7 +45,10 @@ impl Game for Kuhn {
     }
 
     fn sample_chance(&self, rng: &mut dyn RngCore) -> Self {
-        Kuhn { cards: Some(DEALS[rng.gen_range(0..DEALS.len())]), history: vec![] }
+        Kuhn {
+            cards: Some(DEALS[rng.gen_range(0..DEALS.len())]),
+            history: vec![],
+        }
     }
 
     fn legal_actions(&self) -> ActionMask {
@@ -91,13 +100,25 @@ impl ExactGame for Kuhn {
     fn chance_outcomes(&self) -> Vec<(Self, f64)> {
         DEALS
             .iter()
-            .map(|&d| (Kuhn { cards: Some(d), history: vec![] }, 1.0 / 6.0))
+            .map(|&d| {
+                (
+                    Kuhn {
+                        cards: Some(d),
+                        history: vec![],
+                    },
+                    1.0 / 6.0,
+                )
+            })
             .collect()
     }
 
     fn infoset_key(&self, p: Player) -> u64 {
         let card = self.cards.expect("sin repartir")[p] as u64;
-        let bits = self.history.iter().enumerate().fold(0u64, |acc, (i, &a)| acc | ((a as u64) << i));
+        let bits = self
+            .history
+            .iter()
+            .enumerate()
+            .fold(0u64, |acc, (i, &a)| acc | ((a as u64) << i));
         card | ((self.history.len() as u64) << 2) | (bits << 4) | ((p as u64) << 63)
     }
 }

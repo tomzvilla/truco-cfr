@@ -40,7 +40,10 @@ impl MiniTruco {
     }
 
     fn with_cards(&self, cards: [u8; 2]) -> MiniTruco {
-        MiniTruco { cards: Some(cards), ..*self }
+        MiniTruco {
+            cards: Some(cards),
+            ..*self
+        }
     }
 }
 
@@ -194,7 +197,9 @@ impl ExactGame for MiniTruco {
     fn chance_outcomes(&self) -> Vec<(Self, f64)> {
         let d = deals();
         let p = 1.0 / d.len() as f64;
-        d.into_iter().map(|cards| (self.with_cards(cards), p)).collect()
+        d.into_iter()
+            .map(|cards| (self.with_cards(cards), p))
+            .collect()
     }
 
     fn infoset_key(&self, p: Player) -> u64 {

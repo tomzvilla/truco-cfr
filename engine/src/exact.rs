@@ -111,7 +111,12 @@ fn collect<G: ExactGame>(
     }
 }
 
-fn br_value<G: ExactGame>(s: &G, br: Player, policy: Policy<G>, choice: &HashMap<u64, Action>) -> f64 {
+fn br_value<G: ExactGame>(
+    s: &G,
+    br: Player,
+    policy: Policy<G>,
+    choice: &HashMap<u64, Action>,
+) -> f64 {
     match s.node() {
         Node::Terminal => s.returns()[br] as f64,
         Node::Chance => s

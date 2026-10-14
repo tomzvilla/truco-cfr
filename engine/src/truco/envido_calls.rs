@@ -72,7 +72,11 @@ impl TrucoState {
         if accepted {
             let mano = self.mano;
             let pie = other(mano);
-            let winner = if self.tantos[mano] >= self.tantos[pie] { mano } else { pie };
+            let winner = if self.tantos[mano] >= self.tantos[pie] {
+                mano
+            } else {
+                pie
+            };
             self.revealed_tantos[mano] = Some(self.tantos[mano]);
             if winner == pie {
                 self.revealed_tantos[pie] = Some(self.tantos[pie]);
@@ -89,7 +93,11 @@ impl TrucoState {
             let value = if n == 1 {
                 1
             } else {
-                calls[..n - 1].iter().flatten().map(|&(k, _)| kind_value(k)).sum()
+                calls[..n - 1]
+                    .iter()
+                    .flatten()
+                    .map(|&(k, _)| kind_value(k))
+                    .sum()
             };
             self.envido_status = EnvidoStatus::Declined;
             self.award(last_caller, value);

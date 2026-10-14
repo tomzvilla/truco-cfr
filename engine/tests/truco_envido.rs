@@ -9,7 +9,11 @@ fn envido_quiero_mano_wins_and_reveals() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO, QUIERO]);
     assert_eq!(s.points(), [2, 0]);
     assert_eq!(s.envido_status(), EnvidoStatus::Accepted);
-    assert_eq!(s.revealed_tantos(), [Some(33), None], "el pie perdió: dice son buenas");
+    assert_eq!(
+        s.revealed_tantos(),
+        [Some(33), None],
+        "el pie perdió: dice son buenas"
+    );
     assert_eq!(s.turn(), 0, "vuelve el turno al que cantó");
     assert!(!s.is_over());
 }
@@ -39,9 +43,15 @@ fn envido_no_quiero_gives_one() {
 #[test]
 fn raise_sets() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO]);
-    assert_eq!(s.legal_actions(), mask(&[QUIERO, NO_QUIERO, ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]));
+    assert_eq!(
+        s.legal_actions(),
+        mask(&[QUIERO, NO_QUIERO, ENVIDO, REAL_ENVIDO, FALTA_ENVIDO])
+    );
     let s2 = play(s, &[ENVIDO]);
-    assert_eq!(s2.legal_actions(), mask(&[QUIERO, NO_QUIERO, REAL_ENVIDO, FALTA_ENVIDO]));
+    assert_eq!(
+        s2.legal_actions(),
+        mask(&[QUIERO, NO_QUIERO, REAL_ENVIDO, FALTA_ENVIDO])
+    );
     let s3 = play(new("7E 6E 1C", "12O 11O 4B"), &[REAL_ENVIDO]);
     assert_eq!(s3.legal_actions(), mask(&[QUIERO, NO_QUIERO, FALTA_ENVIDO]));
     let s4 = play(new("7E 6E 1C", "12O 11O 4B"), &[FALTA_ENVIDO]);
@@ -56,7 +66,11 @@ fn envido_envido_real_values() {
     let accepted = play(base, &[ENVIDO, ENVIDO, REAL_ENVIDO, QUIERO]);
     assert_eq!(accepted.points(), [7, 0]);
     let er_declined = play(base, &[ENVIDO, REAL_ENVIDO, NO_QUIERO]);
-    assert_eq!(er_declined.points(), [0, 2], "el pie subió con real envido y el mano no quiso");
+    assert_eq!(
+        er_declined.points(),
+        [0, 2],
+        "el pie subió con real envido y el mano no quiso"
+    );
 }
 
 #[test]
@@ -83,14 +97,21 @@ fn falta_envido_at_exactly_15_is_buenas() {
 
 #[test]
 fn falta_declined_after_envido_pays_envido() {
-    let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO, FALTA_ENVIDO, NO_QUIERO]);
+    let s = play(
+        new("7E 6E 1C", "12O 11O 4B"),
+        &[ENVIDO, FALTA_ENVIDO, NO_QUIERO],
+    );
     assert_eq!(s.points(), [0, 2]);
 }
 
 #[test]
 fn envido_va_primero() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[TRUCO]);
-    assert_ne!(s.legal_actions() & mask(&[ENVIDO]), 0, "el pie puede contestar con envido");
+    assert_ne!(
+        s.legal_actions() & mask(&[ENVIDO]),
+        0,
+        "el pie puede contestar con envido"
+    );
     let s = play(s, &[ENVIDO, QUIERO]);
     assert_eq!(s.points(), [2, 0]);
     assert_eq!(s.turn(), 1, "vuelve al pie a responder el truco");
@@ -103,7 +124,10 @@ fn envido_va_primero() {
 #[test]
 fn envido_closed_after_truco_accepted() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[TRUCO, QUIERO]);
-    assert_eq!(s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]), 0);
+    assert_eq!(
+        s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]),
+        0
+    );
 }
 
 #[test]
@@ -123,13 +147,20 @@ fn envido_closed_after_own_first_card_and_after_first_baza() {
 #[test]
 fn envido_only_once() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO, NO_QUIERO]);
-    assert_eq!(s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]), 0);
+    assert_eq!(
+        s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]),
+        0
+    );
 }
 
 #[test]
 fn mazo_after_envido_played_gives_only_truco_value() {
     let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO, NO_QUIERO, MAZO]);
-    assert_eq!(s.points(), [1, 1], "envido rechazado: 1 para el 0; mazo: 1 para el 1, sin el extra");
+    assert_eq!(
+        s.points(),
+        [1, 1],
+        "envido rechazado: 1 para el 0; mazo: 1 para el 1, sin el extra"
+    );
 }
 
 #[test]
@@ -145,6 +176,9 @@ fn envido_reaching_30_ends_hand_with_truco_pending() {
 fn no_mazo_or_card_while_call_pending() {
     let base = new("7E 6E 1C", "12O 11O 4B");
     for pending in [play(base, &[TRUCO]), play(base, &[ENVIDO])] {
-        assert_eq!(pending.legal_actions() & mask(&[MAZO, JUGAR0, JUGAR1, JUGAR2]), 0);
+        assert_eq!(
+            pending.legal_actions() & mask(&[MAZO, JUGAR0, JUGAR1, JUGAR2]),
+            0
+        );
     }
 }

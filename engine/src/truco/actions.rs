@@ -16,6 +16,16 @@ pub const MAZO: Action = 11;
 pub const NUM_ACTIONS: usize = 12;
 
 pub const ACTION_NAMES: [&str; NUM_ACTIONS] = [
-    "jugar0", "jugar1", "jugar2", "envido", "realEnvido", "faltaEnvido",
-    "truco", "retruco", "valeCuatro", "quiero", "noQuiero", "mazo",
+    "jugar0",
+    "jugar1",
+    "jugar2",
+    "envido",
+    "realEnvido",
+    "faltaEnvido",
+    "truco",
+    "retruco",
+    "valeCuatro",
+    "quiero",
+    "noQuiero",
+    "mazo",
 ];

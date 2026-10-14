@@ -17,7 +17,11 @@ fn equal_rank_cards_sort_by_id() {
     let a = new("3O 3E 4C", "12C 11C 10C");
     let b = new("3E 3O 4C", "12C 11C 10C");
     assert_eq!(a.hand(0), b.hand(0));
-    assert_eq!(a.hand(0)[0], Card::parse("3E").unwrap(), "a igual jerarquía, primero el id menor (espada)");
+    assert_eq!(
+        a.hand(0)[0],
+        Card::parse("3E").unwrap(),
+        "a igual jerarquía, primero el id menor (espada)"
+    );
 }
 
 #[test]
@@ -85,7 +89,11 @@ fn three_pardas_mano_wins() {
     let s = new_with("3E 2E 4E", "3O 2O 4O", 1, [0, 0]);
     let s = play(s, &[JUGAR0, JUGAR0, JUGAR1, JUGAR1, JUGAR2, JUGAR2]);
     assert!(s.is_over());
-    assert_eq!(s.points(), [0, 1], "el mano (jugador 1) gana con tres pardas");
+    assert_eq!(
+        s.points(),
+        [0, 1],
+        "el mano (jugador 1) gana con tres pardas"
+    );
 }
 
 #[test]

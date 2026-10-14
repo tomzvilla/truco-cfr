@@ -40,7 +40,11 @@ fn deal_for(deal_seed: u64, k: u64) -> [[Card; 3]; 2] {
     deal(&mut rng)
 }
 
-pub fn play_match(seats: [&mut dyn Agent; 2], deal_seed: u64, rng: &mut dyn RngCore) -> MatchResult {
+pub fn play_match(
+    seats: [&mut dyn Agent; 2],
+    deal_seed: u64,
+    rng: &mut dyn RngCore,
+) -> MatchResult {
     let mut scores = [0u8; 2];
     let mut hands = Vec::new();
     for k in 0u64.. {
@@ -69,7 +73,11 @@ pub fn play_match(seats: [&mut dyn Agent; 2], deal_seed: u64, rng: &mut dyn RngC
         });
         scores = [s.score(0), s.score(1)];
         if let Some(winner) = (0..2).find(|&p| scores[p] >= TARGET) {
-            return MatchResult { winner, final_scores: scores, hands };
+            return MatchResult {
+                winner,
+                final_scores: scores,
+                hands,
+            };
         }
     }
     unreachable!()
@@ -83,5 +91,8 @@ pub fn play_duplicate(
 ) -> DuplicateResult {
     let a_as_seat0 = play_match([&mut *a, &mut *b], deal_seed, rng);
     let a_as_seat1 = play_match([&mut *b, &mut *a], deal_seed, rng);
-    DuplicateResult { a_as_seat0, a_as_seat1 }
+    DuplicateResult {
+        a_as_seat0,
+        a_as_seat1,
+    }
 }

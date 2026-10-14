@@ -4,7 +4,10 @@ use truco_engine::game::bit;
 use truco_engine::truco::{TrucoState, ACTION_NAMES};
 
 pub fn hand(s: &str) -> [Card; 3] {
-    let v: Vec<Card> = s.split_whitespace().map(|t| Card::parse(t).unwrap()).collect();
+    let v: Vec<Card> = s
+        .split_whitespace()
+        .map(|t| Card::parse(t).unwrap())
+        .collect();
     [v[0], v[1], v[2]]
 }
 

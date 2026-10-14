@@ -6,11 +6,18 @@ use truco_engine::truco::*;
 fn truco_quiero_returns_turn_to_caller() {
     let s = play(new("1E 7E 4C", "3C 2C 5O"), &[TRUCO]);
     assert_eq!(s.turn(), 1);
-    assert_eq!(s.legal_actions() & mask(&[QUIERO, NO_QUIERO, RETRUCO]), mask(&[QUIERO, NO_QUIERO, RETRUCO]));
+    assert_eq!(
+        s.legal_actions() & mask(&[QUIERO, NO_QUIERO, RETRUCO]),
+        mask(&[QUIERO, NO_QUIERO, RETRUCO])
+    );
     let s = play(s, &[QUIERO]);
     assert_eq!(s.truco_level(), 2);
     assert_eq!(s.turn(), 0, "vuelve a jugar el que cantó");
-    assert_eq!(s.legal_actions() & mask(&[TRUCO, RETRUCO]), 0, "el que cantó no puede subir");
+    assert_eq!(
+        s.legal_actions() & mask(&[TRUCO, RETRUCO]),
+        0,
+        "el que cantó no puede subir"
+    );
 }
 
 #[test]
@@ -32,7 +39,11 @@ fn quiero_retruco_then_quiero_plays_for_three() {
     let s = play(new("4C 5C 6C", "1E 7E 3O"), &[TRUCO, RETRUCO, QUIERO]);
     assert_eq!(s.truco_level(), 3);
     assert_eq!(s.turn(), 0, "el turno vuelve al que empezó la cadena");
-    assert_ne!(s.legal_actions() & mask(&[VALE_CUATRO]), 0, "el último quiero lo dijo el jugador 0");
+    assert_ne!(
+        s.legal_actions() & mask(&[VALE_CUATRO]),
+        0,
+        "el último quiero lo dijo el jugador 0"
+    );
     let s = play(s, &[JUGAR0, JUGAR0, JUGAR1, JUGAR1]); // 6C<1E, 5C<7E
     assert!(s.is_over());
     assert_eq!(s.points(), [0, 3]);
@@ -47,7 +58,10 @@ fn retruco_no_quiero_gives_two_to_raiser() {
 
 #[test]
 fn vale_cuatro_chain() {
-    let s = play(new("1E 7E 4C", "3C 2C 5O"), &[TRUCO, RETRUCO, VALE_CUATRO, QUIERO]);
+    let s = play(
+        new("1E 7E 4C", "3C 2C 5O"),
+        &[TRUCO, RETRUCO, VALE_CUATRO, QUIERO],
+    );
     assert_eq!(s.truco_level(), 4);
     assert_eq!(s.legal_actions() & mask(&[TRUCO, RETRUCO, VALE_CUATRO]), 0);
     let s = play(s, &[JUGAR0, JUGAR0, JUGAR1, JUGAR1]); // 1E>3C, 7E>2C
@@ -57,12 +71,19 @@ fn vale_cuatro_chain() {
 #[test]
 fn mazo_after_accepted_truco_pays_level() {
     let s = play(new("1E 7E 4C", "3C 2C 5O"), &[TRUCO, QUIERO, JUGAR0, MAZO]);
-    assert_eq!(s.points(), [3, 0], "truco aceptado (2) + 1 porque el envido no se jugó en primera");
+    assert_eq!(
+        s.points(),
+        [3, 0],
+        "truco aceptado (2) + 1 porque el envido no se jugó en primera"
+    );
 }
 
 #[test]
 fn truco_can_be_called_mid_hand() {
-    let s = play(new("1E 7E 4C", "3C 2C 5O"), &[JUGAR0, JUGAR0, TRUCO, QUIERO]);
+    let s = play(
+        new("1E 7E 4C", "3C 2C 5O"),
+        &[JUGAR0, JUGAR0, TRUCO, QUIERO],
+    );
     assert_eq!(s.truco_level(), 2);
     assert_eq!(s.turn(), 0);
     let s = play(s, &[JUGAR1, JUGAR1]); // 7E>2C

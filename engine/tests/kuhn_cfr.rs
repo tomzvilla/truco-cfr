@@ -18,7 +18,11 @@ fn cfr_converges_on_kuhn() {
     let expl = exploitability::<Kuhn>(&policy);
     assert!(expl < 0.01, "explotabilidad demasiado alta: {expl}");
     let v = expected_values::<Kuhn>(&policy);
-    assert!((v[0] + 1.0 / 18.0).abs() < 0.01, "valor del jugador 0: {}", v[0]);
+    assert!(
+        (v[0] + 1.0 / 18.0).abs() < 0.01,
+        "valor del jugador 0: {}",
+        v[0]
+    );
     assert!((v[0] + v[1]).abs() < 1e-9, "tiene que ser suma cero");
 }
 
