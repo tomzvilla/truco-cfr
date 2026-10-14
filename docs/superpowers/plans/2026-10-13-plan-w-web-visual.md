@@ -84,6 +84,57 @@ web/
     styles/   base.css  (más un .css por componente)
 ```
 
+## Enmienda aprobada (2026-10-13): escala según la densidad de pantalla
+
+El usuario aprobó que las cartas escalen en **píxeles físicos enteros** en vez de píxeles CSS enteros: en un celular con `devicePixelRatio` 3, una escala CSS de 4/3 equivale a 4 píxeles físicos por píxel del arte, así que se ve nítido y las cartas quedan ~33% más grandes que a 1x. Esta enmienda **reemplaza** lo que dicen las Tareas 4 y 8 sobre `pickScale`:
+
+1. **Task 4, `src/skins/scale.ts`:** `pickScale` suma un sexto parámetro opcional `dpr = 1` y deja de devolver siempre un entero. Implementación:
+
+```ts
+/** Escala CSS (>= 1) tal que escala × dpr sea un entero: píxeles físicos enteros, sin desbordar. */
+export function pickScale(
+  availableWidth: number,
+  nativeWidth: number,
+  cardsAcross: number,
+  gap: number,
+  maxScale = 3,
+  dpr = 1,
+): number {
+  if (!Number.isFinite(availableWidth) || availableWidth <= 0) return 1;
+  const d = Number.isFinite(dpr) && dpr >= 1 ? dpr : 1;
+  const perCard = (availableWidth - gap * (cardsAcross - 1)) / cardsAcross;
+  const deviceSteps = Math.floor((perCard / nativeWidth) * d + 1e-9);
+  return Math.max(1, Math.min(maxScale, deviceSteps / d));
+}
+```
+
+Los tests existentes de `scale.test.ts` se mantienen: con `dpr = 1` todo sigue siendo entero. Se agregan estos a `src/skins/scale.test.ts`:
+
+```ts
+describe('pickScale con densidad de pantalla', () => {
+  it('dpr 3 en 360 px: 4 píxeles físicos por píxel del arte', () => {
+    expect(pickScale(328, 73, 3, 8, 3, 3)).toBeCloseTo(4 / 3);
+  });
+  it('escala × dpr siempre entero', () => {
+    for (const dpr of [1, 2, 3]) {
+      for (let w = 200; w <= 1400; w += 37) {
+        const s = pickScale(w, 73, 3, 8, 3, dpr);
+        expect(Number.isInteger(Math.round(s * dpr * 1e6) / 1e6)).toBe(true);
+        expect(handWidth(73, s, 3, 8)).toBeLessThanOrEqual(Math.max(w, handWidth(73, 1, 3, 8)) + 1e-6);
+      }
+    }
+  });
+  it('dpr inválido se trata como 1', () => {
+    expect(pickScale(328, 73, 3, 8, 3, Number.NaN)).toBe(1);
+    expect(pickScale(328, 73, 3, 8, 3, 0.5)).toBe(1);
+  });
+});
+```
+
+2. **Task 8, la mesa:** la llamada pasa a ser `pickScale(width - 32, skin.native.w, 3, 8, 3, window.devicePixelRatio || 1)`. Donde la Task 8 dice "a 360 px las cartas van a escala 1x", ahora vale: "a 360 px la escala depende de la densidad; con dpr 3 queda en 4/3". Ningún otro cálculo cambia: `w = skin.native.w * scale` y `--scale` aceptan valores fraccionarios.
+
+3. **Review Focus, punto 1:** se lee como "las cartas nunca desbordan el ancho disponible, nunca bajan de 1x, y escala × dpr es entero".
+
 ---
 
 ### Task 1: Scaffold Vite + React + TypeScript + vitest + router por hash
