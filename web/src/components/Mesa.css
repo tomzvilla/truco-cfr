@@ -1,0 +1,93 @@
+/* Celular primero: 8 px de margen lateral (también en .app__main) para que en 360 px queden 328 px útiles. */
+.mesa {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 8px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(var(--pano), var(--pano-oscuro));
+  box-shadow: var(--notch);
+}
+
+/* Celular: las cartas del bot en una fila y debajo la mascota con su globo. */
+.mesa__bot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 -8px;
+  padding: 0 8px 4px;
+  background: var(--pano-oscuro);
+}
+/* El bot asoma desde el borde: dorsos cortados a mitad de altura... */
+.mesa__botcards {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  height: calc(var(--scale) * 56px);
+  overflow: hidden;
+}
+/* ...pero su mano revelada se ve entera, nunca recortada. */
+.mesa__botcards[data-revealed='true'] { height: auto; overflow: visible; }
+.mesa__mascot { display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
+.bubble {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  max-width: 220px;
+  font-size: 15px;
+  line-height: 1.25;
+  color: var(--tinta);
+  background: var(--tiza);
+  box-shadow: var(--notch);
+}
+
+.score { display: grid; gap: 6px; padding: 10px 12px; }
+.score__legend, .score__row { display: grid; grid-template-columns: 64px 1fr 1fr 40px; align-items: center; gap: 8px; }
+.score__legend { font-size: 13px; color: var(--tiza-dim); }
+.score__name { font: 700 16px/1 var(--font-display); }
+.score__name small { font: 400 12px var(--font-body); color: var(--ambar); }
+.score__half { display: flex; gap: 2px; }
+.score__num { position: relative; text-align: right; font: 700 22px/1 var(--font-display); }
+.fosforito { display: block; }
+
+.mesa__status {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+}
+.mesa__status li { padding: 4px 8px; color: var(--tiza); background: rgba(27, 16, 51, 0.7); }
+
+.mesa__bazas { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; gap: 8px; }
+.baza { display: grid; justify-items: center; }
+.baza > :nth-child(2) { margin-top: calc(var(--scale) * -56px); position: relative; z-index: 1; }
+.baza__tag { min-height: 22px; margin-top: 4px; font-size: 13px; color: var(--tiza); }
+.baza[data-winner='yo'] .baza__tag { color: var(--menta); }
+.baza[data-winner='bot'] .baza__tag { color: var(--brasa); }
+.slot { border: 2px dashed rgba(255, 246, 224, 0.25); }
+
+/* El gap (8 px) debe coincidir con HAND_GAP en Mesa.tsx. El ancho de este contenedor se mide para elegir la escala. */
+.mesa__hand { display: flex; justify-content: center; gap: 8px; padding-top: 8px; }
+
+.actionbar { display: grid; gap: 6px; }
+.actionbar__row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
+.actionbar__row .btn { font-size: 16px; padding: 0 8px; min-height: 48px; }
+.actionbar--wait { margin: 0; padding: 14px 0; text-align: center; color: var(--tiza-dim); }
+
+.xray h2 { font-size: 18px; }
+.xray__hint { font-size: 14px; color: var(--tiza-dim); }
+.xray__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.xray__list li { display: grid; grid-template-columns: 112px 1fr 44px; align-items: center; gap: 8px; font-size: 15px; }
+.xray__bar { height: 14px; background: var(--tinta); }
+.xray__bar > span { display: block; height: 100%; background: var(--menta); }
+.xray__pct { text-align: right; font: 700 16px var(--font-display); }
+
+@media (min-width: 520px) {
+  .mesa { gap: 16px; padding: 0 24px 32px; }
+  .mesa__bot { margin: 0 -24px; padding: 0 24px 4px; flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .mesa__botcards { justify-content: flex-start; align-self: flex-start; }
+}

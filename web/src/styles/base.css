@@ -69,6 +69,12 @@ img, svg { image-rendering: pixelated; }
   padding: 16px;
 }
 
+/* Margen lateral del contenido: 8 px en celular (360 px de pantalla = 328 útiles), 16 px desde 520 px. */
+.app__main { padding-inline: 8px; }
+@media (min-width: 520px) {
+  .app__main { padding-inline: 16px; }
+}
+
 /* contenedor de cada página y aviso de datos de ejemplo */
 .page { display: block; }
 .banner {
