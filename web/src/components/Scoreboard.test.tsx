@@ -40,4 +40,15 @@ describe('Scoreboard', () => {
     rerender(<Scoreboard score={[2, 5]} mano="yo" />);
     expect(screen.queryByText(/^\+\d/)).toBeNull();
   });
+  it('cada fósforo se dibuja con madera y cabeza roja', () => {
+    const { container } = render(<Scoreboard score={[5, 0]} mano="yo" />);
+    const g = container.querySelector('[data-fill="5"]')!;
+    expect(g.querySelectorAll('rect[fill="var(--brasa)"]').length).toBeGreaterThanOrEqual(5);
+    expect(g.querySelectorAll('rect[fill="var(--madera)"]').length).toBeGreaterThanOrEqual(5);
+  });
+  it('los puntos se escriben con la fuente de lectura, no con la de pixeles', () => {
+    render(<Scoreboard score={[8, 3]} mano="yo" />);
+    const n = screen.getByRole('group', { name: 'Vos: 8 puntos' }).querySelector('.score__num')!;
+    expect(n).toHaveTextContent('8');
+  });
 });

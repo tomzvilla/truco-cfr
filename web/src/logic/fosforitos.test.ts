@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { clampPoints, fosforitos, groupRects } from './fosforitos';
+import { GRID, clampPoints, fosforitos, groupRects } from './fosforitos';
 
 describe('fosforitos (grupos de 5, 15 malas + 15 buenas)', () => {
   const cases: [number, number[], number[]][] = [
@@ -50,22 +50,62 @@ describe('fosforitos (grupos de 5, 15 malas + 15 buenas)', () => {
   });
 });
 
-describe('groupRects', () => {
-  it('dibuja un palito por cada fosforito y la cruz solo con el quinto', () => {
+describe('groupRects (fósforos con cabeza roja)', () => {
+  const sticksOf = (n: 0 | 1 | 2 | 3 | 4 | 5) => {
+    const by = new Map<number, ReturnType<typeof groupRects>>();
+    for (const r of groupRects(n)) by.set(r.stick, [...(by.get(r.stick) ?? []), r]);
+    return by;
+  };
+  const cells = (rs: ReturnType<typeof groupRects>) => {
+    const out = new Set<string>();
+    for (const r of rs) for (let x = r.x; x < r.x + r.w; x++) for (let y = r.y; y < r.y + r.h; y++) out.add(`${x},${y}`);
+    return out;
+  };
+
+  it('hay un fósforo por punto: n fósforos distintos, cada uno con madera y cabeza', () => {
     expect(groupRects(0)).toHaveLength(0);
-    expect(groupRects(1)).toHaveLength(1);
-    expect(groupRects(4)).toHaveLength(4);
-    expect(groupRects(4).every((r) => r.kind === 'palo')).toBe(true);
-    const five = groupRects(5);
-    expect(five.some((r) => r.kind === 'cruz')).toBe(true);
-    expect(five).toHaveLength(14);
+    for (const n of [1, 2, 3, 4, 5] as const) {
+      const by = sticksOf(n);
+      expect([...by.keys()].sort()).toEqual(Array.from({ length: n }, (_, i) => i));
+      for (const rs of by.values()) {
+        expect(rs.some((r) => r.kind === 'madera')).toBe(true);
+        expect(rs.some((r) => r.kind === 'cabeza')).toBe(true);
+      }
+    }
   });
-  it('todo cae dentro de la grilla de 12x12', () => {
+  it('los primeros 4 forman un cuadrado cerrado y el quinto lo cruza en diagonal', () => {
+    const square = cells(groupRects(4));
+    // esquinas y puntos medios de los 4 lados
+    for (const c of ['2,2', '12,2', '12,12', '2,12', '6,2', '12,6', '8,12', '2,8']) expect(square.has(c), c).toBe(true);
+    // adentro del cuadrado no hay nada (todavía)
+    expect(square.has('7,7')).toBe(false);
+    const diagonal = sticksOf(5).get(4)!;
+    const d = cells(diagonal);
+    expect(d.has('7,7') || d.has('8,7') || d.has('7,8')).toBe(true); // pasa por el centro
+    const xs = [...d].map((c) => Number(c.split(',')[0]));
+    const ys = [...d].map((c) => Number(c.split(',')[1]));
+    expect(Math.min(...xs)).toBeLessThanOrEqual(4);
+    expect(Math.max(...xs)).toBeGreaterThanOrEqual(11);
+    expect(Math.min(...ys)).toBeLessThanOrEqual(4);
+    expect(Math.max(...ys)).toBeGreaterThanOrEqual(10);
+  });
+  it('los fósforos no se pisan entre sí salvo en las esquinas y el cruce', () => {
+    const by = sticksOf(4);
+    const sets = [...by.values()].map(cells);
+    for (let i = 0; i < sets.length; i++) {
+      for (let j = i + 1; j < sets.length; j++) {
+        const shared = [...sets[i]!].filter((c) => sets[j]!.has(c));
+        expect(shared.length, `${i} y ${j}`).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+  it('todo cae dentro de la grilla de 15x15', () => {
+    expect(GRID).toBe(15);
     for (const r of groupRects(5)) {
       expect(r.x).toBeGreaterThanOrEqual(0);
       expect(r.y).toBeGreaterThanOrEqual(0);
-      expect(r.x + r.w).toBeLessThanOrEqual(12);
-      expect(r.y + r.h).toBeLessThanOrEqual(12);
+      expect(r.x + r.w).toBeLessThanOrEqual(GRID);
+      expect(r.y + r.h).toBeLessThanOrEqual(GRID);
     }
   });
 });

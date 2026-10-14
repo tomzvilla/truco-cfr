@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { groupRects, fosforitos } from '../logic/fosforitos';
+import { GRID, groupRects, fosforitos } from '../logic/fosforitos';
 import type { GroupFill } from '../logic/fosforitos';
 import type { Seat } from '../table/types';
 import { PointsBurst } from './PointsBurst';
@@ -30,9 +30,9 @@ function useScoreFx(yo: number, bot: number): { yo: Fx; bot: Fx } {
 
 function Group({ fill }: { fill: GroupFill }) {
   return (
-    <svg className="fosforito" data-fill={fill} viewBox="0 0 12 12" width="24" height="24" shapeRendering="crispEdges" aria-hidden="true">
+    <svg className="fosforito" data-fill={fill} viewBox={`0 0 ${GRID} ${GRID}`} width="30" height="30" shapeRendering="crispEdges" aria-hidden="true">
       {groupRects(fill).map((r, i) => (
-        <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} fill={r.kind === 'cruz' ? 'var(--ambar)' : 'var(--tiza)'} />
+        <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} fill={r.kind === 'cabeza' ? 'var(--brasa)' : 'var(--madera)'} />
       ))}
     </svg>
   );

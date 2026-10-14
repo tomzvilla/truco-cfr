@@ -38,13 +38,13 @@
 }
 
 .score { display: grid; gap: 4px; padding: 6px 10px; }
-.score__legend, .score__row { display: grid; grid-template-columns: 64px 1fr 1fr 40px; align-items: center; gap: 8px; }
+.score__legend, .score__row { display: grid; grid-template-columns: 52px 1fr 1fr 34px; align-items: center; gap: 8px; }
 .score__legend { font-size: 13px; line-height: 1.2; color: var(--tiza-dim); }
 .score__name { font: 400 16px/1 var(--font-display); }
 .score__name small { font: 400 12px var(--font-body); color: var(--ambar); }
-.score__half { display: flex; gap: 2px; }
+.score__half { display: flex; }
 .score__num { position: relative; text-align: right; font: 700 22px/1 var(--font-body); font-variant-numeric: tabular-nums; }
-.fosforito { display: block; width: 20px; height: 20px; }
+.fosforito { display: block; width: 30px; height: 30px; } /* 15 px de arte x 2 */
 
 .mesa__status {
   list-style: none;
@@ -90,7 +90,7 @@
   .mesa__mascot { display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
   .bubble { grid-column: auto; margin: 0 0 8px; max-width: 220px; padding: 6px 10px; font-size: 15px; }
   .score { gap: 6px; padding: 10px 12px; }
-  .fosforito { width: 24px; height: 24px; }
+  .fosforito { width: 45px; height: 45px; } /* x 3 */
   .mesa__status { gap: 6px; font-size: 14px; }
   .mesa__status li { padding: 4px 8px; }
   .baza > :nth-child(2) { margin-top: calc(var(--scale) * -56px); }
