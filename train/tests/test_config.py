@@ -34,3 +34,10 @@ def test_booleans_and_integers_are_not_interchangeable():
         Config.from_dict({"warm_start": 1})
     with pytest.raises(ValueError):
         Config.from_dict({"traversals": 2.5})
+
+
+@pytest.mark.parametrize("name", ["adv_scale", "lr", "strat_lr", "grad_clip", "time_budget_s"])
+@pytest.mark.parametrize("bad", [float("nan"), float("inf")])
+def test_validate_rejects_nan_and_infinite_floats(name, bad):
+    with pytest.raises(ValueError, match="finito"):
+        Config.from_dict({name: bad})

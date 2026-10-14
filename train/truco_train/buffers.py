@@ -66,6 +66,11 @@ class ReservoirBuffer:
                 raise ValueError(
                     f"el checkpoint tiene {n} muestras y la capacidad es {self.capacity}"
                 )
+            if data["enc"].shape[1:] != self.enc.shape[1:] or data["values"].shape[1:] != self.values.shape[1:]:
+                raise ValueError(
+                    f"el checkpoint tiene ancho de entrada {data['enc'].shape[1:]} y de objetivo "
+                    f"{data['values'].shape[1:]}, y el buffer espera {self.enc.shape[1:]} y {self.values.shape[1:]}"
+                )
             self.enc[:n] = data["enc"]
             self.values[:n] = data["values"]
             self.masks[:n] = data["masks"]

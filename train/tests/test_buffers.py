@@ -72,3 +72,13 @@ def test_load_rejects_a_checkpoint_bigger_than_the_capacity(tmp_path):
     small = ReservoirBuffer(10, 4, 2, np.random.default_rng(0))
     with pytest.raises(ValueError, match="capacidad"):
         small.load(tmp_path / "buf.npz")
+
+
+def test_load_rejects_a_checkpoint_with_different_widths(tmp_path):
+    buf = ReservoirBuffer(50, 4, 2, np.random.default_rng(0))
+    buf.add(*batch(20), t=1)
+    buf.save(tmp_path / "buf.npz")
+    for enc_size, width in ((5, 2), (4, 3)):
+        other = ReservoirBuffer(50, enc_size, width, np.random.default_rng(0))
+        with pytest.raises(ValueError, match="ancho"):
+            other.load(tmp_path / "buf.npz")

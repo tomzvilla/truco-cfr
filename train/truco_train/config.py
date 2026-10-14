@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import tomllib
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
@@ -59,6 +60,9 @@ class Config:
         ):
             if getattr(self, name) < 1:
                 raise ValueError(f"{name} tiene que ser al menos 1")
+        for name in ("adv_scale", "lr", "strat_lr", "grad_clip", "time_budget_s"):
+            if not math.isfinite(getattr(self, name)):
+                raise ValueError(f"{name} tiene que ser un número finito, no {getattr(self, name)}")
         if not (0 <= self.seed < 2**31):
             raise ValueError("seed tiene que estar entre 0 y 2**31 - 1")
         if self.adv_scale <= 0 or self.lr <= 0 or self.strat_lr <= 0:
