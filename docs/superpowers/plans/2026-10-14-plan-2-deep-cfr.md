@@ -10,6 +10,14 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-13-truco-cfr-design.md` (secciones 3.2, 4, 6 y 7). Plan anterior: `docs/superpowers/plans/2026-10-13-plan-1-motor-cfr.md` (motor, ya terminado y testeado).
 
+## Desvíos del spec (el usuario tiene que dar el visto bueno una vez)
+
+Tres cosas de este plan se apartan del texto del spec. Si se aprueban, hay que actualizar las secciones 3.2 y 4 del spec para que digan lo mismo:
+
+1. **K = 5 000 recorridos por jugador y por iteración (no 20 000) en la corrida larga.** Con redes entrenadas la velocidad medida es ~600 recorridos/s (3×128), no los 2 470 de la estimación; con 20 000 por jugador la noche alcanzaría solo ~100 iteraciones. La Tarea 10 mide y recalcula K con los datos reales.
+2. **ONNX se descarta** (spec §4): el test de paridad pasa a ser PyTorch = Rust, y el WASM lo cubre el Plan 4. La publicación en Hugging Face no incluye ONNX.
+3. **El monitoreo mide partidos completos a 30 en formato duplicado** (`eval_pairs` pares = `2 × eval_pairs` partidos), no "1 000 manos".
+
 ## Global Constraints
 
 - Todo comando corre en WSL Ubuntu: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr && <comando>'`. Si se trabaja en un worktree, reemplazar `~/projects/truco-cfr` por la ruta del worktree. Los comandos de Python van desde `train/` (`cd ~/projects/truco-cfr/train && ...`), y las corridas escriben en `train/runs/<id>/` (ya está en `.gitignore`).
@@ -22,6 +30,7 @@
 - **Una sola política:** todo lo que convierte la salida de una red en probabilidades vive en `engine/src/policy.rs`. Ni Python ni la web la reimplementan.
 - Toda acción que cruza la frontera Python → Rust se valida contra la máscara de legales y levanta `ValueError` (el `apply` del motor solo hace `debug_assert`).
 - Los tests son deterministas (semillas fijas). Los umbrales del spec (Kuhn < 0,01) no se relajan: si un test no llega, se suben iteraciones o recorridos, nunca el umbral.
+- **Cómo se lanza una corrida larga (regla de este plan).** No se usa `nohup ... &` adentro de `wsl --exec bash -lc`: WSL2 puede apagar la distribución cuando no queda ninguna sesión de `wsl.exe` conectada, y eso mataría un trabajo de 9 horas. La corrida se lanza como **comando en primer plano de una tarea en segundo plano de Claude Code** (`run_in_background` del Bash), que mantiene viva la sesión de WSL; lo hace la sesión principal, no un implementador.
 - Commits con mensajes convencionales y la línea final `Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>`.
 - Los identificadores van en inglés, salvo los términos del dominio (envido, baza, mano, truco). Los comentarios, mensajes de error y la documentación, en español.
 
@@ -37,7 +46,7 @@
 8. **El monitoreo usa partidos completos a 30 en formato duplicado** (`eval_pairs` pares = `2 × eval_pairs` partidos), no "1 000 manos": es la unidad que usa el torneo del Plan 3 y reutiliza `play_duplicate`.
 9. **Deep CFR en Kuhn con redes llega a ~0,005–0,008** de explotabilidad exacta (medido con 4 semillas, 60 iteraciones y 20 000 recorridos por iteración, con una MLP de 2×64); el umbral del spec es 0,01. Es el piso del ruido de ajustar redes, no un bug: el margen es chico a propósito y la nota de la Tarea 7 dice qué mover si una máquina da peor.
 10. **`pyo3` queda fijado en 0.25** (la API que usa el plan: `Bound`, `allow_threads`). Subirlo a una versión posterior exige revisar `allow_threads` (renombrado `detach` en versiones nuevas).
-11. **RAM:** `docs/benchmarks.md` anota que WSL ve 15 GB (no 31). Los buffers de la corrida larga ocupan ~6 GB más ~3 GB de contexto de CUDA y torch: entra, pero conviene subir el límite de WSL (Tarea 11, paso de preparación).
+11. **RAM:** `docs/benchmarks.md` anota que WSL ve 15 GB (no 31). Los buffers de la corrida larga ocupan ~5,7 GB, más ~2-3 GB de contexto de CUDA y torch, más ~2,8 GB transitorios al retomar un checkpoint (`np.load` descomprime un arreglo entero): el pico ronda 11-12 GB y **entra en los 15 GB actuales**. Subir el límite de WSL a 24 GB es un margen de seguridad **opcional** (Tarea 11, paso 1), que solo se aplica si el usuario lo aprueba.
 
 ## Review Focus
 
@@ -47,7 +56,7 @@ Entradas y condiciones que el spec no nombra y que pueden romper este software s
 2. **Una acción ilegal que llega desde Python:** tiene que dar `ValueError` y dejar el estado intacto (en release, el motor no lo chequea). → Tests `test_hand_rejects_illegal_actions_and_keeps_its_state` y `test_hand_plays_to_the_end_with_random_legal_actions` (Tarea 4).
 3. **Muestras del jugador equivocado:** si una muestra de ventaja se codifica desde el punto de vista del rival, o una de estrategia sale de un nodo propio, la red aprende mal sin que nada falle. → Test `kuhn_samples_belong_to_the_right_player` y el cálculo a mano `kuhn_regret_of_betting_with_a_king_matches_the_hand_computation` (Tarea 2).
 4. **Reservorio sesgado:** si el buffer favorece las muestras recientes (o las viejas), la ponderación lineal por `t` deja de significar lo que dice. → Test `test_reservoir_is_uniform_over_the_whole_stream` (Tarea 5).
-5. **Reanudar no es continuar:** un checkpoint que pierde buffers, estado del RNG o la iteración cambia el resultado de la noche entera sin avisar; un corte de luz a mitad del guardado no puede destruir el último checkpoint bueno. → Tests `test_a_restored_checkpoint_continues_exactly_like_the_original` y `test_saving_a_second_checkpoint_replaces_the_first` (Tarea 8).
+5. **Reanudar no es continuar:** un checkpoint que pierde buffers, estado del RNG o la iteración cambia el resultado de la noche entera sin avisar; un corte de luz a mitad del guardado no puede destruir el último checkpoint bueno. Ctrl-C a mitad de una iteración no puede dejar un checkpoint con medio paso aplicado, y reanudar no puede duplicar filas en `metrics.jsonl`. → Tests `test_a_restored_checkpoint_continues_exactly_like_the_original`, `test_saving_a_second_checkpoint_replaces_the_first`, `test_a_crash_between_the_two_renames_keeps_the_last_good_checkpoint`, `test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint` y `test_resume_drops_metrics_rows_newer_than_the_checkpoint` (Tarea 8).
 
 ---
 
@@ -681,8 +690,8 @@ fn truco_traversal_with_random_nets_emits_valid_samples() {
     let b = Mlp::random(&[ENCODING_SIZE, 32, NUM_ACTIONS], feature_scale(), &mut rng);
     let out = run_traversals::<TrucoGame>([Some(&a), Some(&b)], 1, 5, 0, 30);
     assert!(
-        out.adv.len() >= 30,
-        "cada recorrido tiene al menos una decisión propia"
+        out.adv.len() >= 10,
+        "casi todos los recorridos tienen alguna decisión propia (salvo si el mano cierra de entrada)"
     );
     assert!(!out.strat.is_empty());
     assert_eq!(out.adv.enc.len(), out.adv.len() * ENCODING_SIZE);
@@ -1740,7 +1749,8 @@ def test_from_dict_turns_integers_into_floats_for_float_fields():
 
 @pytest.mark.parametrize(
     "bad",
-    [{"traversals": 0}, {"game": "poker"}, {"device": "tpu"}, {"lr": -1.0}, {"seed": -1}],
+    [{"traversals": 0}, {"game": "poker"}, {"device": "tpu"}, {"lr": -1.0}, {"seed": -1},
+     {"time_budget_s": -1.0}, {"grad_clip": 0.0}],
 )
 def test_validate_rejects_nonsense(bad):
     with pytest.raises(ValueError):
@@ -1972,6 +1982,8 @@ class Config:
             raise ValueError("seed tiene que estar entre 0 y 2**31 - 1")
         if self.adv_scale <= 0 or self.lr <= 0 or self.strat_lr <= 0:
             raise ValueError("adv_scale, lr y strat_lr tienen que ser positivos")
+        if self.grad_clip <= 0 or self.time_budget_s < 0:
+            raise ValueError("grad_clip tiene que ser positivo y time_budget_s no negativo")
 
     @classmethod
     def from_dict(cls, data: dict) -> Config:
@@ -2181,7 +2193,7 @@ class ReservoirBuffer:
 - [ ] **Step 4: Correr y ver que pasan**
 
 Run (uno por vez, cada uno con su archivo):
-`wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_config.py -q 2>&1 | tail -6'` → `9 passed`.
+`wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_config.py -q 2>&1 | tail -6'` → `11 passed`.
 `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_weights.py -q 2>&1 | tail -6'` → `4 passed`.
 `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_buffers.py -q 2>&1 | tail -6'` → `8 passed`.
 
@@ -2736,7 +2748,7 @@ git commit -m "feat(train): DeepCfr loop; Kuhn/MiniTruco convergence and PyTorch
 
 ### Task 8: Corridas — monitoreo, checkpoints, reanudación, exportación e informe
 
-**En criollo:** hasta ahora hay un circuito que sabe dar *un* paso. Esta tarea lo convierte en una **corrida** que puede durar toda la noche sin que tengas que cuidarla: itera, cada tanto mide qué tan bien juega la política actual (partidos contra el bot al azar y contra el heurístico) y lo anota en `runs/<id>/metrics.jsonl`, y cada tanto guarda un **checkpoint** (pesos, buffers, estado del azar, número de iteración) de forma segura: si se corta la luz mientras guarda, el checkpoint anterior queda intacto. Si se corta, `resume` retoma desde ahí *como si nada*: los resultados son idénticos a los de una corrida sin cortes (hay un test que lo demuestra). Al terminar entrena la red de estrategia promedio, la exporta a `strategy.tcfrw` y arma `final.json`. Un comando `report` convierte todo eso en el informe en Markdown.
+**En criollo:** hasta ahora hay un circuito que sabe dar *un* paso. Esta tarea lo convierte en una **corrida** que puede durar toda la noche sin que tengas que cuidarla: itera, cada tanto mide qué tan bien juega la política actual (partidos contra el bot al azar y contra el heurístico) y lo anota en `runs/<id>/metrics.jsonl`, y cada tanto guarda un **checkpoint** (pesos, buffers, estado del azar, número de iteración) de forma segura: se escribe primero en una carpeta temporal, y si se corta la luz justo en el cambio de carpetas, el checkpoint anterior (`checkpoint.old`) sigue siendo legible y no se borra hasta que el nuevo está completo. Si se corta, `resume` retoma desde ahí *como si nada*: los resultados son idénticos a los de una corrida sin cortes (hay un test que lo demuestra), y las filas del log posteriores al checkpoint se descartan para no duplicar iteraciones. **Ctrl-C** no corta la iteración en curso: levanta una bandera, la iteración termina, se guarda y se sale (nunca se guarda un estado a medias); un segundo Ctrl-C sí corta de inmediato. Al terminar entrena la red de estrategia promedio, la exporta a `strategy.tcfrw` y arma `final.json`. Un comando `report` convierte todo eso en el informe en Markdown.
 
 **Files:**
 - Create: `train/truco_train/monitor.py`, `train/truco_train/checkpoint.py`, `train/truco_train/run.py`, `train/truco_train/report.py`, `train/truco_train/__main__.py`
@@ -2748,8 +2760,8 @@ git commit -m "feat(train): DeepCfr loop; Kuhn/MiniTruco convergence and PyTorch
 - Consumes: `DeepCfr` y `unpack` (Tarea 7), `Config` (Tarea 5), `truco_engine_py.{eval_duplicate, exploitability}`.
 - Produces:
   - `wilson(wins, n, z=1.96) -> (lo, hi)`; `duplicate_vs(cfg, opponent, mode, net0, net1, pairs, seed) -> {"wins", "games", "rate", "lo", "hi"}`; `evaluate(cfg, net_bytes, seed) -> dict` (truco: `{"heuristic": ..., "random": ...}`; Kuhn/MiniTruco: `{"exploitability_current": float}`; `{}` si todavía no hay redes).
-  - `save_checkpoint(dcfr, run_dir)`, `load_checkpoint(run_dir, cfg) -> DeepCfr`, `has_checkpoint(run_dir) -> bool` (carpeta `run_dir/checkpoint/` con `state.pt`, `adv0.npz`, `adv1.npz`, `strat.npz`; el guardado es atómico).
-  - `start(cfg, runs_dir, run_id=None, name="run", config_toml=None) -> Path`, `resume(run_dir, iterations=None) -> Path`, `drive(dcfr, run_dir)`, `finalize(dcfr, run_dir) -> dict`. Archivos de una corrida: `config.json`, `config.toml` (si se dio), `metrics.jsonl`, `checkpoint/`, `strategy.tcfrw`, `final.json` (`game, iterations, elapsed_s, strategy_bytes, strategy_sha256, strategy_loss` y `vs_heuristic`/`vs_random` o `exploitability`).
+  - `save_checkpoint(dcfr, run_dir)`, `load_checkpoint(run_dir, cfg) -> DeepCfr`, `has_checkpoint(run_dir) -> bool` (carpeta `run_dir/checkpoint/` con `state.pt`, `adv0.npz`, `adv1.npz`, `strat.npz`; el guardado es atómico: `checkpoint.tmp` -> `checkpoint` -> recién después se borra `checkpoint.old`; `has`/`load` usan `checkpoint.old` si `checkpoint/` falta por un corte entre los dos renombrados).
+  - `start(cfg, runs_dir, run_id=None, name="run", config_toml=None) -> Path`, `resume(run_dir, iterations=None) -> Path` (descarta de `metrics.jsonl` las filas con `iter` mayor al del checkpoint), `truncate_metrics(path, upto)`, `drive(dcfr, run_dir)` (maneja SIGINT con una bandera y para solo entre iteraciones), `finalize(dcfr, run_dir) -> dict`. Archivos de una corrida: `config.json`, `config.toml` (si se dio), `metrics.jsonl`, `checkpoint/`, `strategy.tcfrw`, `final.json` (`game, iterations, elapsed_s, strategy_bytes, strategy_sha256, strategy_loss` y `vs_heuristic`/`vs_random` o `exploitability`).
   - `build_report(run_dir) -> str`.
   - CLI: `python -m truco_train run --config C [--runs-dir D] [--run-id ID]`, `resume RUN_DIR [--iterations N]`, `report RUN_DIR [--out F]`.
   - Test helpers: `tiny_truco_config(**overrides) -> Config`; fixture de sesión `tiny_run`.
@@ -2845,13 +2857,14 @@ def test_the_same_smoke_run_works_on_the_gpu(tmp_path):
 `train/tests/test_resume.py`:
 ```python
 import json
+import signal
 
 import numpy as np
 import pytest
 
 from truco_train.checkpoint import has_checkpoint, load_checkpoint, save_checkpoint
 from truco_train.deepcfr import DeepCfr
-from truco_train.run import resume, start
+from truco_train.run import drive, resume, start, truncate_metrics
 
 from .helpers import tiny_truco_config
 
@@ -2915,6 +2928,95 @@ def test_time_budget_stops_the_run_early_but_still_finalizes(tmp_path):
     final = json.loads((run_dir / "final.json").read_text())
     assert 1 <= final["iterations"] < 1000
     assert (run_dir / "strategy.tcfrw").exists()
+
+
+def test_a_crash_between_the_two_renames_keeps_the_last_good_checkpoint(tmp_path):
+    dcfr = DeepCfr(tiny_truco_config())
+    dcfr.step()
+    save_checkpoint(dcfr, tmp_path)
+    # El corte cae justo después de `checkpoint -> checkpoint.old`: no existe `checkpoint/`.
+    (tmp_path / "checkpoint").rename(tmp_path / "checkpoint.old")
+    assert has_checkpoint(tmp_path)
+    assert load_checkpoint(tmp_path, dcfr.cfg).iteration == 1
+
+    # Un guardado que falla a mitad de camino no puede borrar el único checkpoint bueno.
+    dcfr.step()
+    original_save = type(dcfr.strat_buf).save
+
+    def boom(self, path, compress=True):
+        raise OSError("disco lleno")
+
+    type(dcfr.strat_buf).save = boom
+    try:
+        with pytest.raises(OSError):
+            save_checkpoint(dcfr, tmp_path)
+    finally:
+        type(dcfr.strat_buf).save = original_save
+    assert load_checkpoint(tmp_path, dcfr.cfg).iteration == 1
+
+    # Y un guardado completo deja una sola carpeta, con la iteración nueva.
+    save_checkpoint(dcfr, tmp_path)
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["checkpoint"]
+    assert load_checkpoint(tmp_path, dcfr.cfg).iteration == 2
+
+
+def test_resume_drops_metrics_rows_newer_than_the_checkpoint(tmp_path):
+    run_dir = start(tiny_truco_config(iterations=3, checkpoint_every=2), tmp_path, run_id="m")
+    # Simula un corte en la iteración 3: el último checkpoint es el de la 2 y el log tiene la 3
+    # más una línea cortada a medias.
+    save_cfg = tiny_truco_config(iterations=3, checkpoint_every=2)
+    dcfr = DeepCfr(save_cfg)
+    dcfr.step()
+    dcfr.step()
+    save_checkpoint(dcfr, run_dir)
+    with open(run_dir / "metrics.jsonl", "a", encoding="utf-8") as f:
+        f.write('{"iter": 4, "trunca')
+    (run_dir / "final.json").unlink()
+    resume(run_dir, iterations=4)
+    iters = [json.loads(line)["iter"] for line in (run_dir / "metrics.jsonl").read_text().splitlines()]
+    assert iters == [1, 2, 3, 4]
+
+
+def test_truncate_metrics_keeps_only_rows_up_to_the_checkpoint(tmp_path):
+    path = tmp_path / "metrics.jsonl"
+    path.write_text('{"iter": 1}\n{"iter": 2}\n{"iter": 3}\n{"iter": 4, "x', encoding="utf-8")
+    truncate_metrics(path, 2)
+    assert path.read_text() == '{"iter": 1}\n{"iter": 2}\n'
+    truncate_metrics(tmp_path / "no_existe.jsonl", 2)  # no falla
+
+
+def test_ctrl_c_finishes_the_current_iteration_and_saves_a_consistent_checkpoint(tmp_path):
+    cfg = tiny_truco_config(iterations=4, checkpoint_every=100)
+    reference = DeepCfr(cfg)
+    for _ in range(4):
+        reference.step()
+
+    dcfr = DeepCfr(cfg)
+    run_dir = tmp_path / "ctrlc"
+    run_dir.mkdir()
+    (run_dir / "config.json").write_text(cfg.to_json(), encoding="utf-8")
+    real_step = dcfr.step
+    calls = {"n": 0}
+
+    def step_with_interrupt():
+        calls["n"] += 1
+        if calls["n"] == 2:
+            signal.raise_signal(signal.SIGINT)  # llega a mitad de la iteración 2
+        return real_step()
+
+    dcfr.step = step_with_interrupt
+    drive(dcfr, run_dir)  # no levanta KeyboardInterrupt: termina la iteración y sale
+    assert not (run_dir / "final.json").exists()
+    assert signal.getsignal(signal.SIGINT) is signal.default_int_handler
+    saved = load_checkpoint(run_dir, cfg)
+    assert saved.iteration == 2, "el checkpoint tiene que ser de una iteración completa"
+    assert [json.loads(line)["iter"] for line in (run_dir / "metrics.jsonl").read_text().splitlines()] == [1, 2]
+
+    resume(run_dir)
+    final = json.loads((run_dir / "final.json").read_text())
+    assert final["iterations"] == 4
+    assert load_checkpoint(run_dir, cfg).net_bytes == reference.net_bytes, \
+        "retomar después de Ctrl-C tiene que dar lo mismo que no interrumpir"
 ```
 
 `train/tests/test_report.py`:
@@ -3023,13 +3125,20 @@ DIR = "checkpoint"
 
 def save_checkpoint(dcfr: DeepCfr, run_dir: Path) -> None:
     """Escribe en una carpeta temporal y recién después reemplaza la anterior, así un corte
-    de luz a mitad del guardado no destruye el último checkpoint bueno."""
+    de luz a mitad del guardado no destruye el último checkpoint bueno.
+
+    Orden: (1) escribir `checkpoint.tmp`; (2) `checkpoint` pasa a `checkpoint.old`;
+    (3) `checkpoint.tmp` pasa a `checkpoint`; (4) recién ahí se borra `checkpoint.old`.
+    Si el corte cae entre (2) y (3), no existe `checkpoint/` pero `checkpoint.old` está
+    completo: `has_checkpoint` y `load_checkpoint` lo usan. Un guardado nuevo nunca borra
+    `checkpoint.old` mientras falte `checkpoint/`."""
     final = run_dir / DIR
     tmp = run_dir / f"{DIR}.tmp"
     old = run_dir / f"{DIR}.old"
-    for d in (tmp, old):
-        if d.exists():
-            shutil.rmtree(d)
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    if final.exists() and old.exists():
+        shutil.rmtree(old)  # el viejo ya no hace falta: `checkpoint/` está completo
     tmp.mkdir(parents=True)
     compress = dcfr.cfg.compress_checkpoints
     for p in (0, 1):
@@ -3050,13 +3159,24 @@ def save_checkpoint(dcfr: DeepCfr, run_dir: Path) -> None:
         shutil.rmtree(old)
 
 
+def _source(run_dir: Path) -> Path | None:
+    """La carpeta de la que se puede leer: `checkpoint/`, o `checkpoint.old/` si el corte cayó
+    justo entre los dos renombrados."""
+    for name in (DIR, f"{DIR}.old"):
+        if (run_dir / name / "state.pt").exists():
+            return run_dir / name
+    return None
+
+
 def has_checkpoint(run_dir: Path) -> bool:
-    return (run_dir / DIR / "state.pt").exists()
+    return _source(run_dir) is not None
 
 
 def load_checkpoint(run_dir: Path, cfg: Config) -> DeepCfr:
     """Reconstruye un `DeepCfr` exactamente como estaba al guardar."""
-    src = run_dir / DIR
+    src = _source(run_dir)
+    if src is None:
+        raise FileNotFoundError(f"{run_dir} no tiene checkpoint")
     dcfr = DeepCfr(cfg)
     state = torch.load(src / "state.pt", weights_only=False, map_location=dcfr.device)
     dcfr.iteration = state["iteration"]
@@ -3079,6 +3199,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import signal
 import time
 from datetime import datetime
 from pathlib import Path
@@ -3094,6 +3215,25 @@ from .monitor import duplicate_vs, evaluate
 def _append(path: Path, record: dict) -> None:
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record) + "\n")
+
+
+def truncate_metrics(path: Path, upto: int) -> None:
+    """Deja en `metrics.jsonl` solo las filas con `iter <= upto` (y descarta una última línea
+    cortada a medias). Se usa al retomar: el checkpoint es de la iteración `upto`, y las filas
+    posteriores se van a volver a generar."""
+    if not path.exists():
+        return
+    kept = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row["iter"] <= upto:
+            kept.append(line)
+    tmp = path.with_suffix(".jsonl.tmp")
+    tmp.write_text("".join(line + "\n" for line in kept), encoding="utf-8")
+    tmp.replace(path)
 
 
 def _short(stats: dict) -> str:
@@ -3135,6 +3275,7 @@ def resume(run_dir: Path, iterations: int | None = None) -> Path:
     if not has_checkpoint(run_dir):
         raise FileNotFoundError(f"{run_dir} no tiene checkpoint: todavía no se guardó ninguno")
     dcfr = load_checkpoint(run_dir, cfg)
+    truncate_metrics(run_dir / "metrics.jsonl", dcfr.iteration)
     print(f"retomando {run_dir.name} desde la iteración {dcfr.iteration}")
     drive(dcfr, run_dir)
     return run_dir
@@ -3142,10 +3283,29 @@ def resume(run_dir: Path, iterations: int | None = None) -> Path:
 
 def drive(dcfr: DeepCfr, run_dir: Path) -> None:
     """Itera hasta `cfg.iterations` (o hasta agotar `time_budget_s`), guardando métricas y
-    checkpoints. Con Ctrl-C guarda un checkpoint y sale sin finalizar (se puede retomar)."""
+    checkpoints.
+
+    Ctrl-C (SIGINT) no corta la iteración en curso: levanta una bandera, la iteración termina,
+    se guarda un checkpoint consistente (nunca un estado a medias) y la corrida sale sin
+    finalizar; se retoma con `resume`. Un segundo Ctrl-C sí corta de inmediato (se pierde el
+    trabajo desde el último checkpoint)."""
     cfg = dcfr.cfg
     metrics = run_dir / "metrics.jsonl"
     began = time.monotonic()
+    stop = {"requested": False}
+    previous = None
+
+    def on_sigint(signum, frame):
+        stop["requested"] = True
+        signal.signal(signal.SIGINT, previous)  # el segundo Ctrl-C vuelve a ser el normal
+        print("\nCtrl-C: termino la iteración en curso, guardo y salgo "
+              "(otro Ctrl-C corta ya)", flush=True)
+
+    try:
+        previous = signal.signal(signal.SIGINT, on_sigint)
+        handled = True
+    except ValueError:  # no estamos en el hilo principal
+        handled = False
     try:
         while dcfr.iteration < cfg.iterations:
             stats = dcfr.step()
@@ -3155,16 +3315,19 @@ def drive(dcfr: DeepCfr, run_dir: Path) -> None:
             stats["elapsed_s"] = dcfr.elapsed_s
             _append(metrics, stats)
             print(_short(stats), flush=True)
+            if stop["requested"]:
+                save_checkpoint(dcfr, run_dir)
+                print(f"interrumpido en la iteración {t}; retomá con: "
+                      f"python -m truco_train resume {run_dir}", flush=True)
+                return
             if t % cfg.checkpoint_every == 0:
                 save_checkpoint(dcfr, run_dir)
             if cfg.time_budget_s > 0 and time.monotonic() - began >= cfg.time_budget_s:
                 print("se cumplió time_budget_s: termina la corrida", flush=True)
                 break
-    except KeyboardInterrupt:
-        save_checkpoint(dcfr, run_dir)
-        print(f"interrumpido en la iteración {dcfr.iteration}; retomá con: "
-              f"python -m truco_train resume {run_dir}", flush=True)
-        return
+    finally:
+        if handled and not stop["requested"]:
+            signal.signal(signal.SIGINT, previous)
     save_checkpoint(dcfr, run_dir)
     finalize(dcfr, run_dir)
 
@@ -3228,6 +3391,10 @@ Los intervalos son de Wilson al 95%, sobre partidos completos a 30 en formato du
 Política actual (regret matching sobre las redes de ventajas), medida durante el entrenamiento.
 
 $curve_table
+
+## Observaciones
+
+_(Completar a mano, con dos o tres frases en lenguaje simple: cómo evolucionó la curva, si se estancó, qué sorprendió.)_
 
 ## Limitaciones
 
@@ -3350,7 +3517,7 @@ if __name__ == "__main__":
 
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_report.py -q 2>&1 | tail -6'` → `3 passed`.
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_smoke_truco.py -q 2>&1 | tail -6'` → `3 passed` con GPU (`2 passed, 1 skipped` sin GPU). Es el smoke test del spec: 2 iteraciones de truco de punta a punta.
-Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_resume.py -q 2>&1 | tail -6'` → `6 passed`.
+Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_resume.py -q 2>&1 | tail -6'` → `10 passed`.
 
 - [ ] **Step 5: Probar la línea de comandos a mano**
 
@@ -3659,13 +3826,26 @@ Expected: 3 líneas de iteración y al final una línea `listo: {...}` con `stra
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && ls -la runs/smoke-1 && uv run --no-sync python -m truco_train report runs/smoke-1 --out runs/smoke-1/report.md 2>&1 | tail -3'`
 Expected: carpeta con `config.json`, `config.toml`, `metrics.jsonl`, `checkpoint/`, `strategy.tcfrw` (unos 295 KB con la red 3×128), `final.json`, `report.md`.
 
-- [ ] **Step 2: Lanzar la corrida corta (30 minutos) en segundo plano**
+- [ ] **Step 2: Lanzar la corrida corta (30 minutos) como tarea en segundo plano**
 
-Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && nohup uv run --no-sync python -m truco_train run --config configs/short.toml --run-id short-1 > runs-short-1.log 2>&1 &'`
-(El `nohup` y el `&` la dejan corriendo aunque se cierre la terminal. `time_budget_s = 1800` la corta sola a los 30 minutos: con unos 20 s por iteración, caen unas 85-90 iteraciones, menos que las 120 configuradas.)
+La lanza la sesión principal como un comando en primer plano dentro de una tarea en segundo plano de Claude Code (`run_in_background`), no con `nohup ... &` (ver Global Constraints):
+
+`wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && mkdir -p runs && uv run --no-sync python -m truco_train run --config configs/short.toml --run-id short-1 2>&1 | tee -a runs/short-1.log'`
+
+`time_budget_s = 1800` la corta sola a los 30 minutos: con unos 20 s por iteración caen unas 85-90 iteraciones, menos que las 120 configuradas.
 
 Para mirar el avance, cuando quieras:
 `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && tail -n 3 runs/short-1/metrics.jsonl'`
+
+- [ ] **Step 2b: Ensayo de supervivencia y de `resume` (antes de confiar en la corrida de la noche)**
+
+Esto prueba en la práctica las dos cosas de las que depende la noche: que el proceso sobrevive mientras no hay ninguna otra sesión de WSL abierta, y que `resume` funciona con una corrida real.
+
+1. Con la corrida lanzada, no abrir otra terminal de WSL durante ~10 minutos. Después: `wsl -d Ubuntu --exec bash -lc 'pgrep -af "truco_train run" | head -3; cd ~/projects/truco-cfr/train && tail -n 1 runs/short-1/metrics.jsonl'`. Expected: el proceso sigue y `iter` crece. Si la distribución se apagó (no hay proceso), el método de lanzamiento no sirve para la noche: mantener abierta aparte una sesión `wsl -d Ubuntu --exec sleep infinity` y repetir.
+2. Cuando exista `runs/short-1/checkpoint/` (primer checkpoint a la iteración 25, unos 8 minutos), mandar Ctrl-C al proceso de Python: `wsl -d Ubuntu --exec bash -lc 'pkill -INT -f "^[^ ]*python[0-9.]* -m truco_train"'`. Expected en el log: `Ctrl-C: termino la iteración en curso...` y después `interrumpido en la iteración N; retomá con: ...`, y el proceso sale. No hay `final.json`.
+3. Retomar (otra tarea en segundo plano, con un objetivo más chico para que termine pronto): `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync python -m truco_train resume runs/short-1 --iterations 60 2>&1 | tee -a runs/short-1.log'`. Expected: `retomando short-1 desde la iteración N`, las iteraciones siguientes son N+1, N+2, ... sin repetidos en `metrics.jsonl`, y al final aparece `final.json`. Si `resume` falla, no lanzar la corrida de la noche hasta arreglarlo.
+
+(La corrida corta que se evalúa en el Step 3 es la que sale de este ensayo: tiene menos iteraciones que las 85-90 posibles, y alcanza para los criterios de abajo, que se miran sobre el tramo ya corrido. Si se prefiere una curva más larga, relanzar `short-2` sin interrumpirla.)
 
 - [ ] **Step 3: Qué tiene que pasar (criterios de aceptación)**
 
@@ -3748,20 +3928,18 @@ git commit -m "chore(train): tune overnight config from the 30-minute run measur
 - [ ] **Step 1: Chequeos previos (2 minutos)**
 
 1. Espacio en disco: `wsl -d Ubuntu --exec bash -lc 'df -h ~ | tail -2'`. Hacen falta al menos 15 GB libres (con `compress_checkpoints = true` el checkpoint ronda 2-4 GB; se guarda uno solo, y el anterior se borra recién después de escribir el nuevo, así que por un momento hay dos).
-2. Memoria: `wsl -d Ubuntu --exec bash -lc 'free -g | head -2'`. Los buffers de la noche (4 M + 4 M ventajas y 8 M de estrategia, ~370 bytes por muestra) ocupan ~6 GB, más ~3 GB de CUDA y torch: con 15 GB visibles entra, pero sin margen para hacer otras cosas pesadas. Para dar margen, crear `C:\Users\tomzv\.wslconfig`:
-   ```
-   [wsl2]
-   memory=24GB
-   ```
-   y reiniciar WSL (`wsl --shutdown`, a mano, con nada importante abierto dentro).
+2. Memoria: `wsl -d Ubuntu --exec bash -lc 'free -g | head -2'`. Los buffers de la noche (4 M + 4 M ventajas y 8 M de estrategia, 358 bytes por muestra) ocupan ~5,7 GB, más ~2-3 GB de CUDA y torch, más ~2,8 GB transitorios si hay que retomar: el pico ronda 11-12 GB y **entra en los 15 GB que ve WSL**, así que este paso no es obligatorio. *Opcional, solo si el usuario lo aprueba* (la sesión principal se lo pregunta): dar más margen subiendo el límite. **`C:\Users\tomzv\.wslconfig` ya existe** (tiene `[wsl2]` con `networkingMode=mirrored`): no se sobrescribe nunca. Se agrega la línea `memory=24GB` debajo de `[wsl2]`, conservando lo que ya hay, y se reinicia WSL con `wsl --shutdown` (a mano, con nada importante abierto dentro).
 3. La placa: `wsl -d Ubuntu --exec bash -lc 'nvidia-smi --query-gpu=name,memory.used,memory.total --format=csv'` con casi nada usado.
 4. Suspensión: desactivar la suspensión de Windows y cerrar los programas pesados (navegador con muchas pestañas, juegos).
-5. La suite de tests de Python al día, archivo por archivo (el rápido): `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_resume.py -q 2>&1 | tail -4'` → `6 passed`.
+5. La suite de tests de Python al día, archivo por archivo (el rápido): `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_resume.py -q 2>&1 | tail -4'` → `10 passed`.
 
-- [ ] **Step 2: Lanzar**
+- [ ] **Step 2: Lanzar (lo hace la sesión principal, una vez aprobado el ensayo de la Tarea 10, Step 2b)**
 
-Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && nohup uv run --no-sync python -m truco_train run --config configs/overnight.toml --run-id overnight-1 > runs-overnight-1.log 2>&1 &'`
-Expected: vuelve enseguida. A los 2 minutos: `tail -n 3 runs-overnight-1.log` muestra la primera iteración (la primera iteración dura menos que las siguientes).
+Como comando en primer plano de una tarea en segundo plano de Claude Code (`run_in_background`), no con `nohup ... &` (ver Global Constraints):
+
+`wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && mkdir -p runs && uv run --no-sync python -m truco_train run --config configs/overnight.toml --run-id overnight-1 2>&1 | tee -a runs/overnight-1.log'`
+
+Expected: a los 2 minutos, `tail -n 3 runs/overnight-1.log` muestra la primera iteración (la primera dura menos que las siguientes).
 
 - [ ] **Step 3: Controlar durante la corrida (cuando quieras, sin apuro)**
 
@@ -3769,14 +3947,18 @@ Expected: vuelve enseguida. A los 2 minutos: `tail -n 3 runs-overnight-1.log` mu
 - La corrida está viva: `wsl -d Ubuntu --exec bash -lc 'pgrep -af truco_train | head -2; nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv'`
 - Memoria: `wsl -d Ubuntu --exec bash -lc 'free -g | head -2'` (el uso crece hasta que los buffers se llenan, unas decenas de iteraciones, y después queda fijo; si se acerca al límite de WSL, cortar con Ctrl-C, que guarda un checkpoint, subir el límite y usar `resume`).
 - Qué esperar: la tasa contra el azar debería estabilizarse en 85-95 % y contra el heurístico subir por encima de la meseta de la corrida corta (43-49 %). Si a las 2 horas (≈ 130 iteraciones) la tasa contra el heurístico está por debajo del 40 %, vale la pena parar y revisar la tabla de síntomas de la Tarea 10.
-- Es normal que un checkpoint comprimido tarde 1-3 minutos. Si tarda más de 3, poner `compress_checkpoints = false` y reanudar (`resume` lee el `config.json` guardado en la corrida; ver el Step siguiente para cambiar una config).
+- Es normal que un checkpoint comprimido tarde 1-3 minutos. Si tarda más de 3, parar la corrida (Ctrl-C: termina la iteración, guarda y sale), editar `compress_checkpoints` a `false` en `runs/overnight-1/config.json` y retomar (`resume` lee ese archivo).
 
 - [ ] **Step 4: Si se corta (luz, reinicio, Ctrl-C, OOM)**
 
-Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && nohup uv run --no-sync python -m truco_train resume runs/overnight-1 > runs-overnight-1-resume.log 2>&1 &'`
-Expected: imprime `retomando overnight-1 desde la iteración N` y sigue. Lo que se pierde es, como mucho, el trabajo desde el último checkpoint (`checkpoint_every = 50` iteraciones ≈ 45 minutos). Detalles:
+Lo hace la sesión principal, igual que el lanzamiento (tarea en segundo plano, sin `nohup`):
+
+`wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync python -m truco_train resume runs/overnight-1 2>&1 | tee -a runs/overnight-1.log'`
+
+Expected: imprime `retomando overnight-1 desde la iteración N` y sigue. Lo que se pierde es, como mucho, el trabajo desde el último checkpoint (`checkpoint_every = 50` iteraciones ≈ 45 minutos); si se paró con Ctrl-C, no se pierde nada (guarda al terminar la iteración). Detalles:
+- Las filas de `metrics.jsonl` posteriores al checkpoint se descartan al retomar (se vuelven a generar), así que la curva no queda con iteraciones repetidas.
 - El presupuesto de tiempo (`time_budget_s`) se cuenta de nuevo en cada invocación, así que tras un corte la corrida puede pasar de 9 horas. Para fijar el final, pasar `--iterations N` (el total de iteraciones deseado) a `resume`.
-- Si el checkpoint quedó a medio escribir por el corte, no hay problema: el guardado es atómico, queda el anterior.
+- Si el checkpoint quedó a medio escribir por el corte, no hay problema: el guardado es atómico, queda el anterior (incluso si el corte cayó justo entre los dos renombrados: `resume` lee `checkpoint.old`).
 - Si la corrida terminó sola (`final.json` existe), no hace falta nada.
 
 - [ ] **Step 5: Verificar el resultado final**
@@ -3794,17 +3976,19 @@ Expected: `12 salidas`.
 - [ ] **Step 6: Generar el informe**
 
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync python -m truco_train report runs/overnight-1 --out ../docs/training-report.md 2>&1 | tail -3'`
-Expected: escribe `docs/training-report.md`. Abrirlo, leerlo, y completar a mano (en lenguaje simple) las dos o tres frases de la sección de "Observaciones" si el informe las deja vacías.
+Expected: escribe `docs/training-report.md`. Abrirlo, leerlo, y completar a mano la sección "Observaciones" (la plantilla la trae con una línea guía entre paréntesis: reemplazarla por dos o tres frases en lenguaje simple sobre cómo evolucionó la curva y qué sorprendió).
 
-- [ ] **Step 7: Verificación final de todo el trabajo de este plan**
+- [ ] **Step 7: Verificación final de todo el trabajo de este plan (la hace la sesión principal; los implementadores solo corren tests dirigidos)**
 
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr && cargo fmt --check && echo FMT_OK && cargo clippy --all-targets -- -D warnings 2>&1 | tail -3 && cargo clippy -p truco-engine-py --all-targets -- -D warnings 2>&1 | tail -3'`
 Expected: `FMT_OK` y sin avisos.
 
 Run: `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr && cargo test -p truco-engine --release --test policy --test traversal --test mlp_agent 2>&1 | tail -8'`
-Expected: `11 passed`, `6 passed` y `3 passed` (más los del Plan 1: `cargo test -p truco-engine --release` completo, una vez, debe seguir pasando).
+Expected: `11 passed`, `6 passed` y `3 passed`.
 
-Python, un archivo por vez, cada uno con su `| tail -6`: `test_config.py` (9), `test_weights.py` (4), `test_buffers.py` (8), `test_training.py` (11), `test_engine_bridge.py` (10), `test_engine_bridge_nets.py` (5), `test_parity.py` (3), `test_deepcfr_convergence.py` (2), `test_smoke_truco.py` (3), `test_resume.py` (6), `test_report.py` (3), `test_configs_shipped.py` (5), `test_engine_import.py` (2). Ejemplo:
+**Paso de la sesión principal (una sola vez, con `| tail`):** `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr && cargo test -p truco-engine --release 2>&1 | tail -15'`: la suite completa del motor, incluidos los tests del Plan 1, tiene que seguir pasando. Los implementadores no la corren (Global Constraints).
+
+Python, un archivo por vez, cada uno con su `| tail -6`: `test_config.py` (11), `test_weights.py` (4), `test_buffers.py` (8), `test_training.py` (11), `test_engine_bridge.py` (10), `test_engine_bridge_nets.py` (5), `test_parity.py` (3), `test_deepcfr_convergence.py` (2), `test_smoke_truco.py` (3), `test_resume.py` (10), `test_report.py` (3), `test_configs_shipped.py` (5), `test_engine_import.py` (2). Ejemplo:
 `wsl -d Ubuntu --exec bash -lc 'cd ~/projects/truco-cfr/train && uv run --no-sync pytest tests/test_parity.py -q 2>&1 | tail -6'` → `3 passed`.
 
 - [ ] **Step 8: Commit del informe**
@@ -3834,4 +4018,4 @@ Los pesos (`strategy.tcfrw`) **no** se commitean (`*.tcfrw` está en `.gitignore
 
 **Consistencia de tipos y nombres.** `Probs = [f32; 12]`, `PolicyKind`, `SampleBlock`, `TraversalOutput`, `MlpAgent`, `net_exploitability` se definen en las Tareas 1 a 3 y se consumen sin renombrar en la Tarea 4; `traverse_batch` devuelve siete valores en el orden `(adv_enc, adv_regrets, adv_masks, strat_enc, strat_probs, strat_masks, nodes)`, que `unpack` (Tarea 7) y los tests desempaquetan igual. `Config` tiene los mismos 24 campos en `config.py`, en los `.toml` y en `helpers.py`. `net_bytes` es siempre `list[bytes | None]` de largo 2.
 
-**Review Focus.** Cada ítem tiene su test en la tarea dueña: (1) salidas ilegales o `NaN` de la política: Tarea 1 (`regret_matching_*`, `masked_softmax_*`); (2) acción ilegal desde Python: Tarea 4 (`test_hand_rejects_illegal_actions_and_keeps_its_state`); (3) muestras del jugador equivocado: Tarea 2 (`kuhn_samples_belong_to_the_right_player` y los arrepentimientos calculados a mano de Kuhn); (4) sesgo del reservorio: Tarea 5 (`test_buffers.py`, uniformidad del reservorio sobre todo el flujo); (5) reanudación y checkpoint atómico: Tarea 8 (`test_resume.py`).
+**Review Focus.** Cada ítem tiene su test en la tarea dueña: (1) salidas ilegales o `NaN` de la política: Tarea 1 (`regret_matching_*`, `masked_softmax_*`); (2) acción ilegal desde Python: Tarea 4 (`test_hand_rejects_illegal_actions_and_keeps_its_state`); (3) muestras del jugador equivocado: Tarea 2 (`kuhn_samples_belong_to_the_right_player` y los arrepentimientos calculados a mano de Kuhn); (4) sesgo del reservorio: Tarea 5 (`test_buffers.py`, uniformidad del reservorio sobre todo el flujo); (5) reanudación, checkpoint atómico (incluido el corte entre los dos renombrados), Ctrl-C solo entre iteraciones y log sin filas duplicadas: Tarea 8 (`test_resume.py`).
