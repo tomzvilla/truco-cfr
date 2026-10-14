@@ -3,6 +3,8 @@ import type { KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import type { MotionSetting } from '../logic/motion';
 import { updateSettings, useSettings } from '../settings';
+import type { Volume } from '../settings';
+import { PixelIcon } from './icons';
 import { PixelSegmented } from './PixelSegmented';
 import { PixelSwitch } from './PixelSwitch';
 import './Config.css';
@@ -13,13 +15,19 @@ const MOTION_OPTIONS: readonly { value: MotionSetting; label: string }[] = [
   { value: 'reduced', label: 'Reducidas' },
 ];
 
+const VOLUME_OPTIONS: readonly { value: Volume; label: string }[] = [
+  { value: 'low', label: 'Bajo' },
+  { value: 'mid', label: 'Medio' },
+  { value: 'high', label: 'Alto' },
+];
+
 const FOCUSABLE = 'button:not(:disabled), [href], [tabindex]:not([tabindex="-1"])';
 
 /**
  * Botón "Configuración" + panel modal con todas las preferencias. Es un diálogo de verdad: el foco entra y no se
  * escapa con Tab, Esc (o el fondo, o "Cerrar") lo cierra y el foco vuelve al botón.
  */
-export function ConfigDialog() {
+export function ConfigDialog({ icon = false, className, onOpen }: { icon?: boolean; className?: string; onOpen?: () => void } = {}) {
   const s = useSettings();
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -62,12 +70,17 @@ export function ConfigDialog() {
       <button
         ref={trigger}
         type="button"
-        className="btn btn--ghost"
+        className={className ?? (icon ? 'btn btn--icon' : 'btn btn--ghost')}
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen(true)}
+        aria-label={icon ? 'Configuración' : undefined}
+        title={icon ? 'Configuración' : undefined}
+        onClick={() => {
+          onOpen?.();
+          setOpen(true);
+        }}
       >
-        Configuración
+        {icon ? <PixelIcon name="gear" /> : 'Configuración'}
       </button>
       {open
         ? createPortal(
@@ -94,6 +107,27 @@ export function ConfigDialog() {
                     checked={s.crt}
                     onChange={(crt) => updateSettings({ crt })}
                   />
+                  <PixelSwitch
+                    label="Música"
+                    hint="Fondo de chiptune, sintetizado en tu navegador."
+                    checked={s.music}
+                    onChange={(music) => updateSettings({ music })}
+                  />
+                  <PixelSwitch
+                    label="Efectos"
+                    hint="Sonidos de cartas, cantos y puntos."
+                    checked={s.sfx}
+                    onChange={(sfx) => updateSettings({ sfx })}
+                  />
+                  <div className="config__group">
+                    <span className="config__group-label">Volumen</span>
+                    <PixelSegmented
+                      label="Volumen"
+                      value={s.volume}
+                      options={VOLUME_OPTIONS}
+                      onChange={(volume) => updateSettings({ volume })}
+                    />
+                  </div>
                   <div className="config__group">
                     <span className="config__group-label">Animaciones</span>
                     <PixelSegmented
