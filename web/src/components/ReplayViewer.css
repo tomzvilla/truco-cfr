@@ -1,0 +1,3 @@
+.replay__why { color: var(--tiza-dim); font-size: 15px; }
+.replay__caption { min-height: 3em; margin: 8px 0; padding: 8px 12px; background: var(--noche); box-shadow: var(--notch); }
+.replay__nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }

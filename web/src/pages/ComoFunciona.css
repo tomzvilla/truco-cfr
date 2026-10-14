@@ -1,0 +1,4 @@
+.how { max-width: 62ch; font-size: 18px; line-height: 1.6; }
+.how__lead { font-size: 20px; color: var(--tiza); }
+.how section { margin: 36px 0; }
+.how h2 { margin-bottom: 12px; }

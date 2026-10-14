@@ -1,0 +1,19 @@
+.curve { margin: 24px 0; }
+.curve__controls { display: grid; gap: 12px; margin-bottom: 8px; }
+.curve fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.curve legend { padding: 0; margin-bottom: 4px; color: var(--tiza-dim); font-size: 15px; }
+.curve label { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; }
+.curve input[type='radio'] { width: 24px; height: 24px; accent-color: var(--ambar); }
+.curve__slider { display: grid; gap: 4px; }
+.curve__value { font: 400 20px var(--font-display); color: var(--ambar); }
+.curve input[type='range'] { width: 100%; min-height: 48px; accent-color: var(--ambar); }
+.curve__svg { display: block; width: 100%; height: auto; }
+.curve__bar { fill: var(--ambar); cursor: pointer; }
+.curve__bar--farol { fill: var(--brasa); }
+.curve__bar--sel { stroke: var(--tiza); stroke-width: 2; }
+.curve__summary { min-height: 3.2em; margin: 8px 0; font-size: 17px; }
+.curve__details summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; color: var(--menta); }
+.curve__details table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.curve__details th, .curve__details td { padding: 4px 8px; text-align: right; border-bottom: 1px solid rgba(255, 246, 224, 0.15); }
+.curve__details th:first-child { text-align: left; }
+.curve__note { margin-top: 8px; font-size: 14px; color: var(--ambar); }

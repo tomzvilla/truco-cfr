@@ -1,0 +1,13 @@
+.playground__controls { display: grid; gap: 10px; margin-bottom: 16px; }
+.playground__controls select {
+  font: inherit; color: var(--tiza); background: var(--tinta);
+  border: 2px solid var(--tiza-dim); min-height: 48px; padding: 0 8px;
+}
+.playground__check { display: flex; align-items: center; gap: 8px; min-height: 48px; }
+.playground__check input { width: 24px; height: 24px; accent-color: var(--ambar); }
+.playground__buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.playground__moods { display: flex; flex-wrap: wrap; gap: 16px; }
+.playground__moods figure { margin: 0; text-align: center; }
+.playground__moods figcaption { margin-top: 6px; font-size: 14px; }
+.playground__credit { font-size: 14px; color: var(--tiza-dim); }
+.deck { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -1,0 +1,8 @@
+/* .chart__tick (marcas de los ejes) vive en chartAxes.css, compartido con EnvidoCurve */
+.chart { margin: 16px 0; }
+.chart__title { font: 400 18px var(--font-display); margin-bottom: 8px; }
+.chart__svg { display: block; width: 100%; height: auto; }
+.chart__ref { fill: var(--menta); font: 10px var(--font-body); }
+.chart__legend { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 15px; }
+.chart__swatch { display: inline-block; width: 12px; height: 12px; margin-right: 6px; }
+.chart__summary { margin: 8px 0 0; font-size: 15px; color: var(--tiza-dim); }

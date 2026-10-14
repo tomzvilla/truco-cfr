@@ -1,0 +1,9 @@
+.results h2 { margin-top: 28px; }
+.results__scroll { overflow-x: auto; }
+.results__table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.results__table th, .results__table td { padding: 10px 8px; vertical-align: top; text-align: left; border-bottom: 1px solid rgba(255, 246, 224, 0.15); }
+.results__table thead th { font: 400 15px var(--font-display); color: var(--tiza-dim); }
+.results__table small { display: block; font-size: 13px; font-weight: 400; color: var(--tiza-dim); }
+.results__table td:last-child { min-width: 120px; }
+.results__empty { padding: 12px; background: var(--noche); box-shadow: var(--notch); color: var(--tiza-dim); }
+.results__example { color: var(--ambar); font-size: 13px; }

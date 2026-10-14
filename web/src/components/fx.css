@@ -1,0 +1,46 @@
+.burst { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.burst__label {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  font: 400 22px/1 var(--font-display);
+  color: var(--ambar);
+  text-shadow: 2px 2px 0 var(--tinta);
+  white-space: nowrap;
+  animation: burst-label 0.9s steps(9, end) forwards;
+}
+.burst__p {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--s);
+  height: var(--s);
+  background: var(--c);
+  animation: burst-fly 0.7s steps(8, end) forwards;
+  animation-delay: var(--d);
+}
+@keyframes burst-fly {
+  from { transform: translate(0, 0) rotate(0); opacity: 1; }
+  to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+}
+@keyframes burst-label {
+  from { transform: translate(-50%, 0); opacity: 1; }
+  to { transform: translate(-50%, -28px); opacity: 0; }
+}
+
+/* Con animaciones reducidas el +N no se anima: queda visible y lo quita PointsBurst por timer (900 ms). */
+:root[data-reduced='true'] .burst__label { animation: none; opacity: 1; }
+
+.shake-root[data-shaking='true'] { animation: shake 0.45s steps(9, end); }
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  11% { transform: translate(-6px, 3px); }
+  22% { transform: translate(5px, -4px); }
+  33% { transform: translate(-5px, -3px); }
+  44% { transform: translate(6px, 4px); }
+  55% { transform: translate(-4px, 2px); }
+  66% { transform: translate(3px, -2px); }
+  77% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}

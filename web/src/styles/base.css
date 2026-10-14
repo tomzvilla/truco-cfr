@@ -1,0 +1,148 @@
+:root {
+  --tinta: #1b1033;
+  --noche: #2b1b52;
+  --tiza: #fff6e0;
+  --tiza-dim: #cfc4a8;
+  --pano: #14573d;
+  --pano-oscuro: #0d3d2b;
+  --ambar: #f2b134;
+  --ambar-oscuro: #c47a1c;
+  --brasa: #e0453a;
+  --brasa-oscuro: #9c2a22;
+  --menta: #38d6c8;
+  --violeta: #5b34a8;
+  --font-display: 'Pixelify Sans', ui-monospace, monospace;
+  --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  /* esquinas "mordidas" de pixel: contorno de 3 px sin las esquinas */
+  --notch: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--tinta);
+  color: var(--tiza);
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-synthesis: none; /* si falta un peso, no inventar negrita: deforma la C de Pixelify Sans */
+  line-height: 1.55;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; margin: 0 0 0.5em; }
+h1 { font-size: 28px; }
+h2 { font-size: 22px; }
+h3 { font-size: 18px; }
+p { margin: 0 0 1em; }
+a { color: var(--menta); }
+img, svg { image-rendering: pixelated; }
+:focus-visible { outline: 3px solid var(--menta); outline-offset: 3px; }
+
+/* botones: todo control interactivo mide al menos 48 px de alto */
+.btn {
+  --fondo: var(--ambar);
+  --sombra: var(--ambar-oscuro);
+  font: 400 18px/1 var(--font-display);
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 16px;
+  margin: 3px;
+  border: 0;
+  color: var(--tinta);
+  background: var(--fondo);
+  box-shadow: var(--notch), inset 0 -5px 0 0 var(--sombra);
+  cursor: pointer;
+  transition: transform 60ms steps(2);
+}
+.btn:active:not(:disabled) { transform: translateY(2px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn--brasa { --fondo: var(--brasa); --sombra: var(--brasa-oscuro); color: var(--tiza); }
+.btn--menta { --fondo: var(--menta); --sombra: #1f9c92; }
+.btn--ghost { --fondo: var(--noche); --sombra: var(--tinta); color: var(--tiza); }
+
+.panel {
+  background: var(--noche);
+  box-shadow: var(--notch);
+  margin: 3px;
+  padding: 16px;
+}
+
+/* Margen lateral del contenido: 8 px en celular (360 px de pantalla = 328 útiles), 16 px desde 520 px. */
+.app__main { padding-inline: 8px; }
+@media (min-width: 520px) {
+  .app__main { padding-inline: 16px; }
+}
+
+/* contenedor de cada página y aviso de datos de ejemplo */
+.page { display: block; }
+.banner {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  background: var(--tinta);
+  color: var(--ambar);
+  box-shadow: var(--notch);
+  font-size: 15px;
+}
+
+/* fondo remolino: el degradé cónico es el fallback y lo que se ve antes del primer frame */
+.swirl { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #2a0f3d; }
+.swirl::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg, #5a1230, #1d1a4f, #0f6f6a, #5a1230);
+  animation: swirl-spin 40s linear infinite;
+}
+/* con WebGL activo el canvas tapa el degradé: no gastar composición girándolo (solo gira en el fallback) */
+.swirl[data-fallback='false']::before { animation: none; }
+.swirl__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+@keyframes swirl-spin { to { transform: rotate(1turn); } }
+
+/* filtro CRT */
+.crt {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.22) 2px 3px),
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.45) 100%);
+  animation: crt-flicker 6s steps(60) infinite;
+}
+@keyframes crt-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.94; } }
+
+/* preferencias */
+.settings { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; font-size: 15px; }
+.settings__item { display: flex; align-items: center; gap: 8px; min-height: 48px; }
+.settings select {
+  font: inherit;
+  color: var(--tiza);
+  background: var(--noche);
+  border: 2px solid var(--tiza-dim);
+  min-height: 48px;
+  padding: 0 8px;
+}
+.settings input[type='checkbox'] { width: 24px; height: 24px; accent-color: var(--ambar); }
+
+/*
+ * Reducción de animaciones (un solo bloque). settings.ts pone <html data-reduced="true"> cuando
+ * la elección del usuario (data-motion) y la preferencia del sistema piden reducir.
+ */
+:root[data-reduced='true'] *,
+:root[data-reduced='true'] *::before,
+:root[data-reduced='true'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
