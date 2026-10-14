@@ -70,3 +70,10 @@ describe('handOverlap', () => {
     expect(handOverlap(600, 100, 8)).toBe(8);
   });
 });
+
+describe("dorsos del bot en escritorio", () => {
+  it("van arriba al centro con altura de sobra y en la esquina con la ventana baja", () => {
+    expect(tableSizes({ desktop: true, width: 1500, height: 1000, dpr: 1, native }).botCorner).toBe(false);
+    expect(tableSizes({ desktop: true, width: 900, height: 640, dpr: 1, native }).botCorner).toBe(true);
+  });
+});

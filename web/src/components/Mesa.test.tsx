@@ -308,4 +308,10 @@ describe('Mesa: la superficie de la mesa se define en un solo lugar', () => {
     expect(mesa.style.getPropertyValue('--felt-image')).toMatch(/^url\(/);
     expect(mesa.style.getPropertyValue('--rail-image')).toMatch(/^url\(/);
   });
+  it("dibuja a lo sumo un contorno punteado por baza y no deja huecos en la mano", () => {
+    const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} />);
+    for (const b of container.querySelectorAll(".baza")) expect(b.querySelectorAll(".slot:not(.slot--ghost)").length).toBeLessThanOrEqual(1);
+    const hand = container.querySelector(".mesa__hand")!;
+    expect(hand.children.length).toBe(Number(hand.getAttribute("data-n")));
+  });
 });

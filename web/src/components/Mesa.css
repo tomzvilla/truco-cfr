@@ -115,15 +115,15 @@
 
 /* bazas: la carta del bot arriba y la mía encima, pisando el 40% de su alto, apenas corrida y girada */
 .mesa__bazas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
-.baza { --ov: 0.4; display: grid; justify-items: center; align-content: start; min-width: 0; }
+.baza { --ov: 0.5; display: grid; justify-items: center; align-content: start; min-width: 0; }
 .baza__cards { display: grid; justify-items: center; padding: 3px 5px 0 0; }
 .baza__cards > :nth-child(1) { rotate: -2deg; translate: -3px 0; }
 .baza__cards > :nth-child(2) { position: relative; z-index: 1; margin-top: calc(var(--played-h) * var(--ov) * -1); rotate: 2deg; translate: 4px 0; }
 .baza__tag {
-  min-height: 20px;
-  margin-top: 4px;
+  min-height: 16px;
+  margin-top: 2px;
   padding: 1px 6px;
-  font: 700 12px/18px var(--font-body);
+  font: 700 12px/14px var(--font-body);
   color: var(--tiza);
   background: rgba(27, 16, 51, 0.8);
   white-space: nowrap;
@@ -159,16 +159,20 @@
 .mesa__hand {
   flex: 1;
   min-width: 0;
-  min-height: calc(var(--hand-h) + 16px);
+  min-height: calc(var(--hand-h) + 8px);
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding-top: 14px;
+  padding-top: 6px;
 }
 .mesa__hand > * + * { margin-left: calc(var(--hand-overlap) * -1); }
 .mesa__hand > :nth-child(1) { rotate: -6deg; transform-origin: 50% 100%; }
 .mesa__hand > :nth-child(2) { translate: 0 -4px; }
 .mesa__hand > :nth-child(3) { rotate: 6deg; transform-origin: 50% 100%; }
+/* las jugadas se sacan de la mano: las que quedan se centran (con 2, abanico chico; con 1, derecha) */
+.mesa__hand[data-n='2'] > :nth-child(1) { rotate: -4deg; translate: 0 0; }
+.mesa__hand[data-n='2'] > :nth-child(2) { rotate: 4deg; translate: 0 0; }
+.mesa__hand[data-n='1'] > * { rotate: 0deg; translate: 0 0; }
 
 /* barra de acciones: pegada al borde de abajo de la pantalla */
 .mesa__bar { position: sticky; bottom: 0; z-index: 6; min-height: 60px; }
@@ -272,15 +276,21 @@
   .xsheet { position: static; inset: auto; z-index: auto; display: block; background: none; }
   .xsheet__box { max-height: none; overflow: visible; padding: var(--sp-3); box-shadow: var(--notch); animation: none; }
 
-  .mesa__play { gap: var(--sp-1); }
+  /* columna central: [paño con los dorsos adentro, flex 1] [mano] [barra]. El paño se estira con el alto que sobra. */
+  .mesa__play { display: grid; grid-template-rows: minmax(0, 1fr) auto auto; gap: 0; }
   .mesa__side .mesa__mascot { flex: none; }
-  /* dorsos del bot: solo asoma la parte de arriba (como cartas sostenidas contra el borde) */
-  .mesa__bots { display: flex; justify-content: center; height: calc(var(--bot-h) * 0.4); overflow: hidden; }
-  .mesa__botcards { padding-top: 0; }
-  .mesa__rail { flex: 1; display: flex; padding: 10px; }
-  .mesa__felt { flex: 1; justify-content: center; padding: 4px; }
-  .baza { --ov: 0.5; }
+  /* dorsos del bot: enteros, centrados contra el borde de arriba del paño */
+  .mesa__bots { display: flex; justify-content: center; flex: none; }
+  .mesa__botcards { padding: 2px 4px 0; }
+  .mesa__rail { min-height: 0; display: flex; padding: 18px; background-size: 192px 64px; }
+  .mesa__felt { flex: 1; min-height: 0; justify-content: flex-start; gap: var(--sp-1); padding: 4px; background-size: auto, 128px 128px; }
+  .mesa__bazas { margin-block: auto; }
+  /* ventana baja: los dorsos van en la esquina de arriba a la izquierda y las bazas se corren a la derecha para no pisarlos */
+  .mesa[data-bot='corner'] .mesa__bots { position: absolute; top: 10px; left: 14px; }
+  .mesa[data-bot='corner'] .mesa__bazas { margin-left: calc(var(--bot-w) * 2.2 + 34px); }
+  .baza { --ov: 0.55; }
   .baza__tag { min-height: 18px; margin-top: 2px; line-height: 16px; }
-  .mesa__hand { margin-bottom: -32px; padding-top: 6px; }
-  .mesa__bar { width: min(640px, 100%); margin-inline: auto; position: relative; z-index: 6; bottom: auto; }
+  /* la mano se mete un poco sobre el riel de abajo */
+  .mesa__hand { flex: none; position: relative; z-index: 4; margin-top: -22px; min-height: calc(var(--hand-h) + 6px); padding-top: 6px; }
+  .mesa__bar { width: min(640px, 100%); margin: var(--sp-3) auto 0; position: relative; z-index: 6; bottom: auto; min-height: 0; }
 }

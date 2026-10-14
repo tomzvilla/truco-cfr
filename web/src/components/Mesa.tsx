@@ -83,11 +83,13 @@ function Slot({ w, h, ghost }: { w: number; h: number; ghost?: boolean }) {
 function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefined; skin: CardSkin; scale: number }) {
   const w = skin.native.w * scale;
   const h = skin.native.h * scale;
+  // un solo contorno punteado por baza (solo si todavía no se jugó nada); el otro hueco queda invisible para guardar el lugar
+  const empty = !trick?.bot && !trick?.mine;
   return (
     <div className="baza" role="group" aria-label={`Baza ${n}`} data-winner={trick?.winner ?? 'none'}>
       <div className="baza__cards">
-        {trick?.bot ? <PixelCard card={trick.bot} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} />}
-        {trick?.mine ? <PixelCard card={trick.mine} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} />}
+        {trick?.bot ? <PixelCard card={trick.bot} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} ghost={!empty} />}
+        {trick?.mine ? <PixelCard card={trick.mine} skin={skin} scale={scale} variant="table" /> : <Slot w={w} h={h} ghost />}
       </div>
       <span className="baza__tag">{trick?.winner ? WINNER_TEXT[trick.winner] : ''}</span>
     </div>
@@ -203,7 +205,7 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
 
   return (
     <ShakeRoot trigger={shake}>
-      <section ref={sectionRef} className="mesa" aria-label="Mesa" style={style} data-layout={desktop ? 'desktop' : 'mobile'}>
+      <section ref={sectionRef} className="mesa" aria-label="Mesa" style={style} data-layout={desktop ? "desktop" : "mobile"} data-bot={sizes.botCorner ? "corner" : "top"}>
         {desktop ? (
           <div className="mesa__side">
             {head}
@@ -215,7 +217,7 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
         ) : null}
 
         <div className="mesa__play">
-          {desktop ? backs : (
+          {desktop ? null : (
             <div className="mesa__strip">
               {backs}
               {mascot}
@@ -224,7 +226,7 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
 
           <div className="mesa__rail">
             <div className="mesa__felt">
-              {desktop ? null : paper}
+              {desktop ? backs : paper}
               <div className="mesa__bazas">
                 {[0, 1, 2].map((i) => (
                   <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={sizes.played} />
@@ -243,12 +245,10 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
             </div>
           </div>
 
-          <div className="mesa__hand" ref={handRef} role="group" aria-label="Tus cartas">
+          <div className="mesa__hand" ref={handRef} role="group" aria-label="Tus cartas" data-n={view.hand.filter((s) => !s.played).length}>
             {view.hand.map((slot, i) => {
               const id = PLAY_ACTIONS[i]!;
-              return slot.played ? (
-                <Slot key={i} w={handW} h={handH} ghost />
-              ) : (
+              return slot.played ? null : (
                 <PixelCard
                   key={i}
                   card={slot.card}
