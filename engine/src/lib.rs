@@ -10,4 +10,5 @@ pub mod match_runner;
 pub mod minitruco;
 pub mod mlp;
 pub mod policy;
+pub mod traversal;
 pub mod truco;
