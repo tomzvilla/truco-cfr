@@ -182,3 +182,57 @@ fn no_mazo_or_card_while_call_pending() {
         );
     }
 }
+
+#[test]
+fn envido_closed_when_truco_is_raised_in_reply() {
+    // TRUCO seguido de RETRUCO ("quiero retruco"): el truco queda aceptado y el envido se cierra.
+    let s = play(new("7E 6E 1C", "12O 11O 4B"), &[TRUCO, RETRUCO]);
+    assert_eq!(
+        s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]),
+        0
+    );
+    let s = play(s, &[QUIERO]);
+    assert_eq!(
+        s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]),
+        0
+    );
+    let s = play(
+        new("7E 6E 1C", "12O 11O 4B"),
+        &[TRUCO, RETRUCO, VALE_CUATRO],
+    );
+    assert_eq!(
+        s.legal_actions() & mask(&[ENVIDO, REAL_ENVIDO, FALTA_ENVIDO]),
+        0
+    );
+}
+
+#[test]
+fn falta_envido_in_buenas_winner_behind_takes_what_leader_needs() {
+    // El que va ganando (jugador 1, 20 puntos) está en buenas; la falta la gana el jugador 0, que va atrás.
+    let s = new_with("7E 6E 1C", "12O 11O 4B", 0, [10, 20]);
+    let s = play(s, &[FALTA_ENVIDO, QUIERO]);
+    assert_eq!(
+        s.points(),
+        [10, 0],
+        "30 - 20 = 10 para el que gana el envido"
+    );
+}
+
+#[test]
+fn falta_envido_in_malas_winner_behind_takes_what_he_lacks() {
+    // El que va ganando (jugador 1, 10 puntos) todavía está en malas: la falta le da al ganador lo que le falta.
+    let s = new_with("7E 6E 1C", "12O 11O 4B", 0, [5, 10]);
+    let s = play(s, &[FALTA_ENVIDO, QUIERO]);
+    assert_eq!(s.points(), [25, 0], "30 - 5 = 25: gana el partido");
+    assert!(s.is_over());
+}
+
+#[test]
+fn mazo_in_first_baza_after_accepted_envido_gives_no_bonus() {
+    let s = play(new("7E 6E 1C", "12O 11O 4B"), &[ENVIDO, QUIERO, MAZO]);
+    assert_eq!(
+        s.points(),
+        [2, 1],
+        "envido ganado por el 0; mazo del 0: 1 para el 1, sin el +1"
+    );
+}

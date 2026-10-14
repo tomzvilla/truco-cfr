@@ -7,6 +7,8 @@ use truco_engine::truco::{TrucoGame, ENCODING_SIZE, TARGET};
 fn random_play_invariants() {
     let mut rng = SmallRng::seed_from_u64(7);
     let mut buf = [0u8; ENCODING_SIZE];
+    let scale = TrucoGame::feature_scale();
+    assert_eq!(scale.len(), TrucoGame::ENCODING_SIZE);
     for _ in 0..20_000 {
         let mut g = TrucoGame::root().sample_chance(&mut rng);
         let start = [g.state().score(0), g.state().score(1)];
@@ -14,8 +16,24 @@ fn random_play_invariants() {
         while let Node::Decision(p) = g.node() {
             let legal = g.legal_actions();
             assert_ne!(legal, 0, "nodo de decisión sin acciones legales");
-            g.encode(p, &mut buf);
-            g.encode(other(p), &mut buf);
+            let obs = g.state().observation(p);
+            assert_eq!(
+                legal, obs.legal,
+                "la máscara del juego debe coincidir con la observación"
+            );
+            assert_eq!(
+                g.state().observation(other(p)).legal,
+                0,
+                "el que no juega no tiene acciones"
+            );
+            for q in [p, other(p)] {
+                g.encode(q, &mut buf);
+                assert_eq!(buf.len(), TrucoGame::ENCODING_SIZE);
+                for (i, (&x, &sc)) in buf.iter().zip(scale.iter()).enumerate() {
+                    let v = x as f32 * sc;
+                    assert!((0.0..=1.0).contains(&v), "feature {i} fuera de [0, 1]: {v}");
+                }
+            }
             let acts: Vec<_> = actions_of(legal).collect();
             g.apply(acts[rng.gen_range(0..acts.len())]);
             steps += 1;
