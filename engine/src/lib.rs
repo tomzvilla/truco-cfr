@@ -9,4 +9,5 @@ pub mod kuhn;
 pub mod match_runner;
 pub mod minitruco;
 pub mod mlp;
+pub mod policy;
 pub mod truco;
