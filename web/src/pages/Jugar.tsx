@@ -19,13 +19,20 @@ export function Jugar() {
       <p className="banner" role="note">
         Modo demostración: bot de ejemplo.
       </p>
-      <Mesa view={view} skin={DEFAULT_SKIN} onAction={source.dispatch} xrayOn={xray} />
-      <div className="page__tools">
-        <button type="button" className="btn btn--ghost" onClick={() => source.reset()}>
-          Nueva mano
-        </button>
-        <ConfigDialog />
-      </div>
+      <Mesa
+        view={view}
+        skin={DEFAULT_SKIN}
+        onAction={source.dispatch}
+        xrayOn={xray}
+        tools={
+          <>
+            <button type="button" className="btn btn--ghost" onClick={() => source.reset()}>
+              Nueva mano
+            </button>
+            <ConfigDialog />
+          </>
+        }
+      />
     </article>
   );
 }

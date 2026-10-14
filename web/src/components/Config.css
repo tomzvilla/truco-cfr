@@ -17,7 +17,7 @@
   gap: 14px;
   background: var(--noche);
 }
-.config h2 { margin: 0; }
+.config h2 { margin: 0; font: 700 24px/1.15 var(--font-body); } /* la f de Pixelify Sans parece una A: acá va la fuente de lectura */
 .config__list { display: grid; gap: 10px; }
 .config__group { display: grid; gap: 6px; }
 .config__group-label { font-weight: 700; }

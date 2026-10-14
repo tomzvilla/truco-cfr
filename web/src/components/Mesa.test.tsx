@@ -111,11 +111,11 @@ describe('Mesa: cabecera del bot (F9)', () => {
     const r = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
     expect(r.container.querySelector('.mesa__botcards')).toHaveAttribute('data-revealed', 'false');
   });
-  it('las cartas del bot van antes que la mascota (en celular se apilan en ese orden)', () => {
+  it('las cartas del bot van antes que la mascota (en el DOM y, en celular, también a la vista)', () => {
     const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
-    const header = container.querySelector('.mesa__bot')!;
-    expect(header.children[0]).toHaveClass('mesa__botcards');
-    expect(header.children[1]).toHaveClass('mesa__mascot');
+    const cards = container.querySelector('.mesa__botcards')!;
+    const mascot = container.querySelector('.mascot')!;
+    expect(cards.compareDocumentPosition(mascot) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });
 
@@ -205,5 +205,70 @@ describe('Mesa: mascota gaucha', () => {
     stubNarrow(false);
     const b = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
     expect(mascotWidth(b.container)).toBe(96);
+  });
+});
+
+/** matchMedia con las dos consultas de la mesa: angosta (< 520 px) y escritorio (>= 900 px). */
+function stubMedia({ narrow, desktop }: { narrow: boolean; desktop: boolean }) {
+  window.matchMedia = ((query: string) => ({
+    matches: (narrow && query.includes('max-width')) || (desktop && query.includes('min-width: 900px')),
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  })) as unknown as typeof window.matchMedia;
+}
+
+describe('Mesa: escritorio en dos columnas, sin scroll', () => {
+  const setHeight = (h: number) => Object.defineProperty(window, 'innerHeight', { configurable: true, value: h });
+  afterEach(() => setHeight(768));
+
+  it('en 1280x720 y 1366x768 las cartas quedan en 1x aunque el ancho dé para más (la altura manda)', () => {
+    stubViewport(700, 1);
+    stubMedia({ narrow: false, desktop: true });
+    for (const h of [720, 768]) {
+      setHeight(h);
+      const { container, unmount } = render(<Mesa view={FIXTURES.trucoPendiente} skin={jcanabalSkin} />);
+      expect(handImgWidth()).toBe(73);
+      for (const i of container.querySelectorAll('.baza img')) expect(Number(i.getAttribute('width'))).toBe(73);
+      unmount();
+    }
+  });
+  it('en 1920x1080 crecen a 2x: mano, bazas y dorsos del bot', () => {
+    stubViewport(700, 1);
+    stubMedia({ narrow: false, desktop: true });
+    setHeight(1080);
+    const { container } = render(<Mesa view={FIXTURES.trucoPendiente} skin={jcanabalSkin} />);
+    expect(handImgWidth()).toBe(146);
+    for (const i of container.querySelectorAll('.baza img')) expect(Number(i.getAttribute('width'))).toBe(146);
+    for (const i of container.querySelectorAll('.mesa__botcards img')) expect(Number(i.getAttribute('width'))).toBe(146);
+  });
+  it('con poco ancho la escala sigue limitada por el ancho de la mano', () => {
+    stubViewport(300, 1);
+    stubMedia({ narrow: false, desktop: true });
+    setHeight(1080);
+    render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(handImgWidth()).toBe(73);
+  });
+  it('columna izquierda: dorsos, bazas y mano; derecha: mascota, marcador, estado y botones', () => {
+    stubViewport(700, 1);
+    stubMedia({ narrow: false, desktop: true });
+    const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} />);
+    const table = container.querySelector('.mesa__table')!;
+    const aside = container.querySelector('.mesa__aside')!;
+    for (const sel of ['.mesa__botcards', '.mesa__bazas', '.mesa__hand']) expect(table.querySelector(sel), sel).not.toBeNull();
+    for (const sel of ['.mascot', '.bubble', '.score', '.mesa__status', '[aria-label=Acciones]']) {
+      expect(aside.querySelector(sel), sel).not.toBeNull();
+    }
+    expect(table.querySelector('.mascot')).toBeNull();
+  });
+  it('las herramientas (Nueva mano, Configuración) van en la columna de la derecha, después de los botones', () => {
+    stubViewport(700, 1);
+    const { container } = render(
+      <Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} tools={<button type="button">Herramienta</button>} />,
+    );
+    const tools = container.querySelector('.mesa__aside .mesa__tools')!;
+    expect(tools).toHaveTextContent('Herramienta');
+    const actions = container.querySelector('[aria-label=Acciones]')!;
+    expect(actions.compareDocumentPosition(tools) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

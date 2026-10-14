@@ -45,7 +45,7 @@ export function App() {
   return (
     <>
       <SwirlBackground />
-      <div className="app">
+      <div className="app" data-route={route}>
         <header className="app__head">
           <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>
           <Nav route={route} />
