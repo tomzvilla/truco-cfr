@@ -1,0 +1,17 @@
+# Prueba de humo en la GPU (~1 minuto): verifica que todo el circuito anda con la red real.
+game = "truco"
+seed = 1
+iterations = 3
+traversals = 1000
+threads = 8
+hidden = 128
+n_hidden = 3
+adv_capacity = 500_000
+strat_capacity = 1_000_000
+adv_steps = 300
+strat_steps = 1000
+eval_every = 1
+eval_pairs = 50
+checkpoint_every = 1
+final_pairs = 100
+device = "cuda"

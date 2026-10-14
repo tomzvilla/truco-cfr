@@ -1,0 +1,23 @@
+# Corrida larga (8-10 horas, de noche). Ajustar K con scripts/bench_traversal.py --checkpoint.
+game = "truco"
+seed = 2
+iterations = 600
+traversals = 5_000
+threads = 8
+hidden = 256
+n_hidden = 3
+adv_capacity = 4_000_000
+strat_capacity = 8_000_000
+adv_steps = 2_000
+batch_size = 4_096
+lr = 0.001
+adv_scale = 10.0
+warm_start = true
+strat_steps = 30_000
+eval_every = 10
+eval_pairs = 200
+checkpoint_every = 50
+compress_checkpoints = true
+final_pairs = 1_000
+time_budget_s = 32_400
+device = "cuda"
