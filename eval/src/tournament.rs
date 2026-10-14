@@ -143,10 +143,14 @@ pub fn run_rival(
     let mut all = load_done(logs_path, cfg.pairs);
     let resumed = all.len() as u64;
     // Se reescribe limpio (sin líneas cortadas ni pares incompletos) y se sigue agregando.
-    write_logs(
-        logs_path,
-        &all.values().flatten().cloned().collect::<Vec<_>>(),
-    )?;
+    // Atómico: se escribe a un archivo vecino y se renombra encima, así un corte en este punto no
+    // pierde los pares ya completos (con `File::create` el registro quedaría vacío un instante).
+    let mut tmp_name = logs_path.as_os_str().to_owned();
+    tmp_name.push(".tmp");
+    let tmp = PathBuf::from(tmp_name);
+    write_logs(&tmp, &all.values().flatten().cloned().collect::<Vec<_>>())?;
+    std::fs::rename(&tmp, logs_path)
+        .map_err(|e| format!("no pude reemplazar {}: {e}", logs_path.display()))?;
     let file = OpenOptions::new()
         .append(true)
         .open(logs_path)
