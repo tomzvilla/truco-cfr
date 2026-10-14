@@ -42,7 +42,8 @@ describe('estados de los botones', () => {
   it('ningún :hover queda fuera de @media (hover: hover): en el celular no se pega', () => {
     for (const f of allCss) {
       const { outside } = splitHover(cssOf(f));
-      // las reglas de animaciones reducidas solo anulan el movimiento: pueden estar fuera\n      expect(outside.replace(/:root\[data-reduced[^\n]*/g, ''), f).not.toMatch(/:hover/);
+      // las reglas de animaciones reducidas solo anulan el movimiento: pueden estar fuera
+      expect(outside.replace(/:root\[data-reduced[^\n]*/g, ''), f).not.toMatch(/:hover/);
     }
   });
   it('las cartas de la mano y los links del menú también reaccionan al hover', () => {

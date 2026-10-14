@@ -193,3 +193,17 @@ describe('Mesa: avisos para lectores de pantalla', () => {
     expect(handImgWidth()).toBeCloseTo(73 * (4 / 3), 5);
   });
 });
+
+describe('Mesa: mascota gaucha', () => {
+  const mascotWidth = (c: HTMLElement) => Number(c.querySelector('.mascot')!.getAttribute('width'));
+  it('en celular mide 24 x 3 = 72 px (entra al lado de los 3 dorsos) y en pantalla ancha 24 x 4', () => {
+    stubViewport(328, 1);
+    stubNarrow(true);
+    const a = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(mascotWidth(a.container)).toBe(72);
+    a.unmount();
+    stubNarrow(false);
+    const b = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
+    expect(mascotWidth(b.container)).toBe(96);
+  });
+});

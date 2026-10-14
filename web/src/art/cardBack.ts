@@ -11,6 +11,10 @@ export const CARD_BACK_PALETTE: Record<string, string> = {
   a: '#f2b134', // medallón
   d: '#c47a1c', // borde del medallón (sombra)
   w: '#fff6e0', // ojos
+  n: '#3d3357', // chambergo
+  m: '#6a5d8f', // brillo del chambergo
+  b: '#e0453a', // cinta del chambergo
+  q: '#3a2216', // bigote
 };
 
 function pixelAt(x: number, y: number): string {
@@ -23,6 +27,16 @@ function pixelAt(x: number, y: number): string {
   const inEye = (x0: number) => x >= x0 && x < x0 + 5 && y >= 49 && y < 54;
   const inPupil = (x0: number) => x >= x0 + 1 && x < x0 + 3 && y >= 51 && y < 53;
 
+  // chambergo de ala ancha sobre el medallón
+  if (y >= 42 && y <= 44 && x >= 20 && x <= 52) return y === 43 && x > 20 && x < 52 ? 'n' : 'k';
+  if (y >= 33 && y <= 41 && x >= 29 && x <= 43) {
+    if (y === 33 || x === 29 || x === 43) return 'k';
+    if (y >= 40) return 'b';
+    return y >= 35 && y <= 36 && x >= 31 && x <= 33 ? 'm' : 'n';
+  }
+  // bigote grueso con las puntas caídas
+  const inStache = (y === 60 || y === 61 ? x >= 28 && x <= 44 : (y === 62 || y === 63) && (x <= 30 || x >= 42) && x >= 27 && x <= 45);
+
   const dx = (x - 36) / 17;
   const dy = (y - 56) / 25;
   const e = dx * dx + dy * dy;
@@ -30,7 +44,7 @@ function pixelAt(x: number, y: number): string {
     if (e > 0.82) return 'k'; // anillo
     if (inPupil(28) || inPupil(40)) return 'k';
     if (inEye(28) || inEye(40)) return 'w';
-    if (y === 62 && x >= 31 && x <= 41) return 'k'; // boca
+    if (inStache) return 'q';
     return e > 0.62 ? 'd' : 'a';
   }
   return (x + y) % 8 === 0 || (x - y + 1024) % 8 === 0 ? 'l' : 'f';

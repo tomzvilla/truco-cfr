@@ -20,6 +20,15 @@ describe('dorso de carta', () => {
     expect(m[56]![36]).toBe('a');
     expect(m[50]![28]).toBe('w');
   });
+  it('lleva el chambergo (copa, cinta y ala ancha) y el bigote del gaucho', () => {
+    expect(m[38]![36]).toBe('n');
+    expect(m[40]![36]).toBe('b');
+    expect(m[43]![36]).toBe('n');
+    expect(m[43]![21]).toBe('n');
+    expect(m[61]![36]).toBe('q');
+    expect(m[63]![28]).toBe('q');
+    expect(m[62]![36]).toBe('a'); // la boca vieja ya no está
+  });
   it('el SVG y la data URL son válidos', () => {
     expect(cardBackSvg()).toContain('viewBox="0 0 73 113"');
     expect(cardBackDataUrl().startsWith('data:image/svg+xml;utf8,')).toBe(true);

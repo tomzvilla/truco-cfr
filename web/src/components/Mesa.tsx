@@ -85,7 +85,7 @@ export function Mesa({ view, skin, onAction, xrayOn = false }: MesaProps) {
                 ))}
           </div>
           <div className="mesa__mascot">
-            <Mascot mood={view.mood} scale={4} />
+            <Mascot mood={view.mood} scale={narrow ? 3 : 4} />
             {/* sin aria-live: el ánimo cambia seguido y no hace falta anunciarlo; el estado real va en la lista de abajo */}
             <p className="bubble">{moodLine(view.mood)}</p>
           </div>
