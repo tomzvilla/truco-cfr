@@ -6,7 +6,7 @@
 | 3-12 | Jugando en el celular: una mano real, de la repartida hasta el final. | "Se entrenó sola, jugando contra sí misma. Sin partidas humanas." |
 | 12-20 | Rayos X prendidos: el panel muestra las probabilidades del bot en un farol. | "Con una mano floja, igual canta truco. Esto es lo que 've' la red." |
 | 20-28 | La repetición de la mano contra Haiku: 10 de copa, 4 de espada y 4 de copa; el bot canta truco y Haiku dice "no quiero". | "Con una de las peores manos posibles, le ganó la mano a Claude Haiku." |
-| 28-36 | Página de resultados: la tabla de rivales y la curva del envido. | "Canta envido con 7 o menos el 38 % de las veces. Ganó el 59 % de 100 partidos contra Haiku." |
+| 28-36 | Página "Cómo funciona" (`#/como-funciona`): la curva del envido. Después, `#/resultados`: la tabla de rivales. | "Canta envido con 7 o menos el 38 % de las veces. Ganó el 59 % de 100 partidos contra Haiku." |
 | 36-45 | Cierre con el enlace en pantalla. | "Corre en tu navegador, sin servidores. Jugá una mano: PLAY_URL" |
 
 ## Notas de grabación

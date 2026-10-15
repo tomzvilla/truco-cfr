@@ -14,5 +14,7 @@ export type FromEngine = { type: 'view'; view: TableView } | { type: 'error'; me
 export interface EnginePort {
   postMessage(msg: ToEngine): void;
   onmessage: ((e: MessageEvent<FromEngine>) => void) | null;
+  onerror: ((e: { message?: string }) => void) | null;
+  onmessageerror: ((e: unknown) => void) | null;
   terminate(): void;
 }

@@ -34,6 +34,13 @@ export function createEngineSource(makePort: () => EnginePort, seed: () => numbe
       const msg = e.data;
       set(msg.type === 'view' ? { status: 'listo', view: msg.view } : { status: 'error', message: msg.message });
     };
+    // el script del Worker no cargó (404, error de sintaxis) o llegó un mensaje ilegible: es un error, no un "Cargando" eterno
+    const fail = (message: string) => {
+      if (port !== p) return;
+      set({ status: 'error', message });
+    };
+    p.onerror = (e) => fail(e.message || 'No se pudo iniciar el motor');
+    p.onmessageerror = () => fail('El motor mandó un mensaje ilegible');
     p.postMessage({ type: 'init', modelUrl: modelUrl(), seed: seed() });
   };
 

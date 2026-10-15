@@ -104,7 +104,7 @@ export function Resultados({ data = REAL_RESULTS }: { data?: ResultsData }) {
             { id: 'exp', label: 'Puntos por mano que se le pueden sacar', color: 'var(--brasa)', points: data.exploitability.map((p) => ({ x: p.iteration, y: p.exploitability })) },
           ]}
           summary={`Última iteración (la política de ese momento, que sube y baja): ${comma(exploitLast.exploitability, 4)} puntos por mano.${
-            data.exploitabilityFinal === undefined ? '' : ` La red final, la que juega en la web: ${comma(data.exploitabilityFinal, 4)}.`
+            data.exploitabilityFinal === undefined ? '' : ` La red final, la que juega en la web: ${comma(data.exploitabilityFinal, 3)}.`
           }`}
         />
       )}

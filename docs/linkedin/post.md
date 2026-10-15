@@ -7,7 +7,7 @@ ejemplo. Y lo curioso es que aprendió a farolear. Canta envido con 7 tantos o m
 el 17 % de sus trucos los canta con una mano floja (el rival heurístico que armé yo: 0 %).
 
 Contra Claude Haiku ganó el 59 % de 100 partidos (con tan pocas partidas la ventaja todavía no es
-concluyente), y Haiku se achicó mucho menos que el heurístico cuando el bot cantaba. Contra el azar ganó el
+concluyente), y cuando el bot cantaba envido con 7 tantos o menos, Haiku se achicó mucho menos que el heurístico (32,0 % contra 79,7 % de rivales que no quisieron o se fueron al mazo, en 147 cantos contra Haiku). Contra el azar ganó el
 90,9 % y contra el heurístico, el 63,4 % de 2000 partidos.
 
 Cómo: Deep CFR, un algoritmo que juega millones de manos contra sí mismo y aprende de lo que se "arrepiente".

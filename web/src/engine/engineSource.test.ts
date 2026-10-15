@@ -6,6 +6,8 @@ class FakePort implements EnginePort {
   sent: ToEngine[] = [];
   terminated = false;
   onmessage: ((e: MessageEvent<FromEngine>) => void) | null = null;
+  onerror: ((e: { message?: string }) => void) | null = null;
+  onmessageerror: ((e: unknown) => void) | null = null;
   postMessage(m: ToEngine) {
     this.sent.push(m);
   }
@@ -54,6 +56,24 @@ describe('createEngineSource', () => {
     expect(ports[0]!.terminated).toBe(true);
     expect(src.getSnapshot()).toEqual({ status: 'cargando' });
     expect(ports[1]!.sent[0]).toMatchObject({ type: 'init' });
+  });
+
+  it('si el Worker no arranca (error) o manda algo ilegible (messageerror), pasa a error y se puede reintentar', () => {
+    const ports = [new FakePort(), new FakePort(), new FakePort()];
+    let n = 0;
+    const src = createEngineSource(() => ports[n++]!, () => 1);
+    src.subscribe(() => {});
+    ports[0]!.onerror!({ message: 'script 404' });
+    expect(src.getSnapshot()).toEqual({ status: 'error', message: 'script 404' });
+    src.retry();
+    expect(src.getSnapshot()).toEqual({ status: 'cargando' });
+    ports[0]!.onerror!({ message: 'tarde' }); // el Worker viejo no pisa al nuevo
+    expect(src.getSnapshot()).toEqual({ status: 'cargando' });
+    ports[1]!.onmessageerror!({});
+    expect(src.getSnapshot().status).toBe('error');
+    src.retry();
+    ports[2]!.emit({ type: 'view', view: FIXTURES.inicioDeMano });
+    expect(src.getSnapshot()).toEqual({ status: 'listo', view: FIXTURES.inicioDeMano });
   });
 
   it('nueva mano y nuevo partido', () => {
