@@ -1,0 +1,4 @@
+# Se generan con train/scripts/export_hf.py y se suben a Hugging Face, no a git.
+model.safetensors
+model.onnx
+strategy.tcfrw
