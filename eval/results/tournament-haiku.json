@@ -1,0 +1,25 @@
+{
+  "rival": "haiku",
+  "model": "models/strategy.tcfrw",
+  "pairs": 50,
+  "games": 100,
+  "wins": 59,
+  "winRate": 0.59,
+  "wilson95": [
+    0.4920125056109662,
+    0.6813284290433533
+  ],
+  "hands": 1350,
+  "pointsPerHand": 0.23037037037037036,
+  "pointsPerHandCi95": [
+    0.03751803751803752,
+    0.4243515850144092
+  ],
+  "resumedPairs": 40,
+  "rivalDecisions": 1055,
+  "fallbacks": 0,
+  "rivalCostUsd": 0.868341,
+  "rivalModel": "claude-haiku-5-5",
+  "seed": 2026,
+  "threads": 6
+}

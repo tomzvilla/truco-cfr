@@ -1,0 +1,780 @@
+{
+  "sources": [
+    "eval/logs/heuristic.jsonl",
+    "eval/logs/haiku.jsonl"
+  ],
+  "trucoFound": 2998,
+  "envidoFound": 5101,
+  "truco": [
+    {
+      "rival": "haiku",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 4,
+      "botSeat": 1,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 3,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          10,
+          20
+        ],
+        "hands": [
+          [
+            "11C",
+            "6E",
+            "4O"
+          ],
+          [
+            "10C",
+            "4E",
+            "4C"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "envido"
+          ],
+          [
+            0,
+            "quiero"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 4,
+      "botSeat": 0,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 1,
+        "startScores": [
+          12,
+          10
+        ],
+        "hands": [
+          [
+            "2C",
+            "4E",
+            "4C"
+          ],
+          [
+            "11E",
+            "6B",
+            "6O"
+          ]
+        ],
+        "actions": [
+          [
+            1,
+            "jugar2"
+          ],
+          [
+            0,
+            "envido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            0,
+            "truco"
+          ],
+          [
+            1,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 7,
+      "botSeat": 0,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 1,
+        "startScores": [
+          0,
+          2
+        ],
+        "hands": [
+          [
+            "3O",
+            "4O",
+            "4C"
+          ],
+          [
+            "2B",
+            "10O",
+            "5E"
+          ]
+        ],
+        "actions": [
+          [
+            1,
+            "jugar2"
+          ],
+          [
+            0,
+            "envido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            0,
+            "jugar1"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            0,
+            "truco"
+          ],
+          [
+            1,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 5,
+      "botSeat": 1,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          15,
+          10
+        ],
+        "hands": [
+          [
+            "11C",
+            "6E",
+            "4O"
+          ],
+          [
+            "10C",
+            "4E",
+            "4C"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "realEnvido"
+          ],
+          [
+            0,
+            "noQuiero"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 3,
+      "botSeat": 1,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          6,
+          10
+        ],
+        "hands": [
+          [
+            "11O",
+            "10C",
+            "5O"
+          ],
+          [
+            "10B",
+            "4E",
+            "4B"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "envido"
+          ],
+          [
+            0,
+            "noQuiero"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 4,
+      "botSeat": 0,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 1,
+        "startScores": [
+          7,
+          6
+        ],
+        "hands": [
+          [
+            "6C",
+            "4B",
+            "4O"
+          ],
+          [
+            "10B",
+            "5B",
+            "4E"
+          ]
+        ],
+        "actions": [
+          [
+            1,
+            "jugar2"
+          ],
+          [
+            0,
+            "envido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            0,
+            "truco"
+          ],
+          [
+            1,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 4,
+      "botSeat": 1,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          0,
+          0
+        ],
+        "hands": [
+          [
+            "11E",
+            "5E",
+            "5O"
+          ],
+          [
+            "6C",
+            "4O",
+            "4C"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "realEnvido"
+          ],
+          [
+            0,
+            "noQuiero"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "truco",
+      "call": "truco",
+      "callIndex": 7,
+      "botSeat": 1,
+      "strength": 0.00298582995951417,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          28,
+          25
+        ],
+        "hands": [
+          [
+            "2E",
+            "11C",
+            "6O"
+          ],
+          [
+            "7B",
+            "4E",
+            "4B"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "faltaEnvido"
+          ],
+          [
+            0,
+            "noQuiero"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "jugar1"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          2
+        ]
+      }
+    }
+  ],
+  "envido": [
+    {
+      "rival": "heuristic",
+      "kind": "envido",
+      "call": "envido",
+      "callIndex": 0,
+      "botSeat": 1,
+      "strength": 0.0,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 1,
+        "startScores": [
+          9,
+          20
+        ],
+        "hands": [
+          [
+            "1O",
+            "10E",
+            "5C"
+          ],
+          [
+            "12E",
+            "11B",
+            "11C"
+          ]
+        ],
+        "actions": [
+          [
+            1,
+            "envido"
+          ],
+          [
+            0,
+            "noQuiero"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            0,
+            "jugar1"
+          ],
+          [
+            1,
+            "truco"
+          ],
+          [
+            0,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "envido",
+      "call": "envido",
+      "callIndex": 1,
+      "botSeat": 0,
+      "strength": 0.0,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 1,
+        "startScores": [
+          3,
+          4
+        ],
+        "hands": [
+          [
+            "12C",
+            "11B",
+            "11O"
+          ],
+          [
+            "3C",
+            "10C",
+            "5E"
+          ]
+        ],
+        "actions": [
+          [
+            1,
+            "jugar2"
+          ],
+          [
+            0,
+            "envido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "truco"
+          ],
+          [
+            1,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "envido",
+      "call": "faltaEnvido",
+      "callIndex": 0,
+      "botSeat": 0,
+      "strength": 0.0,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          9,
+          5
+        ],
+        "hands": [
+          [
+            "12B",
+            "10O",
+            "10C"
+          ],
+          [
+            "1B",
+            "6O",
+            "4E"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "faltaEnvido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            0,
+            "jugar1"
+          ],
+          [
+            1,
+            "jugar2"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "rival": "heuristic",
+      "kind": "envido",
+      "call": "envido",
+      "callIndex": 0,
+      "botSeat": 0,
+      "strength": 0.0,
+      "response": "noQuiero",
+      "pointsWon": 2,
+      "hand": {
+        "mano": 0,
+        "startScores": [
+          5,
+          8
+        ],
+        "hands": [
+          [
+            "12B",
+            "12C",
+            "11O"
+          ],
+          [
+            "12E",
+            "10E",
+            "5E"
+          ]
+        ],
+        "actions": [
+          [
+            0,
+            "envido"
+          ],
+          [
+            1,
+            "noQuiero"
+          ],
+          [
+            0,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar2"
+          ],
+          [
+            0,
+            "jugar2"
+          ],
+          [
+            1,
+            "jugar0"
+          ],
+          [
+            1,
+            "jugar1"
+          ],
+          [
+            0,
+            "truco"
+          ],
+          [
+            1,
+            "noQuiero"
+          ]
+        ],
+        "points": [
+          2,
+          0
+        ]
+      }
+    }
+  ]
+}

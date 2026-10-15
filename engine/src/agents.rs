@@ -38,26 +38,29 @@ impl HeuristicAgent {
             .filter(|&slot| !o.my_played.contains(&Some(slot)) && is_high(o.hand[slot]))
             .count()
     }
+}
 
-    fn play_card(o: &Observation) -> Action {
-        // Slots sin jugar, de la carta más fuerte a la más débil.
-        let unplayed: Vec<usize> = (0..3).filter(|&s| o.legal & bit(JUGAR0 + s) != 0).collect();
-        let weakest = *unplayed.last().expect("sin cartas para jugar");
-        if let Some(opp) = o.opp_played[o.baza] {
-            return match unplayed
-                .iter()
-                .rev()
-                .find(|&&s| o.hand[s].rank() > opp.rank())
-            {
-                Some(&s) => JUGAR0 + s,
-                None => JUGAR0 + weakest,
-            };
-        }
-        if o.baza == 0 {
-            JUGAR0 + weakest
-        } else {
-            JUGAR0 + unplayed[0]
-        }
+/// La regla de cartas del heurístico: con la carta del rival en la mesa, la más baja que la gana
+/// (o la más baja si ninguna gana); abriendo la primera baza, la más baja; abriendo otra, la más alta.
+/// La usan el heurístico y la medida de fuerza de una mano de `truco-eval`.
+pub fn heuristic_card(o: &Observation) -> Action {
+    // Slots sin jugar, de la carta más fuerte a la más débil.
+    let unplayed: Vec<usize> = (0..3).filter(|&s| o.legal & bit(JUGAR0 + s) != 0).collect();
+    let weakest = *unplayed.last().expect("sin cartas para jugar");
+    if let Some(opp) = o.opp_played[o.baza] {
+        return match unplayed
+            .iter()
+            .rev()
+            .find(|&&s| o.hand[s].rank() > opp.rank())
+        {
+            Some(&s) => JUGAR0 + s,
+            None => JUGAR0 + weakest,
+        };
+    }
+    if o.baza == 0 {
+        JUGAR0 + weakest
+    } else {
+        JUGAR0 + unplayed[0]
     }
 }
 
@@ -91,6 +94,6 @@ impl Agent for HeuristicAgent {
                 return a;
             }
         }
-        Self::play_card(o)
+        heuristic_card(o)
     }
 }

@@ -1,0 +1,8 @@
+Reglas de este truco (1 contra 1, a 30 puntos, sin flor):
+- Mazo español de 40 cartas. De mayor a menor: 1 de espada, 1 de basto, 7 de espada, 7 de oro, los 3, los 2, 1 de copa y 1 de oro, los 12, los 11, los 10, 7 de copa y 7 de basto, los 6, los 5, los 4.
+- Cada mano se juega a tres bazas y la gana quien gana dos. Si la primera es parda, gana quien gane la segunda; si la segunda es parda, gana quien ganó la primera; si después de una primera parda la segunda también es parda, define la tercera; si todas son pardas, gana el mano. El mano se alterna en cada mano.
+- Envido: solo en la primera baza, antes de jugar tu carta. Tantos: con dos cartas del mismo palo, 20 más sus valores (10, 11 y 12 valen 0); si no, el valor de la carta más alta (las figuras valen 0). Envido vale 2, envido-envido 2 más, real envido 3, falta envido lo que le falta para 30 al que va ganando (si el que va ganando tiene menos de 15, gana el partido). Si no se quiere, el que cantó gana lo aceptado antes del último canto (1 si era el primero). Los tantos se dicen solos y nadie puede mentir con el número.
+- El envido va primero: si te cantan truco en la primera baza, podés cantar envido antes de responder el truco.
+- Truco vale 2, retruco 3, vale cuatro 4. Solo puede subir quien dijo el último "quiero", y en su turno. Si no se quiere, el que cantó gana lo que valía la mano antes.
+- Irse al mazo: el rival gana lo que vale la mano (1 si no se cantó truco), y 1 más si te vas en la primera baza sin que se haya jugado el envido.
+- El partido termina apenas alguien llega a 30.

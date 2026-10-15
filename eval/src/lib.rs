@@ -1,0 +1,10 @@
+//! Evaluación del bot: torneo (con Claude Haiku de rival), faroleo y manos destacadas.
+pub mod args;
+pub mod bluff;
+pub mod haiku;
+pub mod highlights;
+pub mod logs;
+pub mod model;
+pub mod stats;
+pub mod strength;
+pub mod tournament;
