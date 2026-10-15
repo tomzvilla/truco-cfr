@@ -1,0 +1,25 @@
+{
+  "rival": "random",
+  "model": "models/strategy.tcfrw",
+  "pairs": 1000,
+  "games": 2000,
+  "wins": 1818,
+  "winRate": 0.909,
+  "wilson95": [
+    0.8955985748851946,
+    0.9208332229175861
+  ],
+  "hands": 22670,
+  "pointsPerHand": 1.3836347595941774,
+  "pointsPerHandCi95": [
+    1.3233224870284055,
+    1.446187539107893
+  ],
+  "resumedPairs": 0,
+  "rivalDecisions": 0,
+  "fallbacks": 0,
+  "rivalCostUsd": 0.0,
+  "rivalModel": "",
+  "seed": 2026,
+  "threads": 8
+}
