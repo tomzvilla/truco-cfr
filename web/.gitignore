@@ -2,3 +2,5 @@ node_modules
 dist
 art-src
 *.tsbuildinfo
+test-results/
+playwright-report/

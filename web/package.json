@@ -12,6 +12,8 @@
     "sync-model": "node scripts/sync-model.ts",
     "predev": "node scripts/sync-model.ts",
     "prebuild": "node scripts/sync-model.ts",
+    "e2e": "playwright test",
+    "size": "node scripts/check-size.ts",
     "cards:list": "node scripts/import-cards.ts --list",
     "cards:import": "node scripts/import-cards.ts"
   },
@@ -22,6 +24,7 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
