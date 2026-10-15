@@ -39,10 +39,13 @@ pub fn is_bluff(s: &TrucoState, bot: Player, a: Action) -> bool {
     }
 }
 
-/// Humor al terminar la mano según los puntos que sumó cada uno en ella.
+/// Humor al terminar la mano según los puntos que sumó cada uno en ella. Si mintió, lo confiesa:
+/// "farol" si le salió, "descubierto" si no.
 pub fn end_mood(points: [u8; 2], bot: Player, bluffed: bool) -> Mood {
     let (b, h) = (points[bot], points[other(bot)]);
-    if b > h {
+    if b > h && bluffed {
+        Mood::Farol
+    } else if b > h {
         Mood::Gana
     } else if h > b && bluffed {
         Mood::Descubierto
@@ -102,6 +105,7 @@ mod tests {
     #[test]
     fn humor_al_terminar_la_mano() {
         assert_eq!(end_mood([0, 3], 1, false), Mood::Gana);
+        assert_eq!(end_mood([0, 3], 1, true), Mood::Farol);
         assert_eq!(end_mood([2, 0], 1, true), Mood::Descubierto);
         assert_eq!(end_mood([2, 0], 1, false), Mood::Pierde);
         assert_eq!(end_mood([2, 2], 1, true), Mood::Neutral);

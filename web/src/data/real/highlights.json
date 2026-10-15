@@ -117,6 +117,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -199,6 +203,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -287,6 +295,10 @@
               "yo": 6
             }
           },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -310,6 +322,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "quiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -364,6 +380,10 @@
               "yo": 6
             }
           },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -387,6 +407,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -470,6 +494,10 @@
               "yo": 6
             }
           },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -493,6 +521,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -571,6 +603,10 @@
               "yo": 6
             }
           },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -594,8 +630,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 3,
@@ -754,6 +794,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -802,6 +846,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -825,6 +873,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -889,6 +941,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -912,6 +968,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -963,6 +1023,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -986,6 +1050,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1066,6 +1134,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1089,6 +1161,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -1164,6 +1240,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1187,6 +1267,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "finDeMano",
@@ -1347,6 +1431,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "faltaEnvido",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1395,6 +1483,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1418,6 +1510,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1470,6 +1566,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1493,6 +1593,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1544,6 +1648,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1567,6 +1675,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1648,6 +1760,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1671,6 +1787,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1755,6 +1875,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1778,6 +1902,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1843,6 +1971,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1866,6 +1998,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -1943,6 +2079,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -1966,6 +2106,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2056,6 +2200,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 0,
+            "yo": 1
+          },
           "hand": [
             {
               "card": {
@@ -2079,6 +2227,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "finDeMano",
@@ -2251,6 +2403,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -2331,6 +2487,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "realEnvido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2416,6 +2576,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2439,6 +2603,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2490,6 +2658,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2513,6 +2685,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2594,6 +2770,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2617,6 +2797,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2701,6 +2885,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2724,6 +2912,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2789,6 +2981,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2812,6 +3008,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2883,6 +3083,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -2906,6 +3110,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "quiero",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -2985,6 +3193,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3008,6 +3220,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3085,6 +3301,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3108,6 +3328,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "retruco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3198,6 +3422,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3221,6 +3449,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "valeCuatro",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3297,6 +3529,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3320,6 +3556,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "quiero",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3403,6 +3643,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3426,8 +3670,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 5,
@@ -3611,6 +3859,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -3687,6 +3939,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3758,6 +4014,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3781,6 +4041,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3831,6 +4095,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3854,6 +4122,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "quiero",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3910,6 +4182,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -3933,6 +4209,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -3988,6 +4268,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4011,6 +4295,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -4087,6 +4375,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4110,6 +4402,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -4172,6 +4468,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4195,6 +4495,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -4281,6 +4585,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4304,6 +4612,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -4391,6 +4703,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4414,8 +4730,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 3,
@@ -4589,6 +4909,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -4671,6 +4995,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -4756,6 +5084,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4779,6 +5111,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -4830,6 +5166,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4853,6 +5193,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -4933,6 +5277,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -4956,6 +5304,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -5031,6 +5383,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5054,8 +5410,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 2,
@@ -5207,6 +5567,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5289,6 +5653,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5374,6 +5742,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5397,6 +5769,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5448,6 +5824,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5471,6 +5851,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5552,6 +5936,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5575,6 +5963,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5659,6 +6051,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5682,6 +6078,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5747,6 +6147,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5770,6 +6174,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -5847,6 +6255,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5870,6 +6282,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -5960,6 +6376,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -5983,8 +6403,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 2,
@@ -6155,6 +6579,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -6235,6 +6663,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "realEnvido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -6320,6 +6752,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6343,6 +6779,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -6399,6 +6839,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6422,6 +6866,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -6498,6 +6946,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6521,6 +6973,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -6587,6 +7043,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6610,6 +7070,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -6693,6 +7157,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6716,8 +7184,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 2,
@@ -6881,6 +7353,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -6957,6 +7433,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -6980,6 +7460,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -7028,6 +7512,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7051,6 +7539,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -7129,6 +7621,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7152,6 +7648,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -7206,6 +7706,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7229,6 +7733,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -7295,6 +7803,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7318,6 +7830,10 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "bot",
           "mood": "farol",
           "phase": "jugando",
@@ -7401,6 +7917,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7424,8 +7944,12 @@
               "played": false
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "bot",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 2,
@@ -7585,6 +8109,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "neutral",
           "phase": "jugando",
@@ -7667,6 +8195,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -7752,6 +8284,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7775,6 +8311,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -7826,6 +8366,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7849,6 +8393,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -7930,6 +8478,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -7953,6 +8505,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar2",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -8037,6 +8593,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -8060,6 +8620,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -8125,6 +8689,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -8148,6 +8716,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -8225,6 +8797,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -8248,6 +8824,10 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
           "mano": "yo",
           "mood": "farol",
           "phase": "jugando",
@@ -8338,6 +8918,10 @@
             "pending": null,
             "reveal": null
           },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
           "hand": [
             {
               "card": {
@@ -8361,8 +8945,12 @@
               "played": true
             }
           ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
           "mano": "yo",
-          "mood": "gana",
+          "mood": "farol",
           "phase": "finDeMano",
           "result": {
             "bot": 2,

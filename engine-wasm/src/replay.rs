@@ -2,7 +2,7 @@
 //! `TableView` por paso, visto desde el asiento del rival, con las cartas del bot a la vista y
 //! las probabilidades del bot en cada decisión suya.
 use crate::mood::{end_mood, is_bluff, Mood};
-use crate::view::{card_label, table_view, TableView, ViewExtra};
+use crate::view::{card_label, envido_resolved, table_view, TableView, ViewExtra};
 use serde::{Deserialize, Serialize};
 use truco_engine::cards::Card;
 use truco_engine::game::{bit, other, Action, Player};
@@ -121,10 +121,13 @@ pub fn replay(h: &HighlightIn, agent: &MlpAgent, id: String) -> Result<Highlight
                 xray: None,
                 mood: Mood::Neutral,
                 reveal_bot_hand: true,
+                last: None,
+                envido_points: None,
             },
         ),
     }];
     let (mut mood, mut bluffed) = (Mood::Neutral, false);
+    let mut envido_points = None;
     for (i, (p, name)) in h.hand.actions.iter().enumerate() {
         let a = ACTION_NAMES
             .iter()
@@ -144,7 +147,11 @@ pub fn replay(h: &HighlightIn, agent: &MlpAgent, id: String) -> Result<Highlight
             JUGAR0 | JUGAR1 | JUGAR2 => Some(s.hand(*p)[a - JUGAR0]),
             _ => None,
         };
+        let before = s;
         s.apply(a);
+        if let Some(pts) = envido_resolved(&before, &s) {
+            envido_points = Some(pts);
+        }
         if s.is_over() {
             mood = end_mood(s.points(), bot, bluffed);
         }
@@ -168,6 +175,8 @@ pub fn replay(h: &HighlightIn, agent: &MlpAgent, id: String) -> Result<Highlight
                     xray,
                     mood,
                     reveal_bot_hand: true,
+                    last: Some((*p, a)),
+                    envido_points,
                 },
             ),
         });
@@ -291,7 +300,10 @@ mod tests {
         );
         assert!(out.steps[1].view.xray.is_none(), "la jugada de Haiku no");
         assert_eq!(out.steps[6].view.phase, "finDeMano");
-        assert_eq!(out.steps[6].view.mood, "gana");
+        assert_eq!(
+            out.steps[6].view.mood, "farol",
+            "el farol le salió: lo confiesa"
+        );
         assert!(out.steps.iter().all(|s| s.view.bot_hand.is_some()));
     }
 

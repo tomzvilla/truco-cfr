@@ -1,6 +1,6 @@
 //! Un partido a 30 en la web: el humano en el asiento 0 contra el bot en el 1.
 use crate::mood::{end_mood, is_bluff, Mood};
-use crate::view::{table_view, TableView, ViewExtra};
+use crate::view::{envido_resolved, table_view, TableView, ViewExtra};
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 use std::sync::Arc;
@@ -22,6 +22,10 @@ pub struct Match {
     xray: Option<Probs>,
     bluffed: bool,
     mood: Mood,
+    /// Última jugada de la mano: (quién, acción).
+    last: Option<(Player, Action)>,
+    /// Lo que dio el envido a cada asiento, una vez resuelto.
+    envido_points: Option<[u8; 2]>,
 }
 
 impl Match {
@@ -48,6 +52,8 @@ impl Match {
             xray: None,
             bluffed: false,
             mood: Mood::Neutral,
+            last: None,
+            envido_points: None,
         })
     }
 
@@ -64,6 +70,8 @@ impl Match {
             xray: self.xray,
             mood: self.mood,
             reveal_bot_hand: false,
+            last: self.last,
+            envido_points: self.envido_points,
         };
         table_view(&self.state, HUMAN, &extra)
     }
@@ -76,7 +84,18 @@ impl Match {
         (0..2).find(|&p| self.state.score(p) >= TARGET)
     }
 
-    fn after_move(&mut self) {
+    /// Aplica una jugada ya validada. El farol del bot se anota pero no se muestra hasta el
+    /// final de la mano: un humor de "farol" a mitad de mano le avisaría al humano que es mentira.
+    fn apply(&mut self, by: Player, a: Action) {
+        if by == BOT && is_bluff(&self.state, BOT, a) {
+            self.bluffed = true;
+        }
+        let before = self.state;
+        self.state.apply(a);
+        self.last = Some((by, a));
+        if let Some(pts) = envido_resolved(&before, &self.state) {
+            self.envido_points = Some(pts);
+        }
         if self.state.is_over() {
             self.mood = end_mood(self.state.points(), BOT, self.bluffed);
         }
@@ -90,8 +109,7 @@ impl Match {
         if a >= NUM_ACTIONS || self.state.legal_actions() & bit(a) == 0 {
             return Err(format!("jugada ilegal: {a}"));
         }
-        self.state.apply(a);
-        self.after_move();
+        self.apply(HUMAN, a);
         Ok(())
     }
 
@@ -103,13 +121,8 @@ impl Match {
         let obs = self.state.observation(BOT);
         let probs = self.agent.probabilities(&obs);
         let a = sample_action(&probs, obs.legal, &mut self.rng);
-        if is_bluff(&self.state, BOT, a) {
-            self.bluffed = true;
-            self.mood = Mood::Farol;
-        }
         self.xray = Some(probs);
-        self.state.apply(a);
-        self.after_move();
+        self.apply(BOT, a);
         Ok(a)
     }
 
@@ -140,6 +153,8 @@ impl Match {
         self.xray = None;
         self.bluffed = false;
         self.mood = Mood::Neutral;
+        self.last = None;
+        self.envido_points = None;
     }
 
     /// Salida cruda de la red (para el test de paridad con PyTorch y ONNX).
@@ -272,8 +287,7 @@ mod tests {
         m.act(FALTA_ENVIDO).unwrap();
         assert!(m.bot_to_move());
         // el bot quiere (se aplica directo para que el resultado sea fijo): el humano gana con 33
-        m.state.apply(QUIERO);
-        m.after_move();
+        m.apply(BOT, QUIERO);
         assert_eq!(m.match_winner(), Some(HUMAN));
         let v = m.view();
         assert_eq!(v.phase, "finDeMano");
@@ -282,6 +296,49 @@ mod tests {
         m.new_match(2);
         assert_eq!(m.view().score, [0, 0]);
         assert!(m.view().match_winner.is_none());
+    }
+
+    #[test]
+    fn la_vista_cuenta_la_ultima_jugada_y_el_envido_y_se_limpia_al_repartir() {
+        let mut m = Match::new(tiny_net(0), 1).unwrap();
+        let c = |s: &str| Card::parse(s).unwrap();
+        // humano mano con 33 tantos; el bot tiene 6
+        let hands = [[c("7E"), c("6E"), c("4B")], [c("4C"), c("5O"), c("6B")]];
+        m.set_hand_for_test(TrucoState::new_hand(hands, HUMAN, [0, 0]));
+        assert!(m.view().last.is_none());
+        m.act(REAL_ENVIDO).unwrap();
+        let v = m.view();
+        assert_eq!(v.last.map(|l| (l.by, l.action)), Some(("yo", "realEnvido")));
+        assert!(v.envido_points.is_none(), "todavía no se resolvió");
+        m.apply(BOT, QUIERO);
+        let v = m.view();
+        assert_eq!(v.last.map(|l| (l.by, l.action)), Some(("bot", "quiero")));
+        assert_eq!(v.envido_points.map(|p| (p.yo, p.bot)), Some((3, 0)));
+        // los puntos del envido siguen a la vista el resto de la mano
+        m.act(MAZO).unwrap();
+        assert_eq!(m.view().envido_points.map(|p| (p.yo, p.bot)), Some((3, 0)));
+        m.new_hand().unwrap();
+        let v = m.view();
+        assert!(
+            v.last.is_none() && v.envido_points.is_none(),
+            "mano nueva, sin restos"
+        );
+    }
+
+    #[test]
+    fn el_farol_se_confiesa_recien_al_final_de_la_mano() {
+        let mut m = Match::new(tiny_net(0), 1).unwrap();
+        let c = |s: &str| Card::parse(s).unwrap();
+        // el bot es mano con 6 tantos: cantar envido es farol
+        let hands = [[c("7E"), c("6E"), c("4B")], [c("4C"), c("5O"), c("6B")]];
+        m.set_hand_for_test(TrucoState::new_hand(hands, BOT, [0, 0]));
+        m.apply(BOT, ENVIDO);
+        assert_eq!(m.view().mood, "neutral", "a mitad de mano no se delata");
+        m.act(NO_QUIERO).unwrap(); // el bot suma 1
+        m.apply(BOT, JUGAR0);
+        assert_eq!(m.view().mood, "neutral");
+        m.act(MAZO).unwrap(); // y 1 más: el farol le salió
+        assert_eq!(m.view().mood, "farol");
     }
 
     #[test]

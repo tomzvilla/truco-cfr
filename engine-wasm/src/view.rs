@@ -3,7 +3,7 @@
 use crate::mood::Mood;
 use serde::Serialize;
 use truco_engine::cards::{Card, Suit};
-use truco_engine::game::{actions_of, other, Player};
+use truco_engine::game::{actions_of, other, Action, Player};
 use truco_engine::policy::Probs;
 use truco_engine::truco::{BazaResult, EnvidoKind, EnvidoStatus, TrucoState, ACTION_NAMES, TARGET};
 
@@ -72,6 +72,20 @@ pub struct HandResult {
     pub winner: Option<&'static str>,
 }
 
+/// La última jugada de la mano y quién la hizo (para anunciar cantos y respuestas).
+#[derive(Serialize, Clone, Debug, PartialEq)]
+pub struct LastAction {
+    pub by: &'static str,
+    pub action: &'static str,
+}
+
+/// Lo que dio el envido a cada uno, una vez resuelto (querido o no).
+#[derive(Serialize, Clone, Debug, PartialEq)]
+pub struct EnvidoPoints {
+    pub yo: u8,
+    pub bot: u8,
+}
+
 #[derive(Serialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct TableView {
@@ -92,14 +106,32 @@ pub struct TableView {
     pub result: Option<HandResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub match_winner: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last: Option<LastAction>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub envido_points: Option<EnvidoPoints>,
 }
 
-/// Lo que la vista no puede sacar del estado: la última decisión del bot, su humor y si se
-/// muestran sus cartas (al terminar la mano siempre se muestran).
+/// Lo que la vista no puede sacar del estado: la última decisión del bot, su humor, si se
+/// muestran sus cartas (al terminar la mano siempre se muestran), la última jugada de la mano
+/// y lo que dio el envido.
 pub struct ViewExtra {
     pub xray: Option<Probs>,
     pub mood: Mood,
     pub reveal_bot_hand: bool,
+    pub last: Option<(Player, Action)>,
+    /// Puntos del envido por asiento, una vez resuelto.
+    pub envido_points: Option<[u8; 2]>,
+}
+
+/// Si la jugada que llevó de `before` a `after` resolvió el envido: lo que sumó cada asiento.
+pub fn envido_resolved(before: &TrucoState, after: &TrucoState) -> Option<[u8; 2]> {
+    let resolved = before.envido_status() == EnvidoStatus::Pending
+        && after.envido_status() != EnvidoStatus::Pending;
+    resolved.then(|| {
+        let (b, a) = (before.points(), after.points());
+        [a[0] - b[0], a[1] - b[1]]
+    })
 }
 
 fn suit_name(s: Suit) -> &'static str {
@@ -258,6 +290,14 @@ pub fn table_view(s: &TrucoState, viewer: Player, extra: &ViewExtra) -> TableVie
         phase: if over { "finDeMano" } else { "jugando" },
         result,
         match_winner,
+        last: extra.last.map(|(p, a)| LastAction {
+            by: seat(p),
+            action: ACTION_NAMES[a],
+        }),
+        envido_points: extra.envido_points.map(|pts| EnvidoPoints {
+            yo: pts[viewer],
+            bot: pts[rival],
+        }),
     }
 }
 
@@ -276,6 +316,8 @@ mod tests {
             xray: None,
             mood: Mood::Neutral,
             reveal_bot_hand: false,
+            last: None,
+            envido_points: None,
         }
     }
 
@@ -380,6 +422,40 @@ mod tests {
     }
 
     #[test]
+    fn ultima_jugada_y_puntos_del_envido_vistos_por_cada_uno() {
+        let before = start();
+        let mut s = before;
+        s.apply(REAL_ENVIDO); // el mano (asiento 0, 7 tantos) canta real envido
+        assert_eq!(envido_resolved(&before, &s), None, "cantar no resuelve");
+        let before = s;
+        s.apply(QUIERO); // el pie quiere y pierde: 3 para el asiento 0
+        let pts = envido_resolved(&before, &s);
+        assert_eq!(pts, Some([3, 0]));
+        let extra = ViewExtra {
+            last: Some((1, QUIERO)),
+            envido_points: pts,
+            ..plain()
+        };
+        let mine = serde_json::to_value(table_view(&s, 0, &extra)).unwrap();
+        assert_eq!(mine["last"], json!({ "by": "bot", "action": "quiero" }));
+        assert_eq!(mine["envidoPoints"], json!({ "yo": 3, "bot": 0 }));
+        let theirs = serde_json::to_value(table_view(&s, 1, &extra)).unwrap();
+        assert_eq!(theirs["last"], json!({ "by": "yo", "action": "quiero" }));
+        assert_eq!(theirs["envidoPoints"], json!({ "yo": 0, "bot": 3 }));
+        assert!(js(&s, 0).get("last").is_none(), "sin jugada no se manda");
+    }
+
+    #[test]
+    fn envido_no_querido_da_puntos_al_que_canto() {
+        let before = start();
+        let mut s = before;
+        s.apply(ENVIDO);
+        let before = s;
+        s.apply(NO_QUIERO);
+        assert_eq!(envido_resolved(&before, &s), Some([1, 0]));
+    }
+
+    #[test]
     fn fin_de_mano_y_de_partido() {
         // el bot tiene 28: el humano se va al mazo antes del envido y le da 2
         let mut s = TrucoState::new_hand([h("4B", "1E", "7O"), h("5O", "3C", "6B")], 0, [3, 28]);
@@ -411,6 +487,8 @@ mod tests {
             xray: Some(probs),
             mood: Mood::Farol,
             reveal_bot_hand: true,
+            last: None,
+            envido_points: None,
         };
         let v = serde_json::to_value(table_view(&start(), 0, &extra)).unwrap();
         assert_eq!(
