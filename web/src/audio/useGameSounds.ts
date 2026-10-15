@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { handOutcome } from '../game/rules';
 import type { ActionId, TableView } from '../table/types';
 import type { SfxName } from './sfx';
 import { playSfx } from './useSound';
@@ -55,12 +54,9 @@ export function useGameSounds(view: TableView, dispatch: (a: ActionId) => void):
     if (gained > 0) playSfx('points', gained);
 
     if (p.phase !== 'finDeMano' && view.phase === 'finDeMano') {
-      const matchOver = view.score[0] >= 30 && view.score[0] > p.score[0];
-      if (matchOver) playSfx('matchWon');
-      else {
-        const winner = handOutcome(view.tricks, view.mano) ?? (view.score[0] > p.score[0] ? 'yo' : 'bot');
-        playSfx(winner === 'yo' ? 'handWon' : 'handLost');
-      }
+      if (view.matchWinner === 'yo') playSfx('matchWon');
+      else if (view.matchWinner === 'bot' || view.result?.winner === 'bot') playSfx('handLost');
+      else if (view.result?.winner === 'yo') playSfx('handWon');
     }
   }, [view]);
 

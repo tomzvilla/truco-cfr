@@ -218,9 +218,24 @@ describe('Mesa: anotador, bazas y fin de mano', () => {
     );
     const end = container.querySelector('.mesa__felt .mesa__end')!;
     expect(end).not.toBeNull();
-    expect(end.querySelector('.mesa__end-title')!.textContent).toMatch(/Ganaste la mano|Ganó el bot|Mano terminada/);
+    expect(end.querySelector('.mesa__end-title')!.textContent).toBe('Ganó el bot: +1');
     await userEvent.click(within(end as HTMLElement).getByRole('button', { name: 'Nueva mano' }));
     expect(onNewHand).toHaveBeenCalledOnce();
+  });
+  it('fin de partido: el cartel dice quién ganó y ofrece Nuevo partido, no Nueva mano', async () => {
+    const onNewHand = vi.fn();
+    const onNewMatch = vi.fn();
+    const view = { ...FIXTURES.finDeManoRayosX, score: [12, 30] as const, matchWinner: 'bot' as const };
+    const { container } = render(
+      <Mesa view={view} skin={jcanabalSkin} onAction={() => {}} onNewHand={onNewHand} onNewMatch={onNewMatch} />,
+    );
+    const end = container.querySelector('.mesa__felt .mesa__end') as HTMLElement;
+    expect(end.querySelector('.mesa__end-title')!.textContent).toBe('El bot ganó el partido');
+    expect(end).toHaveAttribute('data-outcome', 'bot');
+    expect(within(end).queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+    await userEvent.click(within(end).getByRole('button', { name: 'Nuevo partido' }));
+    expect(onNewMatch).toHaveBeenCalledOnce();
+    expect(onNewHand).not.toHaveBeenCalled();
   });
   it('mientras se juega no hay cartel de fin de mano', () => {
     const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} onNewHand={() => {}} />);

@@ -1,7 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
+
+// jsdom no tiene Worker: el motor queda cargando para siempre
+vi.mock('./engine/createWorker', () => ({
+  createEngineWorker: () => ({ postMessage() {}, onmessage: null, terminate() {} }),
+}));
 
 const go = (hash: string) => {
   window.location.hash = hash;
@@ -44,16 +49,16 @@ describe('App', () => {
     }
   });
 
-  it('"Nueva mano" aparece en el menú solo en Jugar', async () => {
+  it('"Nuevo partido" aparece en el menú solo en Jugar', async () => {
     go('#/jugar');
     const { unmount } = render(<App />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
-    expect(screen.getAllByRole('button', { name: 'Nueva mano' }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: 'Nuevo partido' }).length).toBeGreaterThan(0);
     unmount();
     go('#/resultados');
     render(<App />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
-    expect(screen.queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Nuevo partido' })).toBeNull();
   });
 
   it('muestra el crédito del arte con link al autor', () => {

@@ -6,6 +6,11 @@ import { jcanabalSkin } from '../skins';
 import { FIXTURES, FIXTURE_NAMES } from '../table/fixtures';
 import { ROUTES } from '../router';
 
+// jsdom no tiene Worker: el motor queda cargando para siempre
+vi.mock('../engine/createWorker', () => ({
+  createEngineWorker: () => ({ postMessage() {}, onmessage: null, terminate() {} }),
+}));
+
 afterEach(() => vi.restoreAllMocks());
 
 function silentConsole() {

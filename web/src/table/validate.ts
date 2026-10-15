@@ -44,5 +44,12 @@ export function validateTableView(v: TableView): string[] {
 
   if (v.botHand && v.botHand.length > 3) errors.push('botHand tiene más de 3 cartas');
 
+  if (v.result && v.phase !== 'finDeMano') errors.push('result solo existe en finDeMano');
+  if (v.matchWinner) {
+    if (v.phase !== 'finDeMano') errors.push('matchWinner solo existe en finDeMano');
+    const idx = v.matchWinner === 'yo' ? 0 : 1;
+    if (v.score[idx] !== 30) errors.push(`matchWinner = ${v.matchWinner} pero tiene ${v.score[idx]} puntos`);
+  }
+
   return errors;
 }

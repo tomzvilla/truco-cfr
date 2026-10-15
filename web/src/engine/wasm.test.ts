@@ -4,13 +4,13 @@ import { initSync, WasmMatch } from './pkg/truco_engine_wasm.js';
 import { validateTableView } from '../table/validate';
 import type { TableView } from '../table/types';
 import { actionIndex } from '../table/types';
+import { createSession } from './session';
+import type { FromEngine } from './protocol';
 
 initSync({ module: readFileSync(new URL('./pkg/truco_engine_wasm_bg.wasm', import.meta.url)) });
 const model = readFileSync(new URL('../../../models/strategy.tcfrw', import.meta.url));
 
-// matchWinner todavía no está en el tipo TableView de la web (lo suma la Tarea 3).
-type View = TableView & { matchWinner?: string | null };
-const parse = (json: string) => JSON.parse(json) as View;
+const parse = (json: string) => JSON.parse(json) as TableView;
 
 describe('WasmMatch', () => {
   it('juega un partido entero con vistas válidas', () => {
@@ -52,4 +52,24 @@ describe('WasmMatch', () => {
   it('rechaza un modelo inválido', () => {
     expect(() => new WasmMatch(new Uint8Array([1, 2, 3]), 0)).toThrow();
   });
+});
+
+it('la sesión juega un partido real de punta a punta', async () => {
+  const posted: FromEngine[] = [];
+  const handle = createSession({
+    load: async (_url, seed) => new WasmMatch(model, seed),
+    post: (m) => posted.push(m),
+    think: async () => {},
+  });
+  await handle({ type: 'init', modelUrl: 'x', seed: 3 });
+  for (let i = 0; i < 3000; i++) {
+    const last = posted[posted.length - 1]!;
+    if (last.type === 'error') throw new Error(last.message);
+    const view = last.view;
+    if (view.matchWinner) break;
+    if (view.phase === 'finDeMano') await handle({ type: 'newHand' });
+    else await handle({ type: 'act', action: view.actions[0]! });
+  }
+  const last = posted[posted.length - 1]!;
+  expect(last.type === 'view' && last.view.matchWinner).toBeTruthy();
 });

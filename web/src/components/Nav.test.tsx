@@ -59,14 +59,14 @@ describe('Nav hamburguesa', () => {
     expect(burger()).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('ofrece Nueva mano solo si hay partida, y lo cierra al usarlo', async () => {
-    const onNewHand = vi.fn();
+  it('ofrece Nuevo partido solo si hay partida, y lo cierra al usarlo', async () => {
+    const onNewMatch = vi.fn();
     const { rerender } = render(<Nav route="jugar" />);
     await userEvent.click(burger());
-    expect(screen.queryByRole('button', { name: 'Nueva mano' })).toBeNull();
-    rerender(<Nav route="jugar" onNewHand={onNewHand} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Nueva mano' }));
-    expect(onNewHand).toHaveBeenCalledOnce();
+    expect(screen.queryByRole('button', { name: 'Nuevo partido' })).toBeNull();
+    rerender(<Nav route="jugar" onNewMatch={onNewMatch} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Nuevo partido' }));
+    expect(onNewMatch).toHaveBeenCalledOnce();
     expect(burger()).toHaveAttribute('aria-expanded', 'false');
   });
 });

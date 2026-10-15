@@ -4,7 +4,7 @@ import { Nav } from './components/Nav';
 import { CrtOverlay } from './fx/CrtOverlay';
 import { ConfigDialog } from './components/ConfigDialog';
 import { MuteButton } from './components/MuteButton';
-import { useNewHand } from './game/session';
+import { useNewMatch } from './game/session';
 import { DESKTOP_QUERY, useMediaQuery } from './hooks/useViewport';
 import { SwirlBackground } from './fx/SwirlBackground';
 import { ComoFunciona } from './pages/ComoFunciona';
@@ -40,7 +40,7 @@ function Page({ route }: { route: RouteId }) {
 export function App() {
   const route = useRoute();
   const settings = useSettings();
-  const newHand = useNewHand();
+  const newMatch = useNewMatch();
   // en escritorio la partida tiene panel lateral propio (marca, silencio, configuración): la barra de arriba queda con el menú
   const desktop = useMediaQuery(DESKTOP_QUERY);
   const side = route === 'jugar' && desktop;
@@ -57,7 +57,7 @@ export function App() {
       <div className="app" data-route={route}>
         <header className="app__head" data-side={side}>
           {side ? null : <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>}
-          <Nav route={route} onNewHand={route === 'jugar' ? newHand : null} />
+          <Nav route={route} onNewMatch={route === 'jugar' ? newMatch : null} />
           {side ? null : (
             <div className="app__tools">
               <MuteButton />

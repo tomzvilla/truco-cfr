@@ -2,11 +2,11 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Mascot } from '../art/Mascot';
 import { feltDataUrl, railDataUrl } from '../art/table';
-import { handOutcome } from '../game/rules';
 import { useElementWidth } from '../hooks/useElementWidth';
 import { DESKTOP_QUERY, useDevicePixelRatio, useMediaQuery, useViewportHeight } from '../hooks/useViewport';
 import type { CardSkin } from '../skins/types';
 import { moodLine } from '../table/labels';
+import { outcomeOf, resultLine } from '../table/result';
 import { handOverlap, tableSizes } from '../table/sizing';
 import { describeStatus, isValeCuatroMoment } from '../table/status';
 import { PLAY_ACTIONS } from '../table/types';
@@ -25,6 +25,8 @@ interface MesaProps {
   onAction?: (a: ActionId) => void;
   /** Empezar otra mano: se ofrece en el cartel de fin de mano. */
   onNewHand?: () => void;
+  /** Partido nuevo: el botón aparece en el cartel cuando el partido terminó. */
+  onNewMatch?: () => void;
   xrayOn?: boolean;
   /** Arriba del panel lateral (solo escritorio): marca y aviso de demo. */
   head?: ReactNode;
@@ -96,12 +98,7 @@ function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefin
   );
 }
 
-function resultLine(view: TableView): string {
-  const o = handOutcome(view.tricks, view.mano);
-  return o === 'yo' ? 'Ganaste la mano' : o === 'bot' ? 'Ganó el bot' : 'Mano terminada';
-}
-
-export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, tools }: MesaProps) {
+export function Mesa({ view, skin, onAction, onNewHand, onNewMatch, xrayOn = false, head, tools }: MesaProps) {
   const [handWidth, handRef] = useElementWidth<HTMLDivElement>();
   const sectionRef = useRef<HTMLElement>(null);
   const dpr = useDevicePixelRatio();
@@ -233,9 +230,15 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
                 ))}
               </div>
               {ended ? (
-                <div className="mesa__end" data-outcome={handOutcome(view.tricks, view.mano) ?? 'none'}>
+                <div className="mesa__end" data-outcome={outcomeOf(view)}>
                   <p className="mesa__end-title">{resultLine(view)}</p>
-                  {onNewHand ? (
+                  {view.matchWinner ? (
+                    onNewMatch ? (
+                      <button type="button" className="btn btn--brasa" onClick={onNewMatch}>
+                        Nuevo partido
+                      </button>
+                    ) : null
+                  ) : onNewHand ? (
                     <button type="button" className="btn btn--brasa" onClick={onNewHand}>
                       Nueva mano
                     </button>

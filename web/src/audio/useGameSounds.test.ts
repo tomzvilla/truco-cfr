@@ -49,7 +49,22 @@ describe('useGameSounds', () => {
     rerender({ v: scored });
     const afterScore = count();
     expect(afterScore).toBeGreaterThan(before);
-    rerender({ v: { ...scored, phase: 'finDeMano' } });
+    rerender({ v: { ...scored, phase: 'finDeMano', result: { yo: 2, bot: 0, winner: 'yo' } } });
     expect(count()).toBeGreaterThan(afterScore);
+  });
+
+  it('al terminar la mano suena según lo que dice el motor; sin resultado no suena el jingle', () => {
+    const start: TableView = FIXTURES.inicioDeMano;
+    const ended = (extra: Partial<TableView>): TableView => ({ ...start, phase: 'finDeMano', actions: [], ...extra });
+    const jingles = (extra: Partial<TableView>) => {
+      const { rerender } = renderHook(({ v }) => useGameSounds(v, () => {}), { initialProps: { v: start } });
+      const before = count();
+      rerender({ v: ended(extra) });
+      return count() - before;
+    };
+    expect(jingles({ result: { yo: 0, bot: 1, winner: 'bot' } })).toBeGreaterThan(0);
+    expect(jingles({ score: [30, 5], matchWinner: 'yo', result: { yo: 0, bot: 0, winner: null } })).toBeGreaterThan(0);
+    expect(jingles({ score: [5, 30], matchWinner: 'bot' })).toBeGreaterThan(0);
+    expect(jingles({ result: { yo: 1, bot: 1, winner: null } })).toBe(0);
   });
 });

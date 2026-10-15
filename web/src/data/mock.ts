@@ -40,7 +40,7 @@ export const MOCK_RESULTS: ResultsData = {
 };
 
 const base = FIXTURES.finDeManoRayosX;
-const sinReveal = (v: TableView): TableView => ({ ...v, botHand: undefined, xray: undefined });
+const sinReveal = (v: TableView): TableView => ({ ...v, botHand: undefined, xray: undefined, result: undefined });
 
 // Los textos de cada paso describen exactamente lo que muestra la mesa (F16).
 export const MOCK_HIGHLIGHTS: Highlight[] = [

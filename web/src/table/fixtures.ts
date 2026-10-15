@@ -82,6 +82,7 @@ const finDeManoRayosX: TableView = {
   botHand: [c('oro', 6), c('copa', 5), c('basto', 4)],
   mood: 'gana',
   phase: 'finDeMano',
+  result: { yo: 0, bot: 1, winner: 'bot' },
 };
 
 export const FIXTURES: Record<FixtureName, TableView> = {

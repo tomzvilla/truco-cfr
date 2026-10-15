@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "sync-model": "node scripts/sync-model.ts",
+    "predev": "node scripts/sync-model.ts",
+    "prebuild": "node scripts/sync-model.ts",
     "cards:list": "node scripts/import-cards.ts --list",
     "cards:import": "node scripts/import-cards.ts"
   },
