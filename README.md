@@ -2,9 +2,9 @@
 
 An AI that learned to play (and bluff at) Argentine truco by playing against itself. Runs entirely in your browser.
 
-Play: PLAY_URL · Model: HF_URL
+Play: https://tomzvilla.github.io/truco-cfr/ · Model: https://huggingface.co/tomzv1/truco-cfr
 
-<!-- ![The table](docs/img/mesa.png) -->
+![The table](docs/img/mesa.png)
 
 ## Results
 

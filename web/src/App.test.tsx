@@ -98,6 +98,14 @@ describe('App', () => {
     expect(within(foot).getByRole('link', { name: 'Banco de pruebas' })).toHaveAttribute('href', '#/playground');
   });
 
+  it('el pie tiene los enlaces al código y al modelo', () => {
+    go('#/jugar');
+    render(<App />);
+    const foot = screen.getByRole('contentinfo');
+    expect(within(foot).getByRole('link', { name: 'Código' })).toHaveAttribute('href', 'https://github.com/tomzvilla/truco-cfr');
+    expect(within(foot).getByRole('link', { name: 'Modelo' })).toHaveAttribute('href', 'https://huggingface.co/tomzv1/truco-cfr');
+  });
+
   it('el título de la pestaña acompaña a la página', () => {
     go('#/manos');
     render(<App />);

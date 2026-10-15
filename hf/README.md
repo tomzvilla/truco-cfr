@@ -18,7 +18,7 @@ A small neural network (MLP, 304 → 256 → 256 → 256 → 12, about 850 KB) t
 truco (to 30 points, no flor) with envido and truco. Trained from scratch by self-play with **Deep CFR**
 (Brown et al., 2019) on a single RTX 5070 Ti: no human games, no LLM, no fine-tuning.
 
-Play against it in the browser: see the project repository (link in the GitHub README).
+Play against it in the browser: https://tomzvilla.github.io/truco-cfr/ · Code: https://github.com/tomzvilla/truco-cfr
 
 ## Files
 

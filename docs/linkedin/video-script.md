@@ -7,7 +7,7 @@
 | 12-20 | Rayos X prendidos: el panel muestra las probabilidades del bot en un farol. | "Con una mano floja, igual canta truco. Esto es lo que 've' la red." |
 | 20-28 | La repetición de la mano contra Haiku: 10 de copa, 4 de espada y 4 de copa; el bot canta truco y Haiku dice "no quiero". | "Con una de las peores manos posibles, le ganó la mano a Claude Haiku." |
 | 28-36 | Página "Cómo funciona" (`#/como-funciona`): la curva del envido. Después, `#/resultados`: la tabla de rivales. | "Canta envido con 7 o menos el 38 % de las veces. Ganó el 59 % de 100 partidos contra Haiku." |
-| 36-45 | Cierre con el enlace en pantalla. | "Corre en tu navegador, sin servidores. Jugá una mano: PLAY_URL" |
+| 36-45 | Cierre con el enlace en pantalla. | "Corre en tu navegador, sin servidores. Jugá una mano: https://tomzvilla.github.io/truco-cfr/" |
 
 ## Notas de grabación
 
@@ -15,4 +15,4 @@
 - Grabar desde el navegador del celular, o con el modo dispositivo de Chrome a 360x740.
 - Prender el modo rayos X en Configuración antes de grabar la escena de 12-20 s.
 - La repetición: ir a `#/manos` y abrir la primera de la lista ("Truco con 10, 4 y 4 · Claude Haiku").
-- Para el cierre, reemplazar PLAY_URL por la dirección publicada.
+- El enlace del cierre es la dirección publicada del sitio.

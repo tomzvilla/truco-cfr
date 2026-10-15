@@ -14,8 +14,9 @@ Cómo: Deep CFR, un algoritmo que juega millones de manos contra sí mismo y apr
 El motor del juego está en Rust, el entrenamiento llevó unas 7 horas en una GPU de casa, y todo corre en el
 navegador, sin servidores.
 
-Jugá una mano y mirá si te la puede: PLAY_URL
-Modelo: HF_URL
+Jugá una mano y mirá si te la puede: https://tomzvilla.github.io/truco-cfr/
+Modelo: https://huggingface.co/tomzv1/truco-cfr
+Código: https://github.com/tomzvilla/truco-cfr
 
 #AI #MachineLearning #Rust #WebAssembly #GameAI #Truco
 
@@ -26,4 +27,4 @@ Modelo: HF_URL
 I taught an AI to play Argentine truco... and it learned to bluff. Trained from scratch by self-play (Deep CFR,
 Rust, one home GPU, about 7 hours), no human games. It calls envido with 7 points or less 38 % of the time.
 It beat Claude Haiku in 59 of 100 matches (not conclusive at that sample size) and runs fully in your
-browser. Play: PLAY_URL · Model: HF_URL
+browser. Play: https://tomzvilla.github.io/truco-cfr/ · Model: https://huggingface.co/tomzv1/truco-cfr

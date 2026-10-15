@@ -17,6 +17,8 @@ import { useSettings } from './settings';
 import { DEFAULT_SKIN } from './skins';
 
 const ART_URL = 'https://jcanabal.itch.io/spanish-deck-pixel-art';
+const CODE_URL = 'https://github.com/tomzvilla/truco-cfr';
+const MODEL_URL = 'https://huggingface.co/tomzv1/truco-cfr';
 
 const TITLES: Record<RouteId, string> = {
   jugar: 'Jugar',
@@ -68,7 +70,7 @@ export function App() {
             <a href={ART_URL}>{DEFAULT_SKIN.credit}</a>. El arte de las cartas no es MIT. El código, la mascota y el dorso sí.
           </p>
           <p>
-            <a href={hrefFor('playground')}>Banco de pruebas</a>
+            <a href={CODE_URL}>Código</a> · <a href={MODEL_URL}>Modelo</a> · <a href={hrefFor('playground')}>Banco de pruebas</a>
           </p>
         </footer>
       </div>
