@@ -53,6 +53,9 @@ export function createSession(deps: SessionDeps): (msg: ToEngine) => Promise<voi
       if (!current.actions.includes(msg.action)) return;
       send(match.act(actionIndex(msg.action)));
     } else if (msg.type === 'newHand') {
+      // solo se reparte con la mano terminada y el partido en juego; un clic repetido se ignora
+      const current = JSON.parse(match.view()) as TableView;
+      if (current.phase !== 'finDeMano' || current.matchWinner) return;
       send(match.newHand());
     } else {
       send(match.newMatch(msg.seed));
@@ -63,7 +66,7 @@ export function createSession(deps: SessionDeps): (msg: ToEngine) => Promise<voi
   return (msg) => {
     // una jugada que llega mientras se atiende otro mensaje (doble clic, o el bot pensando) se ignora:
     // quien la mandó miraba una vista que ya no vale. Además, `handle` revisa la legalidad con la vista al ejecutar.
-    if (msg.type === 'act' && pending > 0) return queue;
+    if ((msg.type === 'act' || msg.type === 'newHand') && pending > 0) return queue;
     pending += 1;
     queue = queue
       .then(() => handle(msg))

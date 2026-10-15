@@ -98,9 +98,34 @@ describe('sesión del motor', () => {
     expect(posted).toEqual([{ type: 'error', message: 'modelo roto' }]);
   });
 
+  it('un doble clic en nueva mano llega una sola vez al motor y no es un error', async () => {
+    let ended = true;
+    const log: string[] = [];
+    const v = (extra: Partial<TableView>) => JSON.stringify({ ...FIXTURES.inicioDeMano, ...extra });
+    const api: MatchApi = {
+      view: () => v(ended ? { phase: 'finDeMano', actions: [] } : {}),
+      botToMove: () => false,
+      act: () => v({}),
+      botStep: () => v({}),
+      newHand: () => {
+        if (!ended) throw new Error('la mano todavía no terminó');
+        ended = false;
+        log.push('newHand');
+        return v({});
+      },
+      newMatch: () => v({}),
+    };
+    const s = setup(api);
+    await s.handle({ type: 'init', modelUrl: 'x', seed: 1 });
+    await Promise.all([s.handle({ type: 'newHand' }), s.handle({ type: 'newHand' })]);
+    await s.handle({ type: 'newHand' }); // y uno tardío, con la mano en juego
+    expect(log).toEqual(['newHand']);
+    expect(s.posted.some((m) => m.type === 'error')).toBe(false);
+  });
+
   it('nueva mano y nuevo partido', async () => {
     const { api, log } = fakeMatch();
-    const s = setup(api);
+    const s = setup({ ...api, view: () => JSON.stringify({ ...FIXTURES.finDeManoRayosX }) }); // mano terminada
     await s.handle({ type: 'init', modelUrl: 'x', seed: 1 });
     await s.handle({ type: 'newHand' });
     await s.handle({ type: 'newMatch', seed: 9 });
