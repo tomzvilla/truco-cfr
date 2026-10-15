@@ -1,0 +1,52 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --check
+      - run: cargo clippy --workspace --exclude truco-engine-py --all-targets -- -D warnings
+      - run: cargo test
+
+  python:
+    # Tests de entrenamiento en CPU (los de GPU se saltean solos). torch viene del índice cu128 de
+    # pyproject.toml: la descarga es grande, pero así no hace falta tocar la configuración local.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: train
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - run: uv run --no-sync maturin develop --release -m ../engine-py/Cargo.toml
+      - run: uv run --no-sync pytest
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run size
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e -- --workers=1 --retries=1
