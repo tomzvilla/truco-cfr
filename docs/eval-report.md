@@ -18,22 +18,28 @@ rival; su intervalo sale de un bootstrap que remuestrea pares enteros (2000 remu
 
 **Criterio 3 del spec** (límite inferior de Wilson por encima del 50 %): cumplido contra el azar
 (89,6 %) y contra el heurístico (61,3 %). Contra el heurístico el entrenamiento había medido 60,2 %
-[58,1; 62,4] con otras semillas de reparto; la diferencia (3,2 puntos) está dentro de lo esperable.
+[58,1; 62,4] con otras semillas de reparto; la diferencia (3,2 puntos) es de unos dos errores estándar: probable
+variación de muestreo, aunque no se descarta del todo un efecto de las semillas.
 
 **Contra Claude Haiku** (no lo exige el spec): con 100 partidos el bot ganó el 59 %, pero el
 intervalo de Wilson toca el 50 % (49,2 %), así que la ventaja en partidos no es concluyente. En
-puntos por mano sí lo es: +0,23 con un intervalo enteramente positivo [+0,04; +0,42].
+puntos por mano el intervalo [+0,04; +0,42] apenas excluye el cero: hay ventaja, con 50 pares de
+evidencia.
 
 - Modelo exacto: `claude-haiku-5-5`, vía Claude Code 2.1 (`claude -p`) con la suscripción, sin
-  API key. Corrida del 2026-10-14 (22:09 UTC) al 2026-10-15 (02:30 UTC), con 6 llamadas en paralelo.
+  API key. Corrida del 2026-10-14 (22:09 UTC) al 2026-10-15 (02:30 UTC), con 6 llamadas en paralelo y
+  una pausa en el medio. La sesión retomada jugó 10 pares en 31 minutos (unos 10 segundos por
+  decisión en cada hilo).
 - La corrida se cortó una vez (la protección de memoria de Claude Code la detuvo con 40 de 50 pares
   completos) y se retomó con `--resume true`: no se rejugó ningún par.
-- Fallbacks (jugada prudente por falta de respuesta válida): **0**. No hay ningún mensaje `haiku:`
-  de error en la salida de las dos sesiones.
+- Fallbacks (jugada prudente por falta de respuesta válida): **0** en la sesión retomada (contador
+  del JSON). De la primera sesión se revisó la salida con 30 de sus 40 pares jugados y no había
+  ningún mensaje de error de Claude; la salida de los últimos 10 pares se perdió con un reinicio de
+  WSL y no se puede verificar. El torneo se corta solo tras 5 fallbacks seguidos, y no se cortó.
 - Decisiones y costo: el archivo `tournament-haiku.json` cuenta solo la sesión retomada (20
-  partidos): 1055 decisiones, US$ 0,87 a precio de lista. Para los 100 partidos, Haiku jugó 4947
-  acciones (incluidas las pocas en las que había una sola opción y no se lo consultó), así que el
-  costo total de lista es de unos US$ 4. Con la suscripción no se pagó aparte; consumió cupo.
+  partidos): 1055 decisiones, US$ 0,87 a precio de lista. En la sesión retomada cada acción de Haiku
+  fue una consulta (1055 de 1055); en los 100 partidos jugó 4947 acciones, así que el costo total
+  de lista es de unos US$ 4,07. Con la suscripción no se pagó aparte; consumió cupo.
 
 ## Faroleo
 
@@ -58,8 +64,8 @@ cantó envido antes (incluye las veces en que el pie contesta un truco en la pri
 (Promedios ponderados por la cantidad de situaciones de cada casillero; la curva completa, casillero
 por casillero, está en `eval/results/bluff.json`.)
 
-La curva sube con los tantos, como corresponde, pero no arranca en cero: con 7 tantos canta casi
-tanto como con 21 (mano: 48,9 % contra 45,3 %; pie: 63,0 % contra 60,0 %).
+La curva sube con los tantos, como corresponde, pero no arranca en cero: con 7 tantos canta incluso
+un poco más que con 21 (mano: 48,9 % contra 45,3 %; pie: 63,0 % contra 60,0 %).
 
 ### Envido con 7 o menos (criterio 5)
 
@@ -101,8 +107,15 @@ jugada siguiente.
 | Heurístico | 43 256 | 2969 | 5054 |
 | Claude Haiku | 1350 | 29 | 47 |
 
-Contra Haiku aparecen muchos menos faroles exitosos por mano (2,1 % de las manos con truco y 3,5 %
-con envido, contra 6,9 % y 11,7 % frente al heurístico): Haiku se achica menos.
+Haiku se achica mucho menos que el heurístico cuando el bot canta:
+
+| Canto del bot | Contra el heurístico | Contra Haiku |
+|---|---|---|
+| Envido con 7 o menos: el rival no quiere o se va | 5054 de 6340 = 79,7 % | 47 de 147 = 32,0 % |
+| Cualquier truco, retruco o vale cuatro del bot (con cualquier mano): el rival no quiere o se va | 15 493 de 19 225 = 80,6 % | 145 de 522 = 27,8 % |
+
+(Contra Haiku la muestra es chica: 100 partidos.)
+
 `eval/results/highlights.json` guarda los 8 de truco y los 4 de envido con las manos más flojas.
 
 Un ejemplo contra Haiku: el bot es pie con 10 de copa, 4 de espada y 4 de copa, una de las peores
@@ -143,7 +156,7 @@ cargo build --release -p truco-eval
 B=target/release/truco-eval
 $B tournament --rivals random,heuristic --pairs 1000 --seed 2026 --threads 8
 $B bluff --hands 20000 --seed 11
-# Haiku: ~2,5 h con 6 hilos; si se corta, el mismo comando con --resume true
+# Haiku: unas 2 h de juego con 6 hilos; si se corta, el mismo comando con --resume true
 $B tournament --rivals haiku --pairs 50 --seed 2026 --threads 6 \
   --claude /mnt/c/Users/tomzv/.local/bin/claude.exe
 $B highlights --rivals heuristic,haiku
