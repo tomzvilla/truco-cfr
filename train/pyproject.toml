@@ -4,8 +4,16 @@ version = "0.1.0"
 requires-python = ">=3.12,<3.13"
 dependencies = ["torch>=2.7", "numpy>=2"]
 
+# Orden de instalación (uv sync desinstala el paquete editable del motor, así que va primero):
+#   uv sync                                              (instala los grupos dev y export)
+#   uv run --no-sync maturin develop --release -m ../engine-py/Cargo.toml
+#   uv run --no-sync pytest
+[tool.uv]
+default-groups = ["dev", "export"]
+
 [dependency-groups]
 dev = ["pytest>=8", "maturin>=1.7,<2"]
+export = ["safetensors>=0.4", "onnx>=1.16", "onnxruntime>=1.18"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

@@ -19,4 +19,7 @@ describe('index.html', () => {
     expect(svg).toMatch(/shape-rendering="crispEdges"/);
     expect(svg).not.toMatch(/https?:\/\/(?!www\.w3\.org)/);
   });
+  it('ningún href ni src empieza con / (el sitio se sirve desde una subcarpeta)', () => {
+    expect(html).not.toMatch(/(href|src)="\//);
+  });
 });

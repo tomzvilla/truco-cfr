@@ -104,3 +104,25 @@ pub fn select(
     };
     (pick("truco", top_truco), pick("envido", top_envido))
 }
+
+/// Como `select`, pero las `top_*` más flojas de CADA rival (en el orden en que aparecen en `found`).
+pub fn select_per_rival(
+    found: Vec<Highlight>,
+    top_truco: usize,
+    top_envido: usize,
+) -> (Vec<Highlight>, Vec<Highlight>) {
+    let mut rivals: Vec<String> = Vec::new();
+    for h in &found {
+        if !rivals.contains(&h.rival) {
+            rivals.push(h.rival.clone());
+        }
+    }
+    let (mut truco, mut envido) = (Vec::new(), Vec::new());
+    for r in rivals {
+        let mine: Vec<Highlight> = found.iter().filter(|h| h.rival == r).cloned().collect();
+        let (t, e) = select(mine, top_truco, top_envido);
+        truco.extend(t);
+        envido.extend(e);
+    }
+    (truco, envido)
+}

@@ -1,0 +1,23 @@
+{
+  "architecture": "MLP (ReLU), entrada uint8 multiplicada por input_scale",
+  "input_size": 304,
+  "hidden": 256,
+  "n_hidden": 3,
+  "n_actions": 12,
+  "actions": [
+    "jugar0",
+    "jugar1",
+    "jugar2",
+    "envido",
+    "realEnvido",
+    "faltaEnvido",
+    "truco",
+    "retruco",
+    "valeCuatro",
+    "quiero",
+    "noQuiero",
+    "mazo"
+  ],
+  "policy": "softmax de los logits sobre las acciones legales (red de estrategia promedio de Deep CFR)",
+  "encoding": "engine/src/truco/encode.rs"
+}

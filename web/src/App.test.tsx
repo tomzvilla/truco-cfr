@@ -1,7 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
+
+// jsdom no tiene Worker: el motor queda cargando para siempre
+vi.mock('./engine/createWorker', () => ({
+  createEngineWorker: () => ({ postMessage() {}, onmessage: null, terminate() {} }),
+}));
 
 const go = (hash: string) => {
   window.location.hash = hash;
@@ -44,16 +49,39 @@ describe('App', () => {
     }
   });
 
-  it('"Nueva mano" aparece en el menú solo en Jugar', async () => {
+  it('en escritorio la barra de arriba es la misma en Jugar que en las demás páginas', () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('min-width: 900px'),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })) as unknown as typeof window.matchMedia;
+    try {
+      for (const hash of ['#/jugar', '#/manos']) {
+        go(hash);
+        const { container, unmount } = render(<App />);
+        const head = within(container.querySelector('.app__head') as HTMLElement);
+        expect(head.getByRole('link', { name: 'Truco CFR' })).toBeInTheDocument();
+        expect(head.getByRole('button', { name: 'Silenciar' })).toBeInTheDocument();
+        expect(head.getByRole('button', { name: 'Configuración' })).toBeInTheDocument();
+        unmount();
+      }
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it('"Nuevo partido" aparece en el menú solo en Jugar', async () => {
     go('#/jugar');
     const { unmount } = render(<App />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
-    expect(screen.getAllByRole('button', { name: 'Nueva mano' }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: 'Nuevo partido' }).length).toBeGreaterThan(0);
     unmount();
     go('#/resultados');
     render(<App />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
-    expect(screen.queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Nuevo partido' })).toBeNull();
   });
 
   it('muestra el crédito del arte con link al autor', () => {
@@ -61,6 +89,13 @@ describe('App', () => {
     render(<App />);
     const credit = screen.getByRole('link', { name: 'Card art by Jose Angel Canabal' });
     expect(credit).toHaveAttribute('href', 'https://jcanabal.itch.io/spanish-deck-pixel-art');
+  });
+
+  it('el pie tiene el enlace al Banco de pruebas', () => {
+    go('#/jugar');
+    render(<App />);
+    const foot = screen.getByRole('contentinfo');
+    expect(within(foot).getByRole('link', { name: 'Banco de pruebas' })).toHaveAttribute('href', '#/playground');
   });
 
   it('el título de la pestaña acompaña a la página', () => {

@@ -46,4 +46,6 @@ export interface ResultsData {
   tournament: TournamentRow[];
   learning: LearningPoint[];
   exploitability: ExploitPoint[];
+  /** Explotabilidad de la red final de MiniTruco (puntos por mano). */
+  exploitabilityFinal?: number;
 }

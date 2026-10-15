@@ -163,9 +163,11 @@ describe('Mesa: tamaños de cartas en celular', () => {
 });
 
 describe('Mesa: avisos para lectores de pantalla', () => {
-  it('el estado de la mano se anuncia con cortesía (aria-live polite)', () => {
-    render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
-    expect(screen.getByRole('list', { name: 'Estado de la mano' })).toHaveAttribute('aria-live', 'polite');
+  it('los cantos del paño se anuncian con cortesía (aria-live polite)', () => {
+    const { container } = render(<Mesa view={FIXTURES.trucoPendiente} skin={jcanabalSkin} onAction={() => {}} />);
+    const slot = container.querySelector('.mesa__endslot')!;
+    expect(slot).toHaveAttribute('aria-live', 'polite');
+    expect(slot).toHaveTextContent('El bot canta¡TRUCO!');
   });
   it('el globo de la mascota no es una región viva: los cambios de ánimo no se anuncian', () => {
     const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} />);
@@ -173,6 +175,38 @@ describe('Mesa: avisos para lectores de pantalla', () => {
     expect(bubble).not.toHaveAttribute('role');
     expect(bubble).not.toHaveAttribute('aria-live');
     expect(bubble.closest('[aria-live]')).toBeNull();
+  });
+});
+
+describe('Mesa: el paño cuenta la mano', () => {
+  it('el bot canta real envido: el canto exacto en grande y la frase del gaucho en la burbuja', () => {
+    const view: TableView = {
+      ...FIXTURES.envidoPendiente,
+      envido: { calls: [{ call: 'realEnvido', by: 'bot' }], pending: { by: 'bot' }, reveal: null },
+      last: { by: 'bot', action: 'realEnvido' },
+    };
+    const { container } = render(<Mesa view={view} skin={jcanabalSkin} onAction={() => {}} />);
+    expect(container.querySelector('.mesa__news-title')).toHaveTextContent('¡REAL ENVIDO!');
+    expect(container.querySelector('.bubble')!.textContent).toMatch(/real envido/i);
+  });
+  it('el envido resuelto queda a la vista con los tantos en orden', () => {
+    const view: TableView = {
+      ...FIXTURES.inicioDeMano,
+      mano: 'bot',
+      envido: { calls: [{ call: 'realEnvido', by: 'bot' }], pending: null, reveal: { yo: null, bot: 31 } },
+      envidoPoints: { yo: 0, bot: 3 },
+      last: { by: 'yo', action: 'quiero' },
+    };
+    const { container } = render(<Mesa view={view} skin={jcanabalSkin} onAction={() => {}} />);
+    expect(container.querySelector('.mesa__news')).toHaveTextContent(
+      'Real envido: Bot (mano): 31 · Vos: son buenas → +3 para el bot',
+    );
+  });
+  it('el cartel de fin de mano detalla de dónde salió cada punto', () => {
+    const view: TableView = { ...FIXTURES.finDeManoRayosX, last: { by: 'yo', action: 'mazo' } };
+    const { container } = render(<Mesa view={view} skin={jcanabalSkin} onAction={() => {}} onNewHand={() => {}} />);
+    expect(container.querySelector('.mesa__end-detail')).toHaveTextContent('Te fuiste al mazo: +1 para el bot');
+    expect(container.querySelector('.mesa__news')).toBeNull();
   });
 });
 
@@ -216,11 +250,38 @@ describe('Mesa: anotador, bazas y fin de mano', () => {
     const { container } = render(
       <Mesa view={FIXTURES.finDeManoRayosX} skin={jcanabalSkin} onAction={() => {}} onNewHand={onNewHand} />,
     );
-    const end = container.querySelector('.mesa__felt .mesa__end')!;
+    const end = container.querySelector('.mesa__endslot .mesa__end')!;
     expect(end).not.toBeNull();
-    expect(end.querySelector('.mesa__end-title')!.textContent).toMatch(/Ganaste la mano|Ganó el bot|Mano terminada/);
+    expect(end.querySelector('.mesa__end-title')!.textContent).toBe('Ganó el bot: +1');
     await userEvent.click(within(end as HTMLElement).getByRole('button', { name: 'Nueva mano' }));
     expect(onNewHand).toHaveBeenCalledOnce();
+  });
+  it('franja del cartel: vacía mientras se juega y, al terminar la mano, el cartel va adentro y después de las bazas', () => {
+    const playing = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} />);
+    const slot = playing.container.querySelector('.mesa__endslot')!;
+    expect(slot).not.toBeNull();
+    expect(slot.childElementCount).toBe(0);
+    playing.unmount();
+    const { container } = render(<Mesa view={FIXTURES.finDeManoRayosX} skin={jcanabalSkin} onAction={() => {}} onNewHand={() => {}} />);
+    const endSlot = container.querySelector('.mesa__endslot')!;
+    expect(endSlot.querySelector('.mesa__end')).not.toBeNull();
+    const bazas = container.querySelector('.mesa__bazas')!;
+    expect(bazas.compareDocumentPosition(endSlot) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+  it('fin de partido: el cartel dice quién ganó y ofrece Nuevo partido, no Nueva mano', async () => {
+    const onNewHand = vi.fn();
+    const onNewMatch = vi.fn();
+    const view = { ...FIXTURES.finDeManoRayosX, score: [12, 30] as const, matchWinner: 'bot' as const };
+    const { container } = render(
+      <Mesa view={view} skin={jcanabalSkin} onAction={() => {}} onNewHand={onNewHand} onNewMatch={onNewMatch} />,
+    );
+    const end = container.querySelector('.mesa__felt .mesa__end') as HTMLElement;
+    expect(end.querySelector('.mesa__end-title')!.textContent).toBe('El bot ganó el partido');
+    expect(end).toHaveAttribute('data-outcome', 'bot');
+    expect(within(end).queryByRole('button', { name: 'Nueva mano' })).toBeNull();
+    await userEvent.click(within(end).getByRole('button', { name: 'Nuevo partido' }));
+    expect(onNewMatch).toHaveBeenCalledOnce();
+    expect(onNewHand).not.toHaveBeenCalled();
   });
   it('mientras se juega no hay cartel de fin de mano', () => {
     const { container } = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} onNewHand={() => {}} />);
@@ -270,7 +331,7 @@ describe('Mesa: escritorio con panel lateral, sin scroll', () => {
     render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} />);
     expect(handImgWidth()).toBe(219);
   });
-  it('panel lateral: marca, mascota, anotador, estado y herramientas; a la derecha, dorsos, paño, mano y botones', () => {
+  it('panel lateral: mascota, anotador, estado y herramientas; a la derecha, dorsos, paño, mano y botones', () => {
     stubViewport(700, 1);
     stubMedia({ desktop: true });
     const { container } = render(
@@ -278,14 +339,13 @@ describe('Mesa: escritorio con panel lateral, sin scroll', () => {
         view={FIXTURES.inicioDeMano}
         skin={jcanabalSkin}
         onAction={() => {}}
-        head={<span>cabecera</span>}
         tools={<button type='button'>Herramienta</button>}
       />,
     );
     const side = container.querySelector('.mesa__side')!;
     const play = container.querySelector('.mesa__play')!;
     for (const sel of ['.mascot', '.bubble', '.score', '.mesa__status', '.mesa__tools']) expect(side.querySelector(sel), sel).not.toBeNull();
-    expect(side).toHaveTextContent('cabecera');
+    expect(side).toHaveTextContent('Herramienta');
     for (const sel of ['.mesa__bots', '.mesa__rail .mesa__felt', '.mesa__hand', '[aria-label=Acciones]']) expect(play.querySelector(sel), sel).not.toBeNull();
     expect(play.querySelector('.mascot')).toBeNull();
     expect(play.querySelector('.mesa__paper')).toBeNull();

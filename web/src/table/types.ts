@@ -80,6 +80,13 @@ export interface XRayEntry {
 
 export type Phase = 'jugando' | 'finDeMano';
 
+/** Puntos que sumó cada uno en la mano. `winner` = quien sumó más; `null` si sumaron lo mismo. */
+export interface HandResult {
+  yo: number;
+  bot: number;
+  winner: Seat | null;
+}
+
 export interface TableView {
   hand: HandCard[];
   tricks: TrickView[];
@@ -95,4 +102,17 @@ export interface TableView {
   botHand?: Card[];
   mood: Mood;
   phase: Phase;
+  /** Solo en finDeMano: lo que sumó cada uno en la mano (lo calcula el motor). */
+  result?: HandResult;
+  /** Quién llegó a 30. Solo cuando terminó el partido. */
+  matchWinner?: Seat;
+  /** La última jugada de la mano y quién la hizo (no viene al empezar la mano). */
+  last?: LastAction;
+  /** Lo que sumó cada uno con el envido, una vez resuelto (querido o no). */
+  envidoPoints?: { yo: number; bot: number };
+}
+
+export interface LastAction {
+  by: Seat;
+  action: ActionId;
 }

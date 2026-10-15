@@ -8,14 +8,14 @@ from truco_train.config import Config
 CONFIGS = sorted((Path(__file__).resolve().parent.parent / "configs").glob("*.toml"))
 
 
-def test_the_three_shipped_configs_exist():
-    assert {p.stem for p in CONFIGS} == {"smoke", "short", "overnight"}
+def test_the_shipped_configs_exist():
+    assert {p.stem for p in CONFIGS} == {"smoke", "short", "overnight", "minitruco"}
 
 
 @pytest.mark.parametrize("path", CONFIGS, ids=lambda p: p.stem)
 def test_every_shipped_config_parses_and_validates(path):
     cfg = Config.from_toml(path)
-    assert cfg.game == "truco"
+    assert cfg.game == ("minitruco" if path.stem == "minitruco" else "truco")
     assert cfg.traversals >= 1000
 
 

@@ -1,0 +1,465 @@
+{
+  "exploitability": [
+    {
+      "exploitability": 0.1941986100775004,
+      "iteration": 5
+    },
+    {
+      "exploitability": 0.23876724940140495,
+      "iteration": 10
+    },
+    {
+      "exploitability": 0.1495209002250124,
+      "iteration": 15
+    },
+    {
+      "exploitability": 0.15149537850378902,
+      "iteration": 20
+    },
+    {
+      "exploitability": 0.2848145922542856,
+      "iteration": 25
+    },
+    {
+      "exploitability": 0.14152115688604255,
+      "iteration": 30
+    },
+    {
+      "exploitability": 0.18497304571484344,
+      "iteration": 35
+    },
+    {
+      "exploitability": 0.16324563801518666,
+      "iteration": 40
+    },
+    {
+      "exploitability": 0.07697782521280247,
+      "iteration": 45
+    },
+    {
+      "exploitability": 0.09373502622295504,
+      "iteration": 50
+    },
+    {
+      "exploitability": 0.16958046901787055,
+      "iteration": 55
+    },
+    {
+      "exploitability": 0.12754859797035437,
+      "iteration": 60
+    },
+    {
+      "exploitability": 0.15731969855718142,
+      "iteration": 65
+    },
+    {
+      "exploitability": 0.15344982347076777,
+      "iteration": 70
+    },
+    {
+      "exploitability": 0.15909545906775532,
+      "iteration": 75
+    },
+    {
+      "exploitability": 0.14270745358776302,
+      "iteration": 80
+    },
+    {
+      "exploitability": 0.12284149415791036,
+      "iteration": 85
+    },
+    {
+      "exploitability": 0.18211280753215153,
+      "iteration": 90
+    },
+    {
+      "exploitability": 0.26212859760828877,
+      "iteration": 95
+    },
+    {
+      "exploitability": 0.07327207724366283,
+      "iteration": 100
+    },
+    {
+      "exploitability": 0.07738497908338295,
+      "iteration": 105
+    },
+    {
+      "exploitability": 0.08909518891687318,
+      "iteration": 110
+    },
+    {
+      "exploitability": 0.1945949534497036,
+      "iteration": 115
+    },
+    {
+      "exploitability": 0.2086391049178289,
+      "iteration": 120
+    },
+    {
+      "exploitability": 0.21851121027446516,
+      "iteration": 125
+    },
+    {
+      "exploitability": 0.2456924170717847,
+      "iteration": 130
+    },
+    {
+      "exploitability": 0.28432802407150787,
+      "iteration": 135
+    },
+    {
+      "exploitability": 0.08983556463499828,
+      "iteration": 140
+    },
+    {
+      "exploitability": 0.1088406446020546,
+      "iteration": 145
+    },
+    {
+      "exploitability": 0.12462775172392652,
+      "iteration": 150
+    }
+  ],
+  "exploitabilityFinal": 0.010284175123298695,
+  "generatedAt": "2026-10-15",
+  "isMock": false,
+  "learning": [
+    {
+      "iteration": 10,
+      "vsHeuristic": 0.5875,
+      "vsRandom": 0.92
+    },
+    {
+      "iteration": 20,
+      "vsHeuristic": 0.625,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 30,
+      "vsHeuristic": 0.6025,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 40,
+      "vsHeuristic": 0.6225,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 50,
+      "vsHeuristic": 0.6175,
+      "vsRandom": 0.9175
+    },
+    {
+      "iteration": 60,
+      "vsHeuristic": 0.695,
+      "vsRandom": 0.925
+    },
+    {
+      "iteration": 70,
+      "vsHeuristic": 0.51,
+      "vsRandom": 0.9475
+    },
+    {
+      "iteration": 80,
+      "vsHeuristic": 0.62,
+      "vsRandom": 0.93
+    },
+    {
+      "iteration": 90,
+      "vsHeuristic": 0.7225,
+      "vsRandom": 0.9275
+    },
+    {
+      "iteration": 100,
+      "vsHeuristic": 0.6475,
+      "vsRandom": 0.91
+    },
+    {
+      "iteration": 110,
+      "vsHeuristic": 0.525,
+      "vsRandom": 0.9425
+    },
+    {
+      "iteration": 120,
+      "vsHeuristic": 0.4625,
+      "vsRandom": 0.945
+    },
+    {
+      "iteration": 130,
+      "vsHeuristic": 0.6125,
+      "vsRandom": 0.9175
+    },
+    {
+      "iteration": 140,
+      "vsHeuristic": 0.6325,
+      "vsRandom": 0.925
+    },
+    {
+      "iteration": 150,
+      "vsHeuristic": 0.56,
+      "vsRandom": 0.945
+    },
+    {
+      "iteration": 160,
+      "vsHeuristic": 0.575,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 170,
+      "vsHeuristic": 0.5875,
+      "vsRandom": 0.8925
+    },
+    {
+      "iteration": 180,
+      "vsHeuristic": 0.6,
+      "vsRandom": 0.9475
+    },
+    {
+      "iteration": 190,
+      "vsHeuristic": 0.575,
+      "vsRandom": 0.8725
+    },
+    {
+      "iteration": 200,
+      "vsHeuristic": 0.6575,
+      "vsRandom": 0.9025
+    },
+    {
+      "iteration": 210,
+      "vsHeuristic": 0.555,
+      "vsRandom": 0.905
+    },
+    {
+      "iteration": 220,
+      "vsHeuristic": 0.5525,
+      "vsRandom": 0.94
+    },
+    {
+      "iteration": 230,
+      "vsHeuristic": 0.485,
+      "vsRandom": 0.9125
+    },
+    {
+      "iteration": 240,
+      "vsHeuristic": 0.56,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 250,
+      "vsHeuristic": 0.5875,
+      "vsRandom": 0.9175
+    },
+    {
+      "iteration": 260,
+      "vsHeuristic": 0.5075,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 270,
+      "vsHeuristic": 0.5075,
+      "vsRandom": 0.905
+    },
+    {
+      "iteration": 280,
+      "vsHeuristic": 0.6075,
+      "vsRandom": 0.905
+    },
+    {
+      "iteration": 290,
+      "vsHeuristic": 0.5875,
+      "vsRandom": 0.9075
+    },
+    {
+      "iteration": 300,
+      "vsHeuristic": 0.5775,
+      "vsRandom": 0.9425
+    },
+    {
+      "iteration": 310,
+      "vsHeuristic": 0.5975,
+      "vsRandom": 0.94
+    },
+    {
+      "iteration": 320,
+      "vsHeuristic": 0.63,
+      "vsRandom": 0.91
+    },
+    {
+      "iteration": 330,
+      "vsHeuristic": 0.5875,
+      "vsRandom": 0.9
+    },
+    {
+      "iteration": 340,
+      "vsHeuristic": 0.525,
+      "vsRandom": 0.9625
+    },
+    {
+      "iteration": 350,
+      "vsHeuristic": 0.625,
+      "vsRandom": 0.9
+    },
+    {
+      "iteration": 360,
+      "vsHeuristic": 0.6,
+      "vsRandom": 0.91
+    },
+    {
+      "iteration": 370,
+      "vsHeuristic": 0.6125,
+      "vsRandom": 0.9225
+    },
+    {
+      "iteration": 380,
+      "vsHeuristic": 0.555,
+      "vsRandom": 0.8575
+    },
+    {
+      "iteration": 390,
+      "vsHeuristic": 0.565,
+      "vsRandom": 0.9175
+    },
+    {
+      "iteration": 400,
+      "vsHeuristic": 0.6125,
+      "vsRandom": 0.9425
+    },
+    {
+      "iteration": 410,
+      "vsHeuristic": 0.6175,
+      "vsRandom": 0.89
+    },
+    {
+      "iteration": 420,
+      "vsHeuristic": 0.5175,
+      "vsRandom": 0.915
+    },
+    {
+      "iteration": 430,
+      "vsHeuristic": 0.68,
+      "vsRandom": 0.925
+    },
+    {
+      "iteration": 440,
+      "vsHeuristic": 0.5925,
+      "vsRandom": 0.8925
+    },
+    {
+      "iteration": 450,
+      "vsHeuristic": 0.6875,
+      "vsRandom": 0.9425
+    },
+    {
+      "iteration": 460,
+      "vsHeuristic": 0.5325,
+      "vsRandom": 0.915
+    },
+    {
+      "iteration": 470,
+      "vsHeuristic": 0.7075,
+      "vsRandom": 0.9175
+    },
+    {
+      "iteration": 480,
+      "vsHeuristic": 0.66,
+      "vsRandom": 0.95
+    },
+    {
+      "iteration": 490,
+      "vsHeuristic": 0.6075,
+      "vsRandom": 0.925
+    },
+    {
+      "iteration": 500,
+      "vsHeuristic": 0.7275,
+      "vsRandom": 0.9325
+    },
+    {
+      "iteration": 510,
+      "vsHeuristic": 0.63,
+      "vsRandom": 0.9075
+    },
+    {
+      "iteration": 520,
+      "vsHeuristic": 0.6775,
+      "vsRandom": 0.9125
+    },
+    {
+      "iteration": 530,
+      "vsHeuristic": 0.685,
+      "vsRandom": 0.9425
+    },
+    {
+      "iteration": 540,
+      "vsHeuristic": 0.685,
+      "vsRandom": 0.96
+    },
+    {
+      "iteration": 550,
+      "vsHeuristic": 0.595,
+      "vsRandom": 0.9
+    },
+    {
+      "iteration": 560,
+      "vsHeuristic": 0.6325,
+      "vsRandom": 0.9375
+    },
+    {
+      "iteration": 570,
+      "vsHeuristic": 0.6325,
+      "vsRandom": 0.9275
+    },
+    {
+      "iteration": 580,
+      "vsHeuristic": 0.6525,
+      "vsRandom": 0.9075
+    },
+    {
+      "iteration": 590,
+      "vsHeuristic": 0.6575,
+      "vsRandom": 0.8925
+    }
+  ],
+  "tournament": [
+    {
+      "ciHigh": 0.920833222917586,
+      "ciLow": 0.8955985748851946,
+      "description": "Juega cualquier acción legal",
+      "fallbackPct": null,
+      "ganados": 1818,
+      "netCiHigh": 1.446187539107893,
+      "netCiLow": 1.3233224870284055,
+      "netPerHand": 1.3836347595941774,
+      "partidos": 2000,
+      "rival": "Bot al azar",
+      "winRate": 0.909
+    },
+    {
+      "ciHigh": 0.654836271743574,
+      "ciLow": 0.6126499407394886,
+      "description": "Reglas fijas: canta envido con 27 o más, truco con dos cartas altas",
+      "fallbackPct": null,
+      "ganados": 1268,
+      "netCiHigh": 0.1623749042190076,
+      "netCiLow": 0.12502330785008392,
+      "netPerHand": 0.14356389864989827,
+      "partidos": 2000,
+      "rival": "Heurístico propio",
+      "winRate": 0.634
+    },
+    {
+      "ciHigh": 0.6813284290433533,
+      "ciLow": 0.4920125056109662,
+      "description": "IA de lenguaje de Anthropic que juega leyendo la mesa en texto (100 partidos)",
+      "fallbackPct": 0.0,
+      "ganados": 59,
+      "netCiHigh": 0.4243515850144092,
+      "netCiLow": 0.03751803751803752,
+      "netPerHand": 0.23037037037037036,
+      "partidos": 100,
+      "rival": "Claude Haiku",
+      "winRate": 0.59
+    }
+  ]
+}

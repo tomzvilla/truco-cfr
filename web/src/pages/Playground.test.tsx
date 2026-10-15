@@ -20,7 +20,7 @@ describe('Banco de pruebas (Playground)', () => {
     render(<Playground />);
     const situacion = screen.getByRole('radiogroup', { name: 'Situación' });
     await userEvent.click(within(situacion).getByRole('radio', { name: 'Truco pendiente' }));
-    expect(screen.getByText('El bot cantó truco. Respondé.')).toBeInTheDocument();
+    expect(screen.getByText('¡TRUCO!')).toBeInTheDocument();
   });
   it('las opciones de situación tienen nombre en español', () => {
     render(<Playground />);
@@ -51,7 +51,7 @@ describe('Banco de pruebas (Playground)', () => {
     const { container } = render(<Playground />);
     fireEvent.click(screen.getByRole('button', { name: 'Probar vale cuatro' }));
     expect(container.querySelector('.shake-root')).toHaveAttribute('data-shaking', 'true');
-    expect(screen.getByText('El bot cantó vale cuatro. Respondé.')).toBeInTheDocument();
+    expect(screen.getByText('¡VALE CUATRO!')).toBeInTheDocument();
   });
   it('registra las acciones tocadas', () => {
     render(<Playground />);

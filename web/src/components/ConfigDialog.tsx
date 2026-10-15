@@ -80,7 +80,7 @@ export function ConfigDialog({ icon = false, className, onOpen }: { icon?: boole
           setOpen(true);
         }}
       >
-        {icon ? <PixelIcon name="gear" /> : 'Configuración'}
+        {icon ? <PixelIcon name="sliders" /> : 'Configuración'}
       </button>
       {open
         ? createPortal(

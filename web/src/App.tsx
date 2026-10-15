@@ -4,8 +4,7 @@ import { Nav } from './components/Nav';
 import { CrtOverlay } from './fx/CrtOverlay';
 import { ConfigDialog } from './components/ConfigDialog';
 import { MuteButton } from './components/MuteButton';
-import { useNewHand } from './game/session';
-import { DESKTOP_QUERY, useMediaQuery } from './hooks/useViewport';
+import { useNewMatch } from './game/session';
 import { SwirlBackground } from './fx/SwirlBackground';
 import { ComoFunciona } from './pages/ComoFunciona';
 import { Jugar } from './pages/Jugar';
@@ -40,10 +39,7 @@ function Page({ route }: { route: RouteId }) {
 export function App() {
   const route = useRoute();
   const settings = useSettings();
-  const newHand = useNewHand();
-  // en escritorio la partida tiene panel lateral propio (marca, silencio, configuración): la barra de arriba queda con el menú
-  const desktop = useMediaQuery(DESKTOP_QUERY);
-  const side = route === 'jugar' && desktop;
+  const newMatch = useNewMatch();
 
   // <html data-motion> y data-reduced los mantiene settings.ts; acá solo se pone el título de la pestaña.
   useEffect(() => {
@@ -55,15 +51,14 @@ export function App() {
       <SwirlBackground />
       <AudioRoot />
       <div className="app" data-route={route}>
-        <header className="app__head" data-side={side}>
-          {side ? null : <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>}
-          <Nav route={route} onNewHand={route === 'jugar' ? newHand : null} />
-          {side ? null : (
-            <div className="app__tools">
-              <MuteButton />
-              <ConfigDialog icon />
-            </div>
-          )}
+        {/* la misma barra en todas las páginas: marca, secciones, y a la derecha silencio y configuración */}
+        <header className="app__head">
+          <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>
+          <Nav route={route} onNewMatch={route === 'jugar' ? newMatch : null} />
+          <div className="app__tools">
+            <MuteButton />
+            <ConfigDialog icon />
+          </div>
         </header>
         <main className="app__main">
           <Page route={route} />
@@ -71,6 +66,9 @@ export function App() {
         <footer className="app__foot">
           <p>
             <a href={ART_URL}>{DEFAULT_SKIN.credit}</a>. El arte de las cartas no es MIT. El código, la mascota y el dorso sí.
+          </p>
+          <p>
+            <a href={hrefFor('playground')}>Banco de pruebas</a>
           </p>
         </footer>
       </div>

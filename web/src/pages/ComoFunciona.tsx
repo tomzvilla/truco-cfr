@@ -1,6 +1,6 @@
 import { EnvidoCurve } from '../components/EnvidoCurve';
 import { HOW_LEAD, HOW_SECTIONS } from '../content/howItWorks';
-import { ENVIDO_CURVE_MOCK } from '../data/envidoCurve';
+import { REAL_ENVIDO_CURVE } from '../data/real';
 import './ComoFunciona.css';
 
 export function ComoFunciona() {
@@ -16,8 +16,8 @@ export function ComoFunciona() {
           ))}
           {s.id === 'farol' ? (
             <EnvidoCurve
-              data={ENVIDO_CURVE_MOCK}
-              note="Datos de ejemplo: se reemplazan por la curva real del bot cuando termine el entrenamiento."
+              data={REAL_ENVIDO_CURVE}
+              note="20 000 manos del bot contra sí mismo (eval/results/bluff.json)."
             />
           ) : null}
         </section>

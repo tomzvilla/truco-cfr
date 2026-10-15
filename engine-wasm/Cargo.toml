@@ -1,0 +1,20 @@
+[package]
+name = "truco-engine-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+# cdylib para el navegador; rlib para los tests nativos y el binario web-data.
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+truco-engine = { path = "../engine" }
+rand = { version = "0.8", features = ["small_rng"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+wasm-bindgen = "=0.2.129"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# rand usa getrandom; en el navegador los números al azar salen de crypto.getRandomValues.
+getrandom = { version = "0.2", features = ["js"] }

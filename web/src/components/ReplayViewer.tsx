@@ -18,17 +18,22 @@ export function ReplayViewer({ highlight }: { highlight: Highlight }) {
   return (
     <section className="replay" aria-label={`Repetición: ${highlight.title}`}>
       <p className="replay__why">{highlight.why}</p>
-      <p className="replay__caption" role="status">{current.caption}</p>
-      <Mesa view={current.view} skin={DEFAULT_SKIN} xrayOn={current.view.xray !== undefined} />
-      <div className="replay__nav">
+      {/* los controles van arriba, junto al texto del paso: así no se mueven cuando la mesa cambia de alto */}
+      <div className="replay__step">
         <button type="button" className="btn btn--ghost" disabled={shown <= 0} onClick={() => setStep(shown - 1)}>
           Anterior
         </button>
-        <span>{`Paso ${shown + 1} de ${highlight.steps.length}`}</span>
+        <div className="replay__text">
+          <span className="replay__count">{`Paso ${shown + 1} de ${highlight.steps.length}`}</span>
+          <p className="replay__caption" role="status">
+            {current.caption}
+          </p>
+        </div>
         <button type="button" className="btn" disabled={shown >= last} onClick={() => setStep(shown + 1)}>
           Siguiente
         </button>
       </div>
+      <Mesa view={current.view} skin={DEFAULT_SKIN} xrayOn={current.view.xray !== undefined} />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 /* El margen lateral de .app__main (8 px / 16 px) vive en base.css: en celular de 360 px la mano tiene que entrar. */
 .app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
-.app__head { width: 100%; max-width: 720px; margin: 0 auto; padding-inline: var(--sp-2); }
+/* la barra de arriba tiene el mismo ancho en todas las páginas (el de la mesa), así no salta al cambiar de sección */
+.app__head { width: 100%; max-width: 1160px; margin: 0 auto; padding-inline: var(--sp-2); }
 .app__main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding-block: 2px var(--sp-5); }
 
 /* Pie: ocupa todo el ancho y centra su texto, así queda centrado respecto de la página (no del contenedor de la mesa). */
@@ -56,13 +57,14 @@
   .brand { font-size: 22px; }
 }
 
-/* Desde 720 px: enlaces en línea, sin hamburguesa. */
-@media (min-width: 720px) {
+/* Desde 900 px: enlaces en línea, sin hamburguesa (más angosto no entran en una fila con la marca y los botones). */
+@media (min-width: 900px) {
   .app__head { gap: var(--sp-4); }
   .brand { margin-right: 0; }
-  .nav { display: flex; flex: 1; min-width: 0; flex-wrap: wrap; gap: 2px; }
+  .nav { display: flex; flex: 1; min-width: 0; gap: 2px; }
   .nav__burger, .drawer { display: none; }
   .app__tools { margin-left: auto; }
+  .app__tools .btn--icon { min-height: 40px; height: 40px; width: 40px; min-width: 40px; }
 }
 
 /* Escritorio: en Jugar la mesa ocupa más ancho (panel lateral + mesa) y la página entera entra en la ventana sin scroll. */
@@ -72,8 +74,11 @@
   .brand { min-height: 40px; }
   .app__main { padding-block: 2px 0; }
   .app__foot { padding-block: var(--sp-1); font-size: 13px; line-height: 1.3; }
-  .app[data-route='jugar'] .app__head,
   .app[data-route='jugar'] .app__main { max-width: 1160px; }
+  /* repeticiones: la mesa con el mismo ancho que en Jugar; los textos siguen en su columna de 720 px */
+  .app[data-route='manos'] .app__main { max-width: 1160px; }
+  .app[data-route='manos'] .manos > :not(.replay),
+  .app[data-route='manos'] .replay > :not(.shake-root) { max-width: 720px; margin-inline: auto; }
   /* la mesa rellena el alto que sobra entre el banner y el pie */
   .app[data-route='jugar'] .app__main,
   .app[data-route='jugar'] .page,

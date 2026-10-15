@@ -1,0 +1,3546 @@
+[
+  {
+    "id": "haiku-truco",
+    "steps": [
+      {
+        "caption": "Reparto. El bot tiene 10 de copa, 4 de espada y 4 de copa: una mano del 0,3 % más flojo.",
+        "view": {
+          "actions": [
+            "jugar0",
+            "jugar1",
+            "jugar2",
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": false
+            }
+          ],
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            20
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "Claude Haiku juega el 4 de oro.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            20
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta envido.",
+        "view": {
+          "actions": [
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": {
+              "by": "bot"
+            },
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            20
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.12427942454814911
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.06486651301383972
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.009855495765805244
+            },
+            {
+              "action": "envido",
+              "prob": 0.38370662927627563
+            },
+            {
+              "action": "realEnvido",
+              "prob": 0.11320836842060089
+            },
+            {
+              "action": "faltaEnvido",
+              "prob": 0.07699179649353027
+            },
+            {
+              "action": "truco",
+              "prob": 0.22688531875610352
+            },
+            {
+              "action": "mazo",
+              "prob": 0.0002064027066808194
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku quiere.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": {
+              "bot": 24,
+              "yo": 6
+            }
+          },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "quiero",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            22
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot juega el 10 de copa.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": {
+              "bot": 24,
+              "yo": 6
+            }
+          },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            22
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 10,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.357185423374176
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.26632651686668396
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.07141827791929245
+            },
+            {
+              "action": "truco",
+              "prob": 0.2961573600769043
+            },
+            {
+              "action": "mazo",
+              "prob": 0.008912409655749798
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El bot canta truco con una mano del 0,3 % más flojo: farol.",
+        "view": {
+          "actions": [
+            "retruco",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": {
+              "bot": 24,
+              "yo": 6
+            }
+          },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            10,
+            22
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 10,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": {
+              "by": "bot",
+              "call": "truco"
+            }
+          },
+          "xray": [
+            {
+              "action": "jugar1",
+              "prob": 0.31216347217559814
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.157919242978096
+            },
+            {
+              "action": "truco",
+              "prob": 0.5234034657478333
+            },
+            {
+              "action": "mazo",
+              "prob": 0.006513879168778658
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku no quiere. Fin de la mano: el bot suma 3.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 10,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": {
+              "bot": 24,
+              "yo": 6
+            }
+          },
+          "envidoPoints": {
+            "bot": 2,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "finDeMano",
+          "result": {
+            "bot": 3,
+            "winner": "bot",
+            "yo": 0
+          },
+          "score": [
+            10,
+            23
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 10,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 4,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      }
+    ],
+    "title": "Truco con 10, 4 y 4 · Claude Haiku",
+    "why": "El bot cantó truco con 10 de copa, 4 de espada y 4 de copa (una mano del 0,3 % más flojo). Claude Haiku no quiso y el bot sumó 3 puntos en la mano."
+  },
+  {
+    "id": "haiku-envido",
+    "steps": [
+      {
+        "caption": "Reparto. El bot tiene 1 de basto, 11 de copa y 10 de oro: 1 tanto.",
+        "view": {
+          "actions": [
+            "jugar0",
+            "jugar1",
+            "jugar2",
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": false
+            }
+          ],
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            7,
+            10
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "Claude Haiku juega el 5 de oro.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            7,
+            10
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta real envido con 1 tanto: farol.",
+        "view": {
+          "actions": [
+            "faltaEnvido",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": {
+              "by": "bot"
+            },
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "realEnvido",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            10
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.000057803623349172994
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.23150917887687683
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.49606141448020935
+            },
+            {
+              "action": "envido",
+              "prob": 0.1418590098619461
+            },
+            {
+              "action": "realEnvido",
+              "prob": 0.01640215888619423
+            },
+            {
+              "action": "faltaEnvido",
+              "prob": 0.0011250546667724848
+            },
+            {
+              "action": "truco",
+              "prob": 0.11298534274101257
+            },
+            {
+              "action": "mazo",
+              "prob": 1.2934511239848234e-9
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku no quiere.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot juega el 11 de copa.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.00016405596397817135
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.2249932587146759
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.7082570195198059
+            },
+            {
+              "action": "truco",
+              "prob": 0.06658565253019333
+            },
+            {
+              "action": "mazo",
+              "prob": 1.4224761812897668e-8
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El bot juega el 10 de oro.",
+        "view": {
+          "actions": [
+            "jugar0",
+            "jugar1",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar2",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": null,
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 4.884991540166084e-6
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.9957531690597534
+            },
+            {
+              "action": "truco",
+              "prob": 0.0042419591918587685
+            },
+            {
+              "action": "mazo",
+              "prob": 1.0017987416184593e-13
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku juega el 2 de basto.",
+        "view": {
+          "actions": [
+            "jugar1",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "Claude Haiku canta truco.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "truco",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": {
+              "by": "yo",
+              "call": "truco"
+            }
+          }
+        }
+      },
+      {
+        "caption": "El bot quiere.",
+        "view": {
+          "actions": [
+            "jugar1",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "quiero",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 2,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "retruco",
+              "prob": 0.013166199438273907
+            },
+            {
+              "action": "quiero",
+              "prob": 0.9868220090866089
+            },
+            {
+              "action": "noQuiero",
+              "prob": 0.000011749792065529618
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku juega el 2 de copa.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 2,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta retruco.",
+        "view": {
+          "actions": [
+            "valeCuatro",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "retruco",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 2,
+            "pending": {
+              "by": "bot",
+              "call": "retruco"
+            }
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.00001727708695398178
+            },
+            {
+              "action": "retruco",
+              "prob": 0.9999827146530151
+            },
+            {
+              "action": "mazo",
+              "prob": 1.2927606099919284e-16
+            }
+          ]
+        }
+      },
+      {
+        "caption": "Claude Haiku canta vale cuatro.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "valeCuatro",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 3,
+            "pending": {
+              "by": "yo",
+              "call": "valeCuatro"
+            }
+          }
+        }
+      },
+      {
+        "caption": "El bot quiere.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "quiero",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            7,
+            11
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 4,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "quiero",
+              "prob": 0.9769723415374756
+            },
+            {
+              "action": "noQuiero",
+              "prob": 0.02302764542400837
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El bot juega el 1 de basto. Fin de la mano: el bot suma 5.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 1,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            },
+            {
+              "number": 10,
+              "suit": "oro"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "realEnvido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "finDeMano",
+          "result": {
+            "bot": 5,
+            "winner": "bot",
+            "yo": 0
+          },
+          "score": [
+            7,
+            15
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 5,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            },
+            {
+              "bot": {
+                "number": 10,
+                "suit": "oro"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "basto"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": {
+                "number": 1,
+                "suit": "basto"
+              },
+              "mine": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 4,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 1.0
+            },
+            {
+              "action": "mazo",
+              "prob": 6.83206187343478e-16
+            }
+          ]
+        }
+      }
+    ],
+    "title": "Real envido con 1 tanto · Claude Haiku",
+    "why": "El bot cantó real envido con 1 de basto, 11 de copa y 10 de oro (1 tanto). Claude Haiku no quiso y el bot sumó 5 puntos en la mano."
+  },
+  {
+    "id": "heuristic-truco",
+    "steps": [
+      {
+        "caption": "Reparto. El bot tiene 2 de copa, 4 de espada y 4 de copa: una mano del 0,3 % más flojo.",
+        "view": {
+          "actions": [
+            "jugar0",
+            "jugar1",
+            "jugar2",
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": false
+            }
+          ],
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            12
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El heurístico juega el 6 de oro.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar2",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            12
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta envido.",
+        "view": {
+          "actions": [
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": {
+              "by": "bot"
+            },
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            12
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.08867870271205902
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.033414047211408615
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.005128686316311359
+            },
+            {
+              "action": "envido",
+              "prob": 0.5630767345428467
+            },
+            {
+              "action": "realEnvido",
+              "prob": 0.24114874005317688
+            },
+            {
+              "action": "faltaEnvido",
+              "prob": 0.005128209013491869
+            },
+            {
+              "action": "truco",
+              "prob": 0.06342414021492004
+            },
+            {
+              "action": "mazo",
+              "prob": 7.202471010714362e-7
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El heurístico no quiere.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            13
+          ],
+          "tricks": [
+            {
+              "bot": null,
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot juega el 2 de copa.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "jugar0",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            10,
+            13
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.5872195363044739
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.18351434171199799
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.08382793515920639
+            },
+            {
+              "action": "truco",
+              "prob": 0.1432776302099228
+            },
+            {
+              "action": "mazo",
+              "prob": 0.0021605852525681257
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El bot canta truco con una mano del 0,3 % más flojo: farol.",
+        "view": {
+          "actions": [
+            "retruco",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            10,
+            13
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": {
+              "by": "bot",
+              "call": "truco"
+            }
+          },
+          "xray": [
+            {
+              "action": "jugar1",
+              "prob": 0.45726749300956726
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.1641227900981903
+            },
+            {
+              "action": "truco",
+              "prob": 0.377901166677475
+            },
+            {
+              "action": "mazo",
+              "prob": 0.0007085012621246278
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El heurístico no quiere. Fin de la mano: el bot suma 2.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 2,
+              "suit": "copa"
+            },
+            {
+              "number": 4,
+              "suit": "espada"
+            },
+            {
+              "number": 4,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 11,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "basto"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "played": true
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "yo",
+          "mood": "farol",
+          "phase": "finDeMano",
+          "result": {
+            "bot": 2,
+            "winner": "bot",
+            "yo": 0
+          },
+          "score": [
+            10,
+            14
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 2,
+                "suit": "copa"
+              },
+              "mine": {
+                "number": 6,
+                "suit": "oro"
+              },
+              "winner": "bot"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      }
+    ],
+    "title": "Truco con 2, 4 y 4 · El heurístico",
+    "why": "El bot cantó truco con 2 de copa, 4 de espada y 4 de copa (una mano del 0,3 % más flojo). El heurístico no quiso y el bot sumó 2 puntos en la mano."
+  },
+  {
+    "id": "heuristic-envido",
+    "steps": [
+      {
+        "caption": "Reparto. El bot tiene 12 de espada, 11 de basto y 11 de copa: 0 tantos.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [],
+            "pending": null,
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "mano": "bot",
+          "mood": "neutral",
+          "phase": "jugando",
+          "score": [
+            9,
+            20
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta envido con 0 tantos: farol.",
+        "view": {
+          "actions": [
+            "envido",
+            "realEnvido",
+            "faltaEnvido",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": {
+              "by": "bot"
+            },
+            "reveal": null
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "envido",
+            "by": "bot"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            20
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.34744030237197876
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.28203698992729187
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.28268080949783325
+            },
+            {
+              "action": "envido",
+              "prob": 0.05328679457306862
+            },
+            {
+              "action": "realEnvido",
+              "prob": 0.005221399944275618
+            },
+            {
+              "action": "faltaEnvido",
+              "prob": 0.002687082625925541
+            },
+            {
+              "action": "truco",
+              "prob": 0.026599787175655365
+            },
+            {
+              "action": "mazo",
+              "prob": 0.00004684706073021516
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El heurístico no quiere.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            21
+          ],
+          "tricks": [],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot juega el 11 de basto.",
+        "view": {
+          "actions": [
+            "jugar0",
+            "jugar1",
+            "jugar2",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "jugar1",
+            "by": "bot"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            21
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "basto"
+              },
+              "mine": null,
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.3450377583503723
+            },
+            {
+              "action": "jugar1",
+              "prob": 0.2699926793575287
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.3785659670829773
+            },
+            {
+              "action": "truco",
+              "prob": 0.006346952170133591
+            },
+            {
+              "action": "mazo",
+              "prob": 0.00005654953929479234
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El heurístico juega el 1 de oro.",
+        "view": {
+          "actions": [
+            "jugar1",
+            "jugar2",
+            "truco",
+            "mazo"
+          ],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": false
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "jugar0",
+            "by": "yo"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            21
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "basto"
+              },
+              "mine": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "winner": "yo"
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El heurístico juega el 10 de espada.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "jugar1",
+            "by": "yo"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            21
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "basto"
+              },
+              "mine": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      },
+      {
+        "caption": "El bot canta truco.",
+        "view": {
+          "actions": [
+            "retruco",
+            "quiero",
+            "noQuiero"
+          ],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "truco",
+            "by": "bot"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "jugando",
+          "score": [
+            9,
+            21
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "basto"
+              },
+              "mine": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": {
+              "by": "bot",
+              "call": "truco"
+            }
+          },
+          "xray": [
+            {
+              "action": "jugar0",
+              "prob": 0.7823342084884644
+            },
+            {
+              "action": "jugar2",
+              "prob": 0.09407834708690643
+            },
+            {
+              "action": "truco",
+              "prob": 0.12358099967241287
+            },
+            {
+              "action": "mazo",
+              "prob": 6.4228424889734015e-6
+            }
+          ]
+        }
+      },
+      {
+        "caption": "El heurístico no quiere. Fin de la mano: el bot suma 2.",
+        "view": {
+          "actions": [],
+          "botHand": [
+            {
+              "number": 12,
+              "suit": "espada"
+            },
+            {
+              "number": 11,
+              "suit": "basto"
+            },
+            {
+              "number": 11,
+              "suit": "copa"
+            }
+          ],
+          "envido": {
+            "calls": [
+              {
+                "by": "bot",
+                "call": "envido"
+              }
+            ],
+            "pending": null,
+            "reveal": null
+          },
+          "envidoPoints": {
+            "bot": 1,
+            "yo": 0
+          },
+          "hand": [
+            {
+              "card": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "played": true
+            },
+            {
+              "card": {
+                "number": 5,
+                "suit": "copa"
+              },
+              "played": false
+            }
+          ],
+          "last": {
+            "action": "noQuiero",
+            "by": "yo"
+          },
+          "mano": "bot",
+          "mood": "farol",
+          "phase": "finDeMano",
+          "result": {
+            "bot": 2,
+            "winner": "bot",
+            "yo": 0
+          },
+          "score": [
+            9,
+            22
+          ],
+          "tricks": [
+            {
+              "bot": {
+                "number": 11,
+                "suit": "basto"
+              },
+              "mine": {
+                "number": 1,
+                "suit": "oro"
+              },
+              "winner": "yo"
+            },
+            {
+              "bot": null,
+              "mine": {
+                "number": 10,
+                "suit": "espada"
+              },
+              "winner": null
+            }
+          ],
+          "truco": {
+            "acceptedLevel": 1,
+            "pending": null
+          }
+        }
+      }
+    ],
+    "title": "Envido con 0 tantos · El heurístico",
+    "why": "El bot cantó envido con 12 de espada, 11 de basto y 11 de copa (0 tantos). El heurístico no quiso y el bot sumó 2 puntos en la mano."
+  }
+]

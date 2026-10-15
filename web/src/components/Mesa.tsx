@@ -2,11 +2,13 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Mascot } from '../art/Mascot';
 import { feltDataUrl, railDataUrl } from '../art/table';
-import { handOutcome } from '../game/rules';
 import { useElementWidth } from '../hooks/useElementWidth';
 import { DESKTOP_QUERY, useDevicePixelRatio, useMediaQuery, useViewportHeight } from '../hooks/useViewport';
 import type { CardSkin } from '../skins/types';
-import { moodLine } from '../table/labels';
+import { handBreakdown, tableNews } from '../table/news';
+import type { News } from '../table/news';
+import { botLine } from '../table/phrases';
+import { outcomeOf, resultLine } from '../table/result';
 import { handOverlap, tableSizes } from '../table/sizing';
 import { describeStatus, isValeCuatroMoment } from '../table/status';
 import { PLAY_ACTIONS } from '../table/types';
@@ -25,10 +27,10 @@ interface MesaProps {
   onAction?: (a: ActionId) => void;
   /** Empezar otra mano: se ofrece en el cartel de fin de mano. */
   onNewHand?: () => void;
+  /** Partido nuevo: el botón aparece en el cartel cuando el partido terminó. */
+  onNewMatch?: () => void;
   xrayOn?: boolean;
-  /** Arriba del panel lateral (solo escritorio): marca y aviso de demo. */
-  head?: ReactNode;
-  /** Botones del panel lateral (solo escritorio): Nueva mano, Configuración, sonido. Fuera del paño. */
+  /** Botones del panel lateral (solo escritorio), fuera del paño: Nuevo partido. */
   tools?: ReactNode;
 }
 
@@ -80,6 +82,29 @@ function Slot({ w, h, ghost }: { w: number; h: number; ghost?: boolean }) {
   return <div className={ghost ? 'slot slot--ghost' : 'slot'} style={{ width: w, height: h }} aria-hidden="true" />;
 }
 
+/** El cartel del paño: el canto en grande ("¡REAL ENVIDO!") y abajo cómo viene la mano. */
+function NewsBanner({ news }: { news: News }) {
+  return (
+    <div className="mesa__news" data-tone={news.tone}>
+      {news.title ? (
+        <p className="mesa__news-head">
+          {news.kicker ? <span className="mesa__news-kicker">{news.kicker}</span> : null}
+          <span className="mesa__news-title">{news.title}</span>
+        </p>
+      ) : null}
+      {news.lines.length > 0 ? (
+        <div className="mesa__news-lines">
+          {news.lines.map((l) => (
+            <p key={l} className="mesa__news-line">
+              {l}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefined; skin: CardSkin; scale: number }) {
   const w = skin.native.w * scale;
   const h = skin.native.h * scale;
@@ -96,12 +121,7 @@ function Baza({ n, trick, skin, scale }: { n: number; trick: TrickView | undefin
   );
 }
 
-function resultLine(view: TableView): string {
-  const o = handOutcome(view.tricks, view.mano);
-  return o === 'yo' ? 'Ganaste la mano' : o === 'bot' ? 'Ganó el bot' : 'Mano terminada';
-}
-
-export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, tools }: MesaProps) {
+export function Mesa({ view, skin, onAction, onNewHand, onNewMatch, xrayOn = false, tools }: MesaProps) {
   const [handWidth, handRef] = useElementWidth<HTMLDivElement>();
   const sectionRef = useRef<HTMLElement>(null);
   const dpr = useDevicePixelRatio();
@@ -127,6 +147,9 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
   const interactive = onAction !== undefined;
   const sheet = interactive && xrayOn; // jugando: los rayos X se abren desde un botón
   const ended = interactive && view.phase === 'finDeMano';
+  const news = interactive ? tableNews(view) : null;
+  const replayXray = !interactive && xrayOn ? <XRayPanel entries={view.xray} /> : null;
+  const breakdown = ended ? handBreakdown(view) : null;
 
   const style = {
     '--hand-w': `${handW}px`,
@@ -156,15 +179,15 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
   const mascot = (
     <div className="mesa__mascot">
       <Mascot mood={view.mood} scale={desktop ? 3 : 2} />
-      {/* sin aria-live: el ánimo cambia seguido y no hace falta anunciarlo; el estado real va en la lista de chips */}
-      <p className="bubble">{moodLine(view.mood)}</p>
+      {/* sin aria-live: la frase cambia seguido y no hace falta anunciarla; los cantos se anuncian en el cartel del paño */}
+      <p className="bubble">{botLine(view)}</p>
     </div>
   );
 
   const paper = (
     <div className="mesa__paper">
       <Scoreboard score={view.score} mano={view.mano} />
-      <ul className="mesa__status" aria-label="Estado de la mano" aria-live="polite">
+      <ul className="mesa__status" aria-label="Estado de la mano">
         {status.map((l) => (
           <li key={l.key}>{l.text}</li>
         ))}
@@ -208,11 +231,12 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
       <section ref={sectionRef} className="mesa" aria-label="Mesa" style={style} data-layout={desktop ? "desktop" : "mobile"} data-bot={sizes.botCorner ? "corner" : "top"}>
         {desktop ? (
           <div className="mesa__side">
-            {head}
             {mascot}
             {paper}
             {toolRow}
             {xraySheet}
+            {/* repeticiones: los rayos X van en el panel, así no alargan la columna de la mesa */}
+            {replayXray}
           </div>
         ) : null}
 
@@ -232,16 +256,28 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
                   <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={sizes.played} />
                 ))}
               </div>
+              {interactive ? <div className="mesa__endslot" role="status" aria-live="polite">
+              {news ? <NewsBanner news={news} /> : null}
               {ended ? (
-                <div className="mesa__end" data-outcome={handOutcome(view.tricks, view.mano) ?? 'none'}>
-                  <p className="mesa__end-title">{resultLine(view)}</p>
-                  {onNewHand ? (
-                    <button type="button" className="btn btn--brasa" onClick={onNewHand}>
-                      Nueva mano
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
+                  <div className="mesa__end" data-outcome={outcomeOf(view)}>
+                    <div className="mesa__end-text">
+                      <p className="mesa__end-title">{resultLine(view)}</p>
+                      {breakdown ? <p className="mesa__end-detail">{breakdown}</p> : null}
+                    </div>
+                    {view.matchWinner ? (
+                      onNewMatch ? (
+                        <button type="button" className="btn btn--brasa" onClick={onNewMatch}>
+                          Nuevo partido
+                        </button>
+                      ) : null
+                    ) : onNewHand ? (
+                      <button type="button" className="btn btn--brasa" onClick={onNewHand}>
+                        Nueva mano
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div> : null}
             </div>
           </div>
 
@@ -270,7 +306,7 @@ export function Mesa({ view, skin, onAction, onNewHand, xrayOn = false, head, to
           ) : null}
           {desktop ? null : toolRow}
           {desktop ? null : xraySheet}
-          {!interactive && xrayOn ? <XRayPanel entries={view.xray} /> : null}
+          {desktop ? null : replayXray}
         </div>
       </section>
     </ShakeRoot>
