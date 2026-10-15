@@ -103,13 +103,16 @@ export function Resultados({ data = REAL_RESULTS }: { data?: ResultsData }) {
           series={[
             { id: 'exp', label: 'Puntos por mano que se le pueden sacar', color: 'var(--brasa)', points: data.exploitability.map((p) => ({ x: p.iteration, y: p.exploitability })) },
           ]}
-          summary={`Al final: ${String(exploitLast.exploitability).replace('.', ',')} puntos por mano.`}
+          summary={`Última iteración (la política de ese momento, que sube y baja): ${comma(exploitLast.exploitability, 4)} puntos por mano.${
+            data.exploitabilityFinal === undefined ? '' : ` La red final, la que juega en la web: ${comma(data.exploitabilityFinal, 4)}.`
+          }`}
         />
       )}
       {exploitLast === undefined ? null : (
         <p className="results__note">
           MiniTruco, una versión chica del juego donde se puede calcular exacto cuánto perdería el bot contra el mejor rival posible.
-          {data.exploitabilityFinal === undefined ? '' : ` Red final: ${comma(data.exploitabilityFinal, 3)}.`}
+          Cada punto del gráfico es la política de esa iteración, que es ruidosa y no es la que se usa para jugar.
+          {data.exploitabilityFinal === undefined ? '' : ` La red final (la que juega en la web, un promedio de todas las iteraciones) pierde solo ${comma(data.exploitabilityFinal, 3)} puntos por mano.`}
         </p>
       )}
     </article>

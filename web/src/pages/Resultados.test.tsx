@@ -19,7 +19,9 @@ describe('Resultados', () => {
     expect(screen.queryByText(/ejemplo/i)).toBeNull();
     expect(within(screen.getByRole('table')).getAllByRole('row')).toHaveLength(REAL_RESULTS.tournament.length + 1);
     expect(screen.getByText(/400 partidos de la política de esa iteración/)).toBeInTheDocument();
-    expect(screen.getByText(/Red final: \d,\d{3}\./)).toBeInTheDocument();
+    expect(screen.getByText(/Cada punto del gráfico es la política de esa iteración/)).toBeInTheDocument();
+    expect(screen.getByText(/La red final \(la que juega en la web.*pierde solo 0,010 puntos por mano/)).toBeInTheDocument();
+    expect(screen.getByText(/Última iteración \(la política de ese momento.*La red final, la que juega en la web: 0,0103/)).toBeInTheDocument();
   });
   it('el veredicto sale del intervalo y no del porcentaje', () => {
     render(<Resultados data={MOCK_RESULTS} />);
