@@ -134,23 +134,21 @@
 .slot { border: 2px dashed rgba(255, 246, 224, 0.3); }
 .slot--ghost { border: 0; visibility: hidden; }
 
-/* cartel de fin de mano, centrado sobre el paño */
+/* franja del cartel de fin de mano: siempre reservada debajo de las bazas, así el cartel no tapa nada ni mueve el layout */
+.mesa__endslot { min-height: 48px; display: flex; align-items: center; justify-content: center; }
 .mesa__end {
-  position: absolute;
-  z-index: 8;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  display: grid;
-  justify-items: center;
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: var(--sp-3);
-  min-width: 220px;
-  padding: var(--sp-4) var(--sp-5);
+  padding: var(--sp-1) var(--sp-4);
   text-align: center;
   background: var(--noche);
   box-shadow: var(--notch), 6px 8px 0 rgba(13, 8, 28, 0.55);
 }
-.mesa__end-title { margin: 0; font: 400 24px/1.1 var(--font-display); }
+.mesa__end-title { margin: 0; font: 400 22px/1.1 var(--font-display); }
 .mesa__end[data-outcome='yo'] .mesa__end-title { color: var(--menta); }
 .mesa__end[data-outcome='bot'] .mesa__end-title { color: #ff8a80; }
 .mesa__end .btn { margin: 0; }

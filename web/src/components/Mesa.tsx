@@ -229,22 +229,24 @@ export function Mesa({ view, skin, onAction, onNewHand, onNewMatch, xrayOn = fal
                   <Baza key={i} n={i + 1} trick={view.tricks[i]} skin={skin} scale={sizes.played} />
                 ))}
               </div>
+              {interactive ? <div className="mesa__endslot">
               {ended ? (
-                <div className="mesa__end" data-outcome={outcomeOf(view)}>
-                  <p className="mesa__end-title">{resultLine(view)}</p>
-                  {view.matchWinner ? (
-                    onNewMatch ? (
-                      <button type="button" className="btn btn--brasa" onClick={onNewMatch}>
-                        Nuevo partido
+                  <div className="mesa__end" data-outcome={outcomeOf(view)}>
+                    <p className="mesa__end-title">{resultLine(view)}</p>
+                    {view.matchWinner ? (
+                      onNewMatch ? (
+                        <button type="button" className="btn btn--brasa" onClick={onNewMatch}>
+                          Nuevo partido
+                        </button>
+                      ) : null
+                    ) : onNewHand ? (
+                      <button type="button" className="btn btn--brasa" onClick={onNewHand}>
+                        Nueva mano
                       </button>
-                    ) : null
-                  ) : onNewHand ? (
-                    <button type="button" className="btn btn--brasa" onClick={onNewHand}>
-                      Nueva mano
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
+                    ) : null}
+                  </div>
+                ) : null}
+              </div> : null}
             </div>
           </div>
 

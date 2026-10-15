@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
 
@@ -66,6 +66,13 @@ describe('App', () => {
     render(<App />);
     const credit = screen.getByRole('link', { name: 'Card art by Jose Angel Canabal' });
     expect(credit).toHaveAttribute('href', 'https://jcanabal.itch.io/spanish-deck-pixel-art');
+  });
+
+  it('el pie tiene el enlace al Banco de pruebas', () => {
+    go('#/jugar');
+    render(<App />);
+    const foot = screen.getByRole('contentinfo');
+    expect(within(foot).getByRole('link', { name: 'Banco de pruebas' })).toHaveAttribute('href', '#/playground');
   });
 
   it('el título de la pestaña acompaña a la página', () => {

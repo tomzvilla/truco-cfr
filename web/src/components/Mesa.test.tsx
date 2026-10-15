@@ -216,11 +216,23 @@ describe('Mesa: anotador, bazas y fin de mano', () => {
     const { container } = render(
       <Mesa view={FIXTURES.finDeManoRayosX} skin={jcanabalSkin} onAction={() => {}} onNewHand={onNewHand} />,
     );
-    const end = container.querySelector('.mesa__felt .mesa__end')!;
+    const end = container.querySelector('.mesa__endslot .mesa__end')!;
     expect(end).not.toBeNull();
     expect(end.querySelector('.mesa__end-title')!.textContent).toBe('Ganó el bot: +1');
     await userEvent.click(within(end as HTMLElement).getByRole('button', { name: 'Nueva mano' }));
     expect(onNewHand).toHaveBeenCalledOnce();
+  });
+  it('franja del cartel: vacía mientras se juega y, al terminar la mano, el cartel va adentro y después de las bazas', () => {
+    const playing = render(<Mesa view={FIXTURES.inicioDeMano} skin={jcanabalSkin} onAction={() => {}} />);
+    const slot = playing.container.querySelector('.mesa__endslot')!;
+    expect(slot).not.toBeNull();
+    expect(slot.childElementCount).toBe(0);
+    playing.unmount();
+    const { container } = render(<Mesa view={FIXTURES.finDeManoRayosX} skin={jcanabalSkin} onAction={() => {}} onNewHand={() => {}} />);
+    const endSlot = container.querySelector('.mesa__endslot')!;
+    expect(endSlot.querySelector('.mesa__end')).not.toBeNull();
+    const bazas = container.querySelector('.mesa__bazas')!;
+    expect(bazas.compareDocumentPosition(endSlot) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
   it('fin de partido: el cartel dice quién ganó y ofrece Nuevo partido, no Nueva mano', async () => {
     const onNewHand = vi.fn();

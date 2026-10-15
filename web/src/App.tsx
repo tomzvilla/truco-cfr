@@ -72,6 +72,9 @@ export function App() {
           <p>
             <a href={ART_URL}>{DEFAULT_SKIN.credit}</a>. El arte de las cartas no es MIT. El código, la mascota y el dorso sí.
           </p>
+          <p>
+            <a href={hrefFor('playground')}>Banco de pruebas</a>
+          </p>
         </footer>
       </div>
       <CrtOverlay on={settings.crt} />
