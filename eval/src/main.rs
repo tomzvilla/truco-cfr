@@ -3,12 +3,13 @@
 //!     cargo run --release -p truco-eval -- tournament --rivals random,heuristic
 //!     cargo run --release -p truco-eval -- bluff
 //!     cargo run --release -p truco-eval -- highlights
+//!     cargo run --release -p truco-eval -- highlights --per-rival true --top-truco 3 --top-envido 2
 use std::path::Path;
 use std::process::ExitCode;
 use std::sync::Arc;
 use truco_eval::args::Args;
 use truco_eval::bluff::{analyze, BluffReport};
-use truco_eval::highlights::{find, select, HighlightsReport};
+use truco_eval::highlights::{find, select, select_per_rival, HighlightsReport};
 use truco_eval::logs::read_logs;
 use truco_eval::model::load_model;
 use truco_eval::strength::StrengthTable;
@@ -133,7 +134,9 @@ fn highlights(args: &Args) -> Result<(), String> {
     }
     let truco_found = found.iter().filter(|h| h.kind == "truco").count() as u64;
     let envido_found = found.len() as u64 - truco_found;
-    let (truco, envido) = select(
+    let per_rival: bool = args.get("per-rival", Some(false))?;
+    let pick = if per_rival { select_per_rival } else { select };
+    let (truco, envido) = pick(
         found,
         args.get("top-truco", Some(8))?,
         args.get("top-envido", Some(4))?,

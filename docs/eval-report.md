@@ -116,7 +116,7 @@ Haiku se achica mucho menos que el heurístico cuando el bot canta:
 
 (Contra Haiku la muestra es chica: 100 partidos.)
 
-`eval/results/highlights.json` guarda los 8 de truco y los 4 de envido con las manos más flojas.
+`eval/results/highlights.json` guarda, para cada rival, los 3 faroles de truco y los 2 de envido con las manos más flojas (`highlights --per-rival true --top-truco 3 --top-envido 2`).
 
 Un ejemplo contra Haiku: el bot es pie con 10 de copa, 4 de espada y 4 de copa, una de las peores
 manos posibles (percentil 0,3 %). Haiku abre con el 4 de oro; el bot canta envido (24 tantos, ese
@@ -159,5 +159,5 @@ $B bluff --hands 20000 --seed 11
 # Haiku: unas 2 h de juego con 6 hilos; si se corta, el mismo comando con --resume true
 $B tournament --rivals haiku --pairs 50 --seed 2026 --threads 6 \
   --claude /mnt/c/Users/tomzv/.local/bin/claude.exe
-$B highlights --rivals heuristic,haiku
+$B highlights --rivals heuristic,haiku --per-rival true --top-truco 3 --top-envido 2
 ```

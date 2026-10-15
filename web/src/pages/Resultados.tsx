@@ -1,5 +1,5 @@
 import { LineChart } from '../components/LineChart';
-import { MOCK_RESULTS } from '../data/mock';
+import { REAL_RESULTS } from '../data/real';
 import type { ResultsData } from '../data/types';
 import { formatPct, formatPct1, formatSigned } from '../logic/format';
 import { VERDICT_TEXT, verdictOf } from '../logic/verdict';
@@ -7,8 +7,8 @@ import './Resultados.css';
 
 const comma = (n: number, digits: number): string => n.toFixed(digits).replace('.', ',');
 
-/** `data` sale de eval/results cuando haya torneo; mientras tanto, los datos de ejemplo. Las series pueden venir vacías. */
-export function Resultados({ data = MOCK_RESULTS }: { data?: ResultsData }) {
+/** `data` son los resultados reales de eval/results (ver data/real.ts). Las series pueden venir vacías. */
+export function Resultados({ data = REAL_RESULTS }: { data?: ResultsData }) {
   const learningLast = data.learning[data.learning.length - 1];
   const exploitLast = data.exploitability[data.exploitability.length - 1];
 
@@ -17,7 +17,7 @@ export function Resultados({ data = MOCK_RESULTS }: { data?: ResultsData }) {
       <h1>Resultados</h1>
       {data.isMock ? (
         <p className="banner" role="note">
-          Datos de ejemplo. Se reemplazan por los de eval/results cuando termine el torneo.
+          Datos de ejemplo.
         </p>
       ) : null}
 
@@ -80,6 +80,9 @@ export function Resultados({ data = MOCK_RESULTS }: { data?: ResultsData }) {
           summary={`Al final: ${formatPct(learningLast.vsRandom)} contra el azar y ${formatPct(learningLast.vsHeuristic)} contra el heurístico.`}
         />
       )}
+      {learningLast === undefined ? null : (
+        <p className="results__note">Cada punto: 400 partidos de la política de esa iteración (no la red final) contra cada rival.</p>
+      )}
 
       <h2>Qué tan explotable es</h2>
       <p>
@@ -102,6 +105,12 @@ export function Resultados({ data = MOCK_RESULTS }: { data?: ResultsData }) {
           ]}
           summary={`Al final: ${String(exploitLast.exploitability).replace('.', ',')} puntos por mano.`}
         />
+      )}
+      {exploitLast === undefined ? null : (
+        <p className="results__note">
+          MiniTruco, una versión chica del juego donde se puede calcular exacto cuánto perdería el bot contra el mejor rival posible.
+          {data.exploitabilityFinal === undefined ? '' : ` Red final: ${comma(data.exploitabilityFinal, 3)}.`}
+        </p>
       )}
     </article>
   );

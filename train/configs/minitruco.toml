@@ -1,0 +1,22 @@
+# MiniTruco: la variante chica donde la explotabilidad se calcula exacta. Muestra que Deep CFR converge.
+game = "minitruco"
+seed = 3
+iterations = 150
+traversals = 2_000
+threads = 8
+hidden = 64
+n_hidden = 2
+adv_capacity = 1_000_000
+strat_capacity = 2_000_000
+adv_steps = 500
+batch_size = 2_048
+lr = 0.001
+warm_start = true
+strat_steps = 5_000
+eval_every = 5
+eval_pairs = 1
+checkpoint_every = 50
+compress_checkpoints = false
+final_pairs = 1
+time_budget_s = 1_800
+device = "cuda"

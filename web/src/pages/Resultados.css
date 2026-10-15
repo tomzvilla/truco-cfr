@@ -7,3 +7,4 @@
 .results__table td:last-child { min-width: 120px; }
 .results__empty { padding: 12px; background: var(--noche); box-shadow: var(--notch); color: var(--tiza-dim); }
 .results__example { color: var(--ambar); font-size: 13px; }
+.results__note { margin-top: 8px; font-size: 14px; color: var(--tiza-dim); }

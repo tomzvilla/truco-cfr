@@ -10,8 +10,9 @@ describe('ComoFunciona', () => {
     expect(screen.getByRole('slider')).toBeInTheDocument();
     expect(screen.getByText(/no es un LLM/i)).toBeInTheDocument();
   });
-  it('avisa que la curva usa datos de ejemplo', () => {
+  it('la curva es la real y no avisa de datos de ejemplo', () => {
     render(<ComoFunciona />);
-    expect(screen.getByText(/datos de ejemplo/i)).toBeInTheDocument();
+    expect(screen.getByText(/20 000 manos del bot contra sí mismo/)).toBeInTheDocument();
+    expect(screen.queryByText(/ejemplo/i)).toBeNull();
   });
 });

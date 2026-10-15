@@ -1,0 +1,127 @@
+{
+  "run": "minitruco-1",
+  "points": [
+    {
+      "iteration": 5,
+      "exploitability": 0.1941986100775004
+    },
+    {
+      "iteration": 10,
+      "exploitability": 0.23876724940140495
+    },
+    {
+      "iteration": 15,
+      "exploitability": 0.1495209002250124
+    },
+    {
+      "iteration": 20,
+      "exploitability": 0.15149537850378902
+    },
+    {
+      "iteration": 25,
+      "exploitability": 0.2848145922542856
+    },
+    {
+      "iteration": 30,
+      "exploitability": 0.14152115688604255
+    },
+    {
+      "iteration": 35,
+      "exploitability": 0.18497304571484346
+    },
+    {
+      "iteration": 40,
+      "exploitability": 0.16324563801518666
+    },
+    {
+      "iteration": 45,
+      "exploitability": 0.07697782521280247
+    },
+    {
+      "iteration": 50,
+      "exploitability": 0.09373502622295503
+    },
+    {
+      "iteration": 55,
+      "exploitability": 0.16958046901787055
+    },
+    {
+      "iteration": 60,
+      "exploitability": 0.12754859797035437
+    },
+    {
+      "iteration": 65,
+      "exploitability": 0.15731969855718142
+    },
+    {
+      "iteration": 70,
+      "exploitability": 0.15344982347076777
+    },
+    {
+      "iteration": 75,
+      "exploitability": 0.15909545906775532
+    },
+    {
+      "iteration": 80,
+      "exploitability": 0.14270745358776302
+    },
+    {
+      "iteration": 85,
+      "exploitability": 0.12284149415791035
+    },
+    {
+      "iteration": 90,
+      "exploitability": 0.18211280753215153
+    },
+    {
+      "iteration": 95,
+      "exploitability": 0.26212859760828877
+    },
+    {
+      "iteration": 100,
+      "exploitability": 0.07327207724366283
+    },
+    {
+      "iteration": 105,
+      "exploitability": 0.07738497908338295
+    },
+    {
+      "iteration": 110,
+      "exploitability": 0.08909518891687318
+    },
+    {
+      "iteration": 115,
+      "exploitability": 0.19459495344970362
+    },
+    {
+      "iteration": 120,
+      "exploitability": 0.2086391049178289
+    },
+    {
+      "iteration": 125,
+      "exploitability": 0.21851121027446516
+    },
+    {
+      "iteration": 130,
+      "exploitability": 0.2456924170717847
+    },
+    {
+      "iteration": 135,
+      "exploitability": 0.28432802407150787
+    },
+    {
+      "iteration": 140,
+      "exploitability": 0.08983556463499828
+    },
+    {
+      "iteration": 145,
+      "exploitability": 0.10884064460205461
+    },
+    {
+      "iteration": 150,
+      "exploitability": 0.12462775172392651
+    }
+  ],
+  "finalStrategyExploitability": 0.010284175123298697,
+  "iterations": 150
+}

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ENVIDO_CURVE_MOCK } from '../data/envidoCurve';
+import { ENVIDO_CURVE_MOCK } from '../data/mock';
 import { EnvidoCurve } from './EnvidoCurve';
 
 describe('EnvidoCurve', () => {

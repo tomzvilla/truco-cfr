@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { ReplayViewer } from '../components/ReplayViewer';
-import { MOCK_HIGHLIGHTS } from '../data/mock';
+import { REAL_HIGHLIGHTS } from '../data/real';
+import type { Highlight } from '../data/types';
 import './Manos.css';
 
-export function Manos() {
-  const [selected, setSelected] = useState(MOCK_HIGHLIGHTS[0]!.id);
-  const highlight = MOCK_HIGHLIGHTS.find((h) => h.id === selected) ?? MOCK_HIGHLIGHTS[0]!;
+export function Manos({ highlights = REAL_HIGHLIGHTS }: { highlights?: Highlight[] }) {
+  const [selected, setSelected] = useState(highlights[0]!.id);
+  const highlight = highlights.find((h) => h.id === selected) ?? highlights[0]!;
 
   return (
     <article className="page manos">
       <h1>Manos destacadas</h1>
-      <p className="banner" role="note">
-        Repeticiones de ejemplo. Las reales se eligen automáticamente de los registros del torneo.
+      <p>
+        Faroles que funcionaron, sacados de los partidos del torneo: el bot cantó con una mano floja y el rival no se animó. Pasá los pasos para verlos; en cada decisión del bot ves sus probabilidades (rayos X).
       </p>
-      <p>Faroles que funcionaron: el bot cantó con una mano floja y el rival no se animó a aceptar. Pasá los pasos para verlos.</p>
       <div className="manos__list" role="group" aria-label="Elegí una repetición">
-        {MOCK_HIGHLIGHTS.map((h) => (
+        {highlights.map((h) => (
           <button
             key={h.id}
             type="button"

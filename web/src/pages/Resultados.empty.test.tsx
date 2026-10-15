@@ -24,7 +24,7 @@ describe('Resultados con datos vacíos o de ejemplo', () => {
     expect(screen.getByText('Todavía no hay resultados del torneo.')).toBeInTheDocument();
   });
   it('con datos de ejemplo cada porcentaje inventado dice "(ejemplo)" ahí mismo', () => {
-    render(<Resultados />);
+    render(<Resultados data={MOCK_RESULTS} />);
     const rows = within(screen.getByRole('table')).getAllByRole('row').slice(1);
     for (const r of rows) expect(r).toHaveTextContent('(ejemplo)');
   });
@@ -34,7 +34,7 @@ describe('Resultados con datos vacíos o de ejemplo', () => {
     expect(screen.queryByRole('note')).toBeNull();
   });
   it('los colores de las series salen de los tokens CSS, no de hexadecimales', () => {
-    const { container } = render(<Resultados />);
+    const { container } = render(<Resultados data={MOCK_RESULTS} />);
     const strokes = [...container.querySelectorAll('polyline')].map((p) => p.getAttribute('stroke'));
     expect(strokes.length).toBeGreaterThan(0);
     for (const s of strokes) expect(s).toMatch(/^var\(--/);

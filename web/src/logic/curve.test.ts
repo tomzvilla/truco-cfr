@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ENVIDO_CURVE_MOCK } from '../data/envidoCurve';
+import { ENVIDO_CURVE_MOCK } from '../data/mock';
 import { TANTOS, barSlot, bluffMass, curveSummary, probAt } from './curve';
 
 describe('datos mock de la curva', () => {

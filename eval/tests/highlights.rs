@@ -1,4 +1,4 @@
-use truco_eval::highlights::{find, select};
+use truco_eval::highlights::{find, select, select_per_rival, Highlight};
 use truco_eval::logs::{HandLog, MatchLog};
 use truco_eval::strength::StrengthTable;
 
@@ -96,4 +96,44 @@ fn select_keeps_the_weakest_first() {
     assert_eq!(truco.len(), 2);
     assert!(envido.is_empty());
     assert!(truco[0].strength <= truco[1].strength);
+}
+
+fn fake(rival: &str, strength: f64) -> Highlight {
+    Highlight {
+        rival: rival.to_string(),
+        kind: "truco".to_string(),
+        call: "truco".to_string(),
+        call_index: 0,
+        bot_seat: 0,
+        strength,
+        response: "noQuiero".to_string(),
+        points_won: 1,
+        hand: hand(
+            ["5E", "4B", "4O"],
+            ["1E", "1B", "3C"],
+            &[(0, "truco"), (1, "noQuiero")],
+            [1, 0],
+        ),
+    }
+}
+
+#[test]
+fn select_per_rival_takes_the_weakest_of_each_rival() {
+    let mut found: Vec<Highlight> = [0.05, 0.01, 0.04, 0.03, 0.02]
+        .iter()
+        .map(|&s| fake("heuristic", s))
+        .collect();
+    found.extend([0.09, 0.07].iter().map(|&s| fake("haiku", s)));
+    let (truco, envido) = select_per_rival(found, 3, 0);
+    assert!(envido.is_empty());
+    let strengths = |r: &str| -> Vec<f64> {
+        truco
+            .iter()
+            .filter(|h| h.rival == r)
+            .map(|h| h.strength)
+            .collect()
+    };
+    assert_eq!(strengths("heuristic"), vec![0.01, 0.02, 0.03]);
+    assert_eq!(strengths("haiku"), vec![0.07, 0.09]);
+    assert_eq!(truco.len(), 5);
 }
