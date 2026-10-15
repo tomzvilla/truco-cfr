@@ -10,16 +10,33 @@ function watchErrors(page: Page): string[] {
   return errors;
 }
 
-/** Hace una jugada cualquiera de las que hay; devuelve false si no había ninguna. */
+/**
+ * Hace una jugada cualquiera de las que hay y espera a que la mesa la refleje;
+ * devuelve false si no había ninguna. Sin esa espera, el sondeo siguiente ve la
+ * mano vieja (todavía habilitada) y apunta a una carta que se deshabilita enseguida.
+ */
 async function playSomething(page: Page): Promise<boolean> {
-  const card = page.getByRole('group', { name: 'Tus cartas' }).getByRole('button').and(page.locator(':enabled'));
+  const hand = page.getByRole('group', { name: 'Tus cartas' });
+  const card = hand.getByRole('button').and(page.locator(':enabled')).first();
+  const quiero = page.getByRole('button', { name: 'Quiero', exact: true });
   if (await card.count()) {
-    await card.first().click();
+    let label: string;
+    try {
+      label = (await card.getAttribute('aria-label', { timeout: 1_000 }))!;
+      await hand.getByRole('button', { name: label, exact: true }).click({ timeout: 2_000 });
+    } catch {
+      return true; // la mesa cambió entre mirar y hacer clic: se vuelve a mirar
+    }
+    await expect(hand.getByRole('button', { name: label, exact: true })).toHaveCount(0);
     return true;
   }
-  const quiero = page.getByRole('button', { name: 'Quiero', exact: true });
   if (await quiero.count()) {
-    await quiero.first().click();
+    try {
+      await quiero.first().click({ timeout: 2_000 });
+    } catch {
+      return true;
+    }
+    await expect(quiero).toHaveCount(0);
     return true;
   }
   return false;
