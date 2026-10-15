@@ -1,15 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { useGameSounds } from '../audio/useGameSounds';
-import { ConfigDialog } from '../components/ConfigDialog';
 import { Mesa } from '../components/Mesa';
-import { MuteButton } from '../components/MuteButton';
 import { createEngineWorker } from '../engine/createWorker';
 import { createEngineSource } from '../engine/engineSource';
 import { registerNewMatch } from '../game/session';
 import { useGame } from '../game/source';
 import type { GameSource } from '../game/source';
 import { DESKTOP_QUERY, useMediaQuery } from '../hooks/useViewport';
-import { hrefFor } from '../router';
 import { useSettings } from '../settings';
 import { DEFAULT_SKIN } from '../skins';
 import type { TableView } from '../table/types';
@@ -63,24 +60,12 @@ function Partida({ view, source }: { view: TableView; source: GameSource }) {
         onNewHand={source.newHand}
         onNewMatch={source.newMatch}
         xrayOn={xray}
-        head={
-          desktop ? (
-            <a className="brand mesa__brand" href={hrefFor('jugar')}>
-              Truco CFR
-            </a>
-          ) : null
-        }
+        // marca, silencio y configuración están en la barra de arriba, igual que en el resto del sitio
         tools={
           desktop ? (
-            <>
-              <button type="button" className="btn btn--brasa" onClick={source.newMatch}>
-                Nuevo partido
-              </button>
-              <div className="mesa__tools-row">
-                <ConfigDialog />
-                <MuteButton />
-              </div>
-            </>
+            <button type="button" className="btn btn--brasa" onClick={source.newMatch}>
+              Nuevo partido
+            </button>
           ) : null
         }
       />

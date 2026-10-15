@@ -5,7 +5,6 @@ import { CrtOverlay } from './fx/CrtOverlay';
 import { ConfigDialog } from './components/ConfigDialog';
 import { MuteButton } from './components/MuteButton';
 import { useNewMatch } from './game/session';
-import { DESKTOP_QUERY, useMediaQuery } from './hooks/useViewport';
 import { SwirlBackground } from './fx/SwirlBackground';
 import { ComoFunciona } from './pages/ComoFunciona';
 import { Jugar } from './pages/Jugar';
@@ -41,9 +40,6 @@ export function App() {
   const route = useRoute();
   const settings = useSettings();
   const newMatch = useNewMatch();
-  // en escritorio la partida tiene panel lateral propio (marca, silencio, configuración): la barra de arriba queda con el menú
-  const desktop = useMediaQuery(DESKTOP_QUERY);
-  const side = route === 'jugar' && desktop;
 
   // <html data-motion> y data-reduced los mantiene settings.ts; acá solo se pone el título de la pestaña.
   useEffect(() => {
@@ -55,15 +51,14 @@ export function App() {
       <SwirlBackground />
       <AudioRoot />
       <div className="app" data-route={route}>
-        <header className="app__head" data-side={side}>
-          {side ? null : <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>}
+        {/* la misma barra en todas las páginas: marca, secciones, y a la derecha silencio y configuración */}
+        <header className="app__head">
+          <a className="brand" href={hrefFor('jugar')}>Truco CFR</a>
           <Nav route={route} onNewMatch={route === 'jugar' ? newMatch : null} />
-          {side ? null : (
-            <div className="app__tools">
-              <MuteButton />
-              <ConfigDialog icon />
-            </div>
-          )}
+          <div className="app__tools">
+            <MuteButton />
+            <ConfigDialog icon />
+          </div>
         </header>
         <main className="app__main">
           <Page route={route} />

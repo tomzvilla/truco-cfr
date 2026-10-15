@@ -49,6 +49,29 @@ describe('App', () => {
     }
   });
 
+  it('en escritorio la barra de arriba es la misma en Jugar que en las demás páginas', () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('min-width: 900px'),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })) as unknown as typeof window.matchMedia;
+    try {
+      for (const hash of ['#/jugar', '#/manos']) {
+        go(hash);
+        const { container, unmount } = render(<App />);
+        const head = within(container.querySelector('.app__head') as HTMLElement);
+        expect(head.getByRole('link', { name: 'Truco CFR' })).toBeInTheDocument();
+        expect(head.getByRole('button', { name: 'Silenciar' })).toBeInTheDocument();
+        expect(head.getByRole('button', { name: 'Configuración' })).toBeInTheDocument();
+        unmount();
+      }
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
   it('"Nuevo partido" aparece en el menú solo en Jugar', async () => {
     go('#/jugar');
     const { unmount } = render(<App />);

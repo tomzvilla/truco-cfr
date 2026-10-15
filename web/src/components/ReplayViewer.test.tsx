@@ -21,6 +21,12 @@ describe('ReplayViewer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Anterior' }));
     expect(screen.getByText(`Paso ${h.steps.length - 1} de ${h.steps.length}`)).toBeInTheDocument();
   });
+  it('los botones van arriba de la mesa, así los rayos X no los empujan hacia abajo', () => {
+    render(<ReplayViewer highlight={h} />);
+    const next = screen.getByRole('button', { name: 'Siguiente' });
+    const mesa = screen.getByRole('region', { name: 'Mesa' });
+    expect(next.compareDocumentPosition(mesa) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
   it('la mesa es de solo lectura (sin botones de jugar)', () => {
     render(<ReplayViewer highlight={h} />);
     expect(screen.queryByRole('button', { name: /^Jugar / })).toBeNull();

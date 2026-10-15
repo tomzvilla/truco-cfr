@@ -60,7 +60,7 @@ function EnvidoMenu({ buttons, onAction }: { buttons: ActionButton[]; onAction: 
       <button
         ref={trigger}
         type="button"
-        className="btn"
+        className="btn actionbar__trigger"
         aria-haspopup="true"
         aria-expanded={open}
         aria-controls={menuId}

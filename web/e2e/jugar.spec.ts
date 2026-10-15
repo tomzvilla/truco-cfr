@@ -74,6 +74,43 @@ test('se juega una mano entera contra el bot real', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test('un canto se ve en grande en el paño, sin tapar las bazas ni agrandar la página', async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.goto('#/jugar');
+  await expect(page.getByRole('group', { name: 'Tus cartas' })).toBeVisible({ timeout: 30_000 });
+  const truco = page.getByRole('button', { name: 'Truco', exact: true });
+  const title = page.locator('.mesa__news-title', { hasText: '¡TRUCO!' });
+  let seen = false;
+  for (let i = 0; i < 60 && !seen; i++) {
+    if (await truco.count()) {
+      await truco.click({ timeout: 2_000 }).catch(() => {});
+      // el bot tarda al menos 400 ms en contestar: el cartel "Cantaste ¡TRUCO!" tiene que estar
+      seen = await title.waitFor({ state: 'visible', timeout: 1_000 }).then(() => true, () => false);
+      continue;
+    }
+    const nueva = page.getByRole('button', { name: 'Nueva mano' });
+    if (await nueva.count()) await nueva.click({ timeout: 2_000 }).catch(() => {});
+    else if (!(await playSomething(page))) await page.waitForTimeout(200);
+  }
+  expect(seen, 'se tiene que haber visto el cartel del truco').toBe(true);
+
+  // todo en una sola medición, antes de que el bot conteste
+  const m = await page.evaluate(() => {
+    const box = (el: Element) => el.getBoundingClientRect();
+    const news = box(document.querySelector('.mesa__news')!);
+    const overlaps = [...document.querySelectorAll('.baza')].some((el) => {
+      const b = box(el);
+      return b.left < news.right && news.left < b.right && b.top < news.bottom && news.top < b.bottom;
+    });
+    const d = document.documentElement;
+    return { overlaps, sw: d.scrollWidth, cw: d.clientWidth, sh: d.scrollHeight, ch: d.clientHeight };
+  });
+  expect(m.overlaps).toBe(false);
+  expect(m.sw).toBeLessThanOrEqual(m.cw);
+  if (test.info().project.name === 'escritorio') expect(m.sh).toBeLessThanOrEqual(m.ch);
+  expect(errors).toEqual([]);
+});
+
 test('el bot piensa entre 400 y 900 ms', async ({ page }) => {
   await page.goto('#/jugar');
   await expect(page.getByRole('group', { name: 'Tus cartas' })).toBeVisible({ timeout: 30_000 });

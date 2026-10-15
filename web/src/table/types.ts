@@ -106,4 +106,13 @@ export interface TableView {
   result?: HandResult;
   /** Quién llegó a 30. Solo cuando terminó el partido. */
   matchWinner?: Seat;
+  /** La última jugada de la mano y quién la hizo (no viene al empezar la mano). */
+  last?: LastAction;
+  /** Lo que sumó cada uno con el envido, una vez resuelto (querido o no). */
+  envidoPoints?: { yo: number; bot: number };
+}
+
+export interface LastAction {
+  by: Seat;
+  action: ActionId;
 }

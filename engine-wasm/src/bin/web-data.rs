@@ -132,27 +132,38 @@ fn highlights(results: &Path, model: &Path) -> Result<Value, String> {
         "bot",
     );
     let report = read(&results.join("highlights.json"))?;
+    // una sola mano por canto y por rival (la que más puntos le dio al bot; si empatan, la primera):
+    // con diez la página era una lista larga de faroles casi iguales
     let mut out = Vec::new();
     for kind in ["truco", "envido"] {
         let list: Vec<HighlightIn> =
             serde_json::from_value(report[kind].clone()).map_err(|e| e.to_string())?;
-        let mut counts = std::collections::HashMap::new();
+        let mut rivals: Vec<&str> = Vec::new();
         for h in &list {
-            let n = counts.entry(h.rival.clone()).or_insert(0);
-            *n += 1;
-            let id = format!("{}-{kind}-{n}", h.rival);
-            out.push(serde_json::to_value(replay(h, &agent, id)?).unwrap());
+            if !rivals.contains(&h.rival.as_str()) {
+                rivals.push(&h.rival);
+            }
+        }
+        for rival in rivals {
+            let best = list
+                .iter()
+                .filter(|h| h.rival == rival)
+                .reduce(|a, b| if b.points_won > a.points_won { b } else { a })
+                .expect("el rival salió de la lista");
+            let id = format!("{rival}-{kind}");
+            out.push(serde_json::to_value(replay(best, &agent, id)?).unwrap());
         }
     }
     // los títulos son los nombres de los botones de la página: no pueden repetirse
-    let mut seen: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
-    for h in out.iter_mut() {
-        let title = h["title"].as_str().unwrap_or("").to_string();
-        let n = seen.entry(title.clone()).or_insert(0);
-        *n += 1;
-        if *n > 1 {
-            h["title"] = Value::String(format!("{title} ({n})"));
-        }
+    let mut titles: Vec<&str> = out
+        .iter()
+        .map(|h| h["title"].as_str().unwrap_or(""))
+        .collect();
+    titles.sort_unstable();
+    if titles.windows(2).any(|w| w[0] == w[1]) {
+        return Err(format!(
+            "hay manos destacadas con el mismo título: {titles:?}"
+        ));
     }
     // primero Haiku, que es lo más llamativo; después el heurístico
     out.sort_by_key(|h| !h["id"].as_str().unwrap_or("").starts_with("haiku"));
