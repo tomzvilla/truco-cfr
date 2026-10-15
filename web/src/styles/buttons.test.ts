@@ -53,7 +53,8 @@ describe('estados de los botones', () => {
   });
   it('con animaciones reducidas el hover no mueve nada (solo cambia el color)', () => {
     expect(base).toMatch(/:root\[data-reduced='true'\] \.btn:hover[^{]*\{[^}]*transform:\s*none/);
-    expect(everything).toMatch(/:root\[data-reduced='true'\] button\.pcard[^{]*:hover[^{]*\{[^}]*top:\s*0/);
+    // la carta se levanta moviendo su dibujo (.pcard__face); con animaciones reducidas, no
+    expect(everything).toMatch(/:root\[data-reduced='true'\] button\.pcard[^{]*:hover \.pcard__face[^{]*\{[^}]*translate:\s*none/);
   });
   it('los links del menú tienen focus-visible propio', () => {
     expect(app).toMatch(/\.nav a:focus-visible/);

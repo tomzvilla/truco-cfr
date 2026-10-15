@@ -136,3 +136,43 @@ test('el bot piensa entre 400 y 900 ms', async ({ page }) => {
   expect(measured!).toBeGreaterThanOrEqual(350);
   expect(measured!).toBeLessThan(1_500);
 });
+
+test.describe('con animaciones', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('el puntero en el borde de abajo de una carta no la hace saltar', async ({ page }) => {
+    test.skip(test.info().project.name !== 'escritorio', 'el hover es de mouse');
+    await page.goto('#/jugar');
+    const card = page.getByRole('group', { name: 'Tus cartas' }).getByRole('button').and(page.locator(':enabled')).first();
+    await expect(page.getByRole('group', { name: 'Tus cartas' })).toBeVisible({ timeout: 30_000 });
+    // si el bot arranca cantando, se contesta hasta que toque jugar una carta
+    const quiero = page.getByRole('button', { name: 'Quiero', exact: true });
+    for (let i = 0; i < 30 && !(await card.count()); i++) {
+      if (await quiero.count()) await quiero.click({ timeout: 2_000 }).catch(() => {});
+      else await page.waitForTimeout(200);
+    }
+    await expect(card).toBeVisible();
+    // el punto más bajo de la carta que de verdad toma el puntero (la barra de botones tapa un poco el pie)
+    const edge = await card.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      for (let y = Math.floor(r.bottom) - 1; y > r.top; y--) {
+        if (el.contains(document.elementFromPoint(x, y))) return { x, y: y - 2 };
+      }
+      return null;
+    });
+    expect(edge, 'la carta tiene que tomar el puntero en algún lado').not.toBeNull();
+    await page.mouse.move(edge!.x, edge!.y);
+    await page.waitForTimeout(250); // que termine de subir (la transición dura 80 ms)
+    const samples: string[] = [];
+    for (let i = 0; i < 12; i++) {
+      await page.waitForTimeout(80);
+      samples.push(
+        await card.evaluate((el) => `${el.matches(':hover')}|${getComputedStyle(el.querySelector('.pcard__face')!).translate}`),
+      );
+    }
+    // levantada y quieta todo el tiempo: siempre con hover y siempre a la misma altura
+    expect(new Set(samples).size, samples.join(' ')).toBe(1);
+    expect(samples[0]).toMatch(/^true\|0px -14px$/);
+  });
+});
